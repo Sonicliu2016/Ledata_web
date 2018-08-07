@@ -1,0 +1,26 @@
+# le_data_manager
+
+> A Vue.js project
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+```
+
+1：引入VueRouter： `npm i vue-router -S`或者`cnpm i vue-router -S`
+2：引入ElementUI：`cnpm i element-ui -S`
+  *此时如果报错，在webpack.config.js文件中加入一行：
+  (参考-->https://blog.csdn.net/valderfields1206/article/details/80880392)
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: 'file-loader'
+      }
+3.
