@@ -21,7 +21,7 @@
               <!-- <i slot="prefix" class="dbm d-icon-password"></i> -->
             </el-input>
           </el-form-item>
-          <el-checkbox v-model="isAutoLogin" checked class="remember">自动登录</el-checkbox>
+          <!-- <el-checkbox v-model="isAutoLogin" checked class="remember">自动登录</el-checkbox> -->
           <el-form-item style="width:100%;">
             <el-button type="primary" style="width:100%;" @click.native.prevent="login" :loading="logining">登录</el-button>
           </el-form-item>
@@ -44,11 +44,43 @@
           username: [{ required: true, message: "请输入账号", trigger: "blur" }],
           password: [{ required: true, message: "请输入密码", trigger: "blur" }]
         },
-        isAutoLogin: true
+        isAutoLogin: true,
+        loginData:[],
      }
    },
    methods: {
      login(){
+       this.$refs.ruleForm.validate(valid =>{
+         if(valid){
+           console.log("name:" + this.ruleForm.username + "-->pwd:" + this.ruleForm.password);
+            //post
+            this.$axios.post('http://10.5.11.127:8080/user/login',{
+              username: this.ruleForm.username,
+              password: this.ruleForm.password
+            },
+            {
+              //跨域请求配置参数
+              headers:{
+                'Content-Type':'application/x-www-form-urlencoded',
+              }
+            })
+            .then(res=>{
+              console.log("请求成功:" + res.data.code);
+              if(res.data.code == 200){
+                this.loginData = res.data.data;
+                this.$router.push({
+                  name:'home'
+                });
+              }else{
+                alert("账号或密码错误！");
+              }
+            })
+            .catch(err=>{
+              console.log("error:" + err);
+              alert("服务器出现故障，请稍后再试！");
+            }) 
+         }
+       });
        
      }
    },

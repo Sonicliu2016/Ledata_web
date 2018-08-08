@@ -23,4 +23,5 @@ npm run build
         test: /\.(eot|svg|ttf|woff|woff2)$/,
         loader: 'file-loader'
       }
-3.
+3.引入axios：`cnpm install axios`
+  -关于post跨域请求解决方案：https://www.cnblogs.com/snowhite/p/7872503.html
