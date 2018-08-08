@@ -15,6 +15,10 @@ npm run dev
 npm run build
 ```
 
+git push --set-upstream origin dev_ls
+git push --set-upstream origin dev_mali
+git push --set-upstream origin dev
+
 1：引入VueRouter： `npm i vue-router -S`或者`cnpm i vue-router -S`
 2：引入ElementUI：`cnpm i element-ui -S`
   *此时如果报错，在webpack.config.js文件中加入一行：

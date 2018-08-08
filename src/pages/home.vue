@@ -1,10 +1,10 @@
 <template>
- <div>
-   <el-container>
+ <div class="homecontent">
+    <el-container>
       <el-header>
-        <span class="header_title">LEDATA</span>
+        <span class="header_title">Le_data Manager</span>
         <!-- start ============================== -->
-        <el-menu
+        <el-menu :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect"
@@ -12,15 +12,14 @@
           text-color="#fff"
           active-text-color="#ffd04b">
 
-          <el-menu-item index="1"><router-link :to="{name:'userList'}" >用户管理</router-link></el-menu-item>
-
-
-          <el-submenu index="2">
+          <el-menu-item index="1"><router-link :to="{name:'userList'}">用户管理</router-link></el-menu-item>
+          <el-menu-item index="2"><router-link :to="{name:'mediaList'}">图片管理</router-link></el-menu-item>
+          <!-- <el-submenu index="2">
             <template slot="title">图片管理</template>
             <router-link :to="{name:'mediaList'}"><el-menu-item index="2-1">图片列表</el-menu-item></router-link>
 
             <el-menu-item index="2-2">删除图片</el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
           <el-submenu index="3">
             <template slot="title">标注管理</template>
             <el-menu-item index="3-1">选项1</el-menu-item>
@@ -36,20 +35,22 @@
             <el-menu-item index="4-3">选项3</el-menu-item>
           </el-submenu>
         </el-menu>
-    <!-- stop ============================-->
+        <!-- stop ============================-->
       </el-header>
-  <el-container>
-
-    <el-main><router-view></router-view></el-main>
-  </el-container>
-</el-container>
- </div>
+   
+      <el-container>
+        <el-main><router-view></router-view></el-main>
+      </el-container>
+    </el-container>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      activeIndex: '2'
+    };
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -60,13 +61,16 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+
 .el-header,
 .el-footer {
   background-color: rgb(84, 92, 100);
   color: #333;
+  width: 100%;
   line-height: 60px;
   float: left;
+  top: 0;
 }
 .header_title {
   font-weight: bold;
@@ -91,6 +95,7 @@ export default {
   padding-left: 0;
   float: right;
 }
+
 a {
   text-decoration: none;
 }

@@ -35,6 +35,7 @@ let router = new VueRouter({
     //首页重定向，设置默认首页页面
     {path: '/',redirect:{name:'login'}},
     {name:'home',path:'/home',component:Home,
+      redirect:'/home/mediaList',
       children:[
         {name:'userList',path:'userList',component:UserList},
         {name:'mediaList',path:'mediaList',component:MediaList},
