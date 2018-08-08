@@ -13,6 +13,9 @@ import App from './App.vue';
 import Login from './pages/Login.vue';
 import NotFound from './pages/404.vue';
 import Home from './pages/home.vue';
+import UserList from './pages/user/userList.vue';
+import MediaList from './pages/media/mediaList.vue';
+import TaggingImage from './pages/tagging/taggingImage.vue';
 
 //给Vue原型挂载一个属性
 Vue.prototype.$axios = Axios;
@@ -29,6 +32,9 @@ Vue.use(ElementUI);//挂载ElementUI
 let router = new VueRouter({
   routes:[
     {name:'login',path:'/login',component:Login},
+    {name:'userList',path:'/userList',component:UserList},
+    {name:'mediaList',path:'/mediaList',component:MediaList},
+    {name:'taggingImage',path:'/taggingImg',component:TaggingImage},
      //首页重定向，设置默认首页页面
     {path: '/',redirect:{name:'login'}},
     // 404页面(当输入地址错误时，显示404页面)
