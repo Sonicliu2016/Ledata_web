@@ -32,14 +32,18 @@ Vue.use(ElementUI);//挂载ElementUI
 let router = new VueRouter({
   routes:[
     {name:'login',path:'/login',component:Login},
-    {name:'userList',path:'/userList',component:UserList},
-    {name:'mediaList',path:'/mediaList',component:MediaList},
-    {name:'taggingImage',path:'/taggingImg',component:TaggingImage},
-     //首页重定向，设置默认首页页面
+    //首页重定向，设置默认首页页面
     {path: '/',redirect:{name:'login'}},
+    {name:'home',path:'/home',component:Home,
+      children:[
+        {name:'userList',path:'userList',component:UserList},
+        {name:'mediaList',path:'mediaList',component:MediaList},
+        {name:'taggingImage',path:'taggingImg',component:TaggingImage}
+      ]
+    },
+
     // 404页面(当输入地址错误时，显示404页面)
-    {path: '*', component: NotFound },
-    {name:'home',path:'/home',component:Home}
+    {path: '*', component: NotFound }
   ]
 });
 
