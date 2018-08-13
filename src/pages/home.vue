@@ -13,8 +13,6 @@
           active-text-color="#ffd04b">
 
           <el-menu-item index="1"><router-link :to="{name:'userList'}" >用户管理</router-link></el-menu-item>
-
-
           <el-submenu index="2">
             <template slot="title">图片管理</template>
             <router-link :to="{name:'mediaList'}"><el-menu-item index="2-1">图片列表</el-menu-item></router-link>
@@ -39,8 +37,9 @@
     <!-- stop ============================-->
       </el-header>
   <el-container>
+  <router-view><el-main></el-main></router-view>
 
-    <el-main><router-view></router-view></el-main>
+    <!-- <el-main><router-view></router-view></el-main> -->
   </el-container>
 </el-container>
  </div>
@@ -78,11 +77,11 @@ export default {
   color: #333;
   text-align: center;
   line-height: 160px;
+  overflow: hidden;
 }
 .header_title {
   float: left;
 }
-
 .el-menu {
   border-right: solid 1px #e6e6e6;
   list-style: none;
@@ -93,5 +92,12 @@ export default {
 }
 a {
   text-decoration: none;
+}
+body{
+  height:100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #e9eef3;
 }
 </style>
