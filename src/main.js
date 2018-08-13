@@ -10,6 +10,7 @@ import App from './App.vue';
 
 
 //路由切换页面
+import Head from './components/head.vue';
 import Login from './pages/Login.vue';
 import NotFound from './pages/404.vue';
 import Home from './pages/home.vue';
@@ -21,7 +22,7 @@ import TaggingImage from './pages/tagging/taggingImage.vue';
 Vue.prototype.$axios = Axios;
 
 //注册全局组件
-
+Vue.component('headerVue', Head);
 
 //安装插件
 Vue.use(VueRouter);//挂载路由
@@ -35,6 +36,7 @@ let router = new VueRouter({
     //首页重定向，设置默认首页页面
     {path: '/',redirect:{name:'login'}},
     {name:'home',path:'/home',component:Home,
+      redirect:'/home/mediaList',
       children:[
         {name:'userList',path:'userList',component:UserList},
         {name:'mediaList',path:'mediaList',component:MediaList},
