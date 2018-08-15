@@ -120,8 +120,8 @@ export default {
           }
         }
         return -1;
-      }
     }
+  }
 }
 </script>
 
