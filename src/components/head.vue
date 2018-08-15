@@ -128,6 +128,7 @@
     font-size: 18px;
   }
 
+  /*导航菜单*/
   .el-menu {
     height: 64px;
     border-right: solid 0px;
