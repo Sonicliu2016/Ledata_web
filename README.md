@@ -29,3 +29,5 @@ git push --set-upstream origin dev
       }
 3.引入axios：`cnpm install axios`
   -关于post跨域请求解决方案：https://www.cnblogs.com/snowhite/p/7872503.html
+
+4.引入Moment：`npm install moment --save`

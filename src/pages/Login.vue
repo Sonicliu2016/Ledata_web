@@ -12,12 +12,12 @@
             <h3>账号密码登录</h3>
           </div>
           <el-form-item prop="username">
-            <el-input type="text" v-model="ruleForm.username" auto-complete="off" placeholder="admin/watcher">
+            <el-input type="text" v-model="ruleForm.username" auto-complete="off" placeholder="请输入账号">
               <!-- <i slot="prefix" class="dbm d-icon-username"></i> -->
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input type="password" v-model="ruleForm.password" auto-complete="off" placeholder="admin/watcher">
+            <el-input type="password" v-model="ruleForm.password" auto-complete="off" placeholder="请输入密码">
               <!-- <i slot="prefix" class="dbm d-icon-password"></i> -->
             </el-input>
           </el-form-item>
@@ -46,6 +46,7 @@
         },
         isAutoLogin: true,
         loginData:[],
+        url:'http://10.5.11.127:8080/user/login',
      }
    },
    methods: {
@@ -53,16 +54,13 @@
        this.$refs.ruleForm.validate(valid =>{
          if(valid){
            console.log("name:" + this.ruleForm.username + "-->pwd:" + this.ruleForm.password);
-            //post
-            this.$axios.post('http://10.5.11.127:8080/user/login',{
-              username: this.ruleForm.username,
-              password: this.ruleForm.password
-            },
-            {
-              //跨域请求配置参数
-              headers:{
-                'Content-Type':'application/x-www-form-urlencoded',
-              }
+           var params = new URLSearchParams();
+           params.append('username', this.ruleForm.username);       //你要传给后台的参数值 key/value
+           params.append('password', this.ruleForm.password);
+           this.$axios({
+                method: 'post',
+                url:this.url,
+                data:params
             })
             .then(res=>{
               console.log("请求成功:" + res.data.code);
