@@ -9,6 +9,7 @@ import Axios from 'axios';
 import Moment from 'moment';
 //主体
 import App from './App.vue';
+import Global from './common/global.vue'
 
 
 //路由切换页面
@@ -21,6 +22,8 @@ import MediaList from './pages/media/mediaList.vue';
 import TaggingImage from './pages/tagging/taggingImage.vue';
 
 //给Vue原型挂载一个属性
+Vue.prototype.global=Global;
+Axios.defaults.baseURL=Global.BASE_URL;
 Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$axios = Axios;
 
