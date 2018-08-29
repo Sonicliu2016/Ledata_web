@@ -41,7 +41,7 @@
       <el-col :span="3">
         <div class="user-content">
           <el-dropdown @command="handleCommand">
-            <span class="userinfo">User
+            <span class="userinfo">{{username}}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -62,6 +62,7 @@
  export default {
    data () {
      return {
+      username:'',
       activeIndex: '2',
     };
    },
@@ -81,6 +82,9 @@
    },
    components: {
 
+   },
+   created(){
+     this.username = user.methods.getUserName();
    }
  }
 </script>
