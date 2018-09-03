@@ -42,9 +42,8 @@
         align="center"
         width="800">
         <template slot-scope="scope">
-          <!-- <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
           <el-button type="text" size="small" @click="editUserDialog(scope.$index, scope.row)">修改用户密码</el-button>
-          <el-button @click="deleteUserDialog(scope.row)" type="text" size="small">删除该用户</el-button>
+          <el-button @click="deleteUserDialog(scope.row)" type="text" size="small" v-show="scope.row.showDelete">删除该用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -69,7 +68,7 @@
         <el-form-item label="用户名:" :label-width="formLabelWidth">
           {{editUserForm.username}}
         </el-form-item>
-        <el-form-item label="密码:" :label-width="formLabelWidth">
+        <el-form-item label="新密码:" :label-width="formLabelWidth">
           <el-input v-model="editUserForm.newpass" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -100,6 +99,7 @@
         showAddUserDialog:false,
         showEditUserDialog:false,
         showDeleteUserDialog:false,
+        isShow:true,
         userList: [],
         formLabelWidth: '80px',
         addUserForm:{
@@ -208,6 +208,7 @@
                 'createtime':userinfo[i].Created,
                 'username':userinfo[i].UserName,
                 'password':userinfo[i].UserPass,
+                'showDelete':userinfo[i].UserName == "admin" ? false:true,
               });
             }
           }else{

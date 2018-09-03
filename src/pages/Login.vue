@@ -32,6 +32,8 @@
 </template>
 
 <script>
+ import User from '../modules/UserModule.js';
+ var user = User;
  export default {
    data () {
      return {
@@ -66,6 +68,10 @@
               console.log("请求成功:" + res.data.code);
               if(res.data.code == 200){
                 this.loginData = res.data.data;
+                // 在这里把用户名和token保存起来
+                // localStorage.setItem("current_user",this.ruleForm.username);
+                // localStorage.setItem("currentUser_token",user_token);
+                user.methods.setUserName(this.ruleForm.username);
                 this.$router.push({
                   name:'home'
                 });

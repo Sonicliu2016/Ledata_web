@@ -40,8 +40,8 @@
 
       <el-col :span="3">
         <div class="user-content">
-          <el-dropdown >
-            <span class="userinfo">User
+          <el-dropdown @command="handleCommand">
+            <span class="userinfo">{{username}}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -57,19 +57,34 @@
 </template>
 
 <script>
+ import User from '../modules/UserModule.js';
+ var user = User;
  export default {
    data () {
      return {
+      username:'',
       activeIndex: '2',
     };
    },
    methods: {
-     handleSelect(key, keyPath) {
+      handleSelect(key, keyPath) {
         console.log(key, keyPath);
       },
+      handleCommand(command){
+        if(command == "logout"){
+          console.log("注销登录");
+          user.methods.removeUser();
+          this.$router.push({
+                  name:'login'
+                });
+        }
+      }
    },
    components: {
 
+   },
+   created(){
+     this.username = user.methods.getUserName();
    }
  }
 </script>
