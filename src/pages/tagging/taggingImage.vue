@@ -24,7 +24,7 @@
               @click.native="setSelect(tag)"
               @keyup.delete.native="deleteSelectTag()"
               :props="selectLabelsProps"
-              v-for="tag in curTask.tags"
+              v-for="tag in curEditTask.tags"
               :key="tag.name"
               closable
               @close="remove(tag)"
@@ -37,16 +37,19 @@
             <span class="commit-btn-box">
               <el-button type="danger" round>删除</el-button>
               <el-button type="warning" round>上报</el-button>
-              <el-button type="primary" round>提交</el-button>
+              <el-button type="primary" round @click="submitAnnotateTask">提交</el-button>
             </span>
           </div>
         </div>
       </div>
+
       <el-tabs v-model="activeTabName" type="border-card" >
-        <el-tab-pane label="任务列表" name="first">
+        <el-tab-pane label="标注任务列表" name="first">
+          <span style="float:right;font-size:12px;color:gray;padding:5px;">{{taskProgress}}</span>
           <el-table
             ref="singleTable"
             :data="taskList"
+            height="500px"
             highlight-current-row
             @current-change="handleCurrentChange"
             style="width: 100%">
@@ -68,7 +71,9 @@
             <el-table-column
               property="status"
               label="状态"
-              width="120">
+              width="120"
+              :filters="[{ text: '未标', value: '未标'}, { text: '已标', value: '已标'}, { text: '错误', value: '错误'}, { text: '删除', value: '删除'}]"
+              :filter-method="filterTaskStatusHandler">
             </el-table-column>
             <el-table-column
               property="date"
@@ -82,14 +87,18 @@
               <i class="el-input__icon el-icon-search"></i>
             </span>
             <input v-model="searchTv" type="text" v-on:input ="searchAssociate" autocomplete="off"
-              placeholder="请输入标签名称" class="el-input__inner" @keyup.enter="addToSelect(searchTv)">
+              @keyup="sous($event)" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask"
+              placeholder="请输入标签名称" class="el-input__inner" @keyup.enter="addFromSearch2Select()">
           </div>
-          <ul class="associate-label_ul">
-            <li class="el-dropdown-menu__item" v-for="(label,index) in associateLabels" v-bind:key="index"
-              @click="setSearchText(label)">
-              {{ label }}
-            </li>
-          </ul>
+          <div class="associate-label_ul">
+            <ol >
+              <li class="el-dropdown-menu__item" v-for="(label,index) in associateLabels" v-bind:key="index"
+                @click="setSearchText(label)" :class="{bgc: index == nowInAssociates}">
+                {{ label }}
+              </li>
+            </ol>
+          </div>
+
           <div class="el-transfer-panel__header">所有分类</div>
             <el-tree :data="data4" :props="allLabelsProps" class="vertical-scroll">
               <span class="custom-tree-node" slot-scope="{ node, data }">
@@ -111,7 +120,9 @@ export default {
     return {
       baserul:"http://10.5.11.127:8080/",
       activeTabName:"first",
+      taskProgress:"",
       searchTv:"",
+      searchTvs:[],
       allLabelsProps: {
         children: "ClusterChilds",
         label: "EnglishStr"
@@ -119,11 +130,12 @@ export default {
       selectLabelsProps: {
         name: "cluster_name"
       },
-      // data4: []
       associateLabels:[],
+      nowInAssociates:-1,
       data4: [],
       allLabelsArray:[],
       curTask:{},
+      curEditTask:{},
       taskList:[
         {
           "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
@@ -154,9 +166,108 @@ export default {
               "cluster_id": 2
             }
           ]
+        },
+        {
+          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
+          "media_url": "static/img/upload/machine/0039.jpg",
+          "status":'错误',
+          "tags": [
+            {
+              "cluster_name": "person",
+              "cluster_id": 1
+            },
+            {
+              "cluster_name": "smile",
+              "cluster_id": 2
+            }
+          ]
+        },
+        {
+          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
+          "media_url": "static/img/upload/machine/0040.jpg",
+          "status":'删除',
+          "tags": [
+            {
+              "cluster_name": "person",
+              "cluster_id": 1
+            },
+            {
+              "cluster_name": "smile",
+              "cluster_id": 2
+            }
+          ]
+        },
+        {
+          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
+          "media_url": "static/img/upload/machine/0041.jpg",
+          "status":'已标',
+          "tags": [
+            {
+              "cluster_name": "person",
+              "cluster_id": 1
+            },
+            {
+              "cluster_name": "smile",
+              "cluster_id": 2
+            }
+          ]
+        },
+        {
+          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
+          "media_url": "static/img/upload/machine/0042.jpg",
+          "status":'错误',
+          "tags": [
+            {
+              "cluster_name": "person",
+              "cluster_id": 1
+            },
+            {
+              "cluster_name": "smile",
+              "cluster_id": 2
+            }
+          ]
+        },
+        {
+          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
+          "media_url": "static/img/upload/machine/0043.jpg",
+          "status":'删除',
+          "tags": [
+            {
+              "cluster_name": "person",
+              "cluster_id": 1
+            },
+            {
+              "cluster_name": "smile",
+              "cluster_id": 2
+            }
+          ]
+        },
+        {
+          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
+          "media_url": "static/img/upload/machine/0044.jpg",
+          "status":'未标',
+          "tags": [
+            {
+              "cluster_name": "person",
+              "cluster_id": 1
+            },
+            {
+              "cluster_name": "smile",
+              "cluster_id": 2
+            }
+          ]
         }
       ]
     };
+  },
+  watch: {
+    // 当 lists 中的值变化时
+    // 清除的选择到的 li
+    associateLabels: function(nw,old){
+      console.log("watch associateLabels new : "+nw+" old: "+old);
+      if(old != nw)
+        this.now = -1;
+    }
   },
   methods: {
     // 展示消息
@@ -167,44 +278,71 @@ export default {
             type: msgType
           });
     },
+    addFromSearch2Select(){
+      this.searchTvs=[];
+      var strs = new Array();
+      strs = this.searchTv.split(" ");
+      for(var i=0;i<strs.length;i++){
+        var s = strs[i];
+        var num= s.replace(/[^0-9]/ig,"");
+        var labelPart = s.replace(/[^a-z]+/ig,"");
+        this.getAssociateList(labelPart);
+        if(this.associateLabels.length >0){
+          if(num>this.associateLabels.length){
+            num=this.associateLabels.length;
+          }
+          if(num<=0){
+            num=1;
+          }
+          this.searchTvs.push(this.associateLabels[num-1]);
+        }
+      }
+      console.log("addFromSearch2Select :"+this.searchTvs.length);
+      for(var i=0; i< this.searchTvs.length;i++){
+        this.addToSelect(this.searchTvs[i]);
+      }
+      this.associateLabels=[];
+      this.searchTv="";
+    },
     // 添加tag到已选
     addToSelect(labelStr) {
       console.log("请求成功:" + labelStr);
       if(this.allLabelsArray.indexOf(labelStr) == -1){
-        this.showMsg("无法添加，此标签不存在","warning");
+        this.showMsg("无法添加"+labelStr+"，此标签不存在","warning");
         return;
       }
-      for (var i = 0; i < this.curTask.tags.length; i++) {
-        if (labelStr == this.curTask.tags[i].cluster_name) {
-          console.log("不能重复添加:" + this.curTask.tags[i].cluster_name);
-          this.showMsg("不能重复添加","warning");
+      // this.curEditTask = JSON.parse(JSON.stringify(this.curTask));
+      for (var i = 0; i < this.curEditTask.tags.length; i++) {
+        if (labelStr == this.curEditTask.tags[i].cluster_name) {
+          console.log("不能重复添加:" + this.curEditTask.tags[i].cluster_name);
+          this.showMsg(this.curEditTask.tags[i].cluster_name+"已添加","warning");
           return;
         }
       }
-      this.curTask.tags.push({ cluster_name: labelStr, type: "" });
+      this.curEditTask.tags.push({ cluster_name: labelStr, type: "" });
       console.log("添加成功");
     },
     // 从已选tag中删除
     remove(tag) {
-      this.curTask.tags.splice(this.curTask.tags.indexOf(tag), 1);
+      this.curEditTask.tags.splice(this.curEditTask.tags.indexOf(tag), 1);
     },
     // 设置已选tag列表中，tag为选中状态
     setSelect(tag) {
       console.log("选择了：" + tag);
-      for (var i = 0; i < this.curTask.tags.length; i++) {
-        this.curTask.tags[i].type = "";
+      for (var i = 0; i < this.curEditTask.tags.length; i++) {
+        this.curEditTask.tags[i].type = "";
       }
       tag.type = "danger";
     },
     // 点击”->“选择下一个
     seleceNext(tag) {
-      console.log("选择了 下一个：" + this.curTask.tags.indexOf(tag) + 1);
-      setSelect(this.curTask.tags[this.curTask.tags.indexOf(tag) + 1]);
+      console.log("选择了 下一个：" + this.curEditTask.tags.indexOf(tag) + 1);
+      setSelect(this.curEditTask.tags[this.curEditTask.tags.indexOf(tag) + 1]);
     },
     deleteSelectTag() {
-      for (var i = 0; i < this.curTask.tags.length; i++) {
-        if (this.curTask.tags[i].type == "danger") {
-          remove(this.curTask.tags[i]);
+      for (var i = 0; i < this.curEditTask.tags.length; i++) {
+        if (this.curEditTask.tags[i].type == "danger") {
+          remove(this.curEditTask.tags[i]);
         }
       }
     },
@@ -214,14 +352,31 @@ export default {
     },
     // 监听到搜索框内容变化时，调用获取联想列表
     searchAssociate(){
+      var strs = new Array();
+      strs = this.searchTv.split(" ");
+      if(strs.length > 0){
+        var s = strs[strs.length-1];
+        var labelPart = s.replace(/[^a-z]+/ig,"");
+        this.getAssociateList(labelPart);
+      }
+    },
+    getAssociateList(text){
       this.associateLabels=[];
-      var s = this.searchTv;
       for(var i=0; i<this.allLabelsArray.length;i++){
         var label = this.allLabelsArray[i];
-        if(s!="" && label.indexOf(s)!=-1){
+        if(text!="" && label.indexOf(text)!=-1){
           this.associateLabels.push(label);
         }
       }
+      this.associateLabels.sort(function(m,n){
+        if(m.slice(0,1) == text.slice(0,1)){
+          return -1;
+        }else if(n.slice(0,1) == text.slice(0,1)){
+          return 1;
+        }else{
+          return 0;
+        }
+      });
     },
     setCurrent(row,i) {
       // this.onRowClick(row)
@@ -247,6 +402,18 @@ export default {
     },
     handleCurrentChange(val) {
       this.curTask = val;
+      this.curEditTask = JSON.parse(JSON.stringify(val));
+    },
+    formatter(row, column) {
+        return row.status;
+    },
+    filterTaskStatus(value, row) {
+        return row.status === value;
+    },
+    filterTaskStatusHandler(value, row, column) {
+      console.log("filterTaskStatusHandler: "+value);
+      const property = column['property'];
+      return row[property] === value;
     },
     // 获取所有标签列表
     getLableList() {
@@ -285,13 +452,17 @@ export default {
           // alert("服务器出现故障，请稍后再试！");
         });
     },
-    // 获取当前任务
-    getAnnotateTask() {
+    // 获取当前用户任务列表
+    getAnnotateTaskList() {
       this.$axios
         .post(
-          "task/getAnnotateTask",
+          "/task/getTaskByUserName",
+          // "/task/getAnnotateTask",
           {
-            username: "admin"
+            page:1,
+            pagesize:100000,
+            assignusername:'lixiang',
+            username: "lixiang"
           },
           {
             //跨域请求配置参数
@@ -304,7 +475,8 @@ export default {
           if(res.data.code == 200){
             // this.curTask = JSON.parse(JSON.stringify(res.data.data));
             this.setCurrent(this.taskList[0],0);
-            console.log("请求成功:" + this.curTask);
+            console.log("请求成功: getAnnotateTaskList" + this.curTask);
+            this.refreshTaskProgress();
             this.$router.push({
               // name:'home'
             });
@@ -317,11 +489,39 @@ export default {
           // alert("服务器出现故障，请稍后再试！");
         });
     },
+    refreshTaskProgress(){
+      this.taskProgress="共"+this.taskList.length+"个，未标："+this.filterTaskList(0).length
+                                +"，错误："+this.filterTaskList(2).length+"，删除："+this.filterTaskList(3).length;
+    },
+    filterTaskList(a){
+      if(a == 0){
+        return this.taskList.filter(function(item){
+          return item.status == "未标";
+        });
+      }else if(a == 1){
+        return this.taskList.filter(function(item){
+          return item.status == "已标";
+        });
+      }else if(a == 2){
+        return this.taskList.filter(function(item){
+          return item.status == "错误";
+        });
+      }else if(a == 3){
+        return this.taskList.filter(function(item){
+          return item.status == "删除";
+        });
+      }
+    },
     //提交当前任务
     submitAnnotateTask(){
-      this.$axios.post(
-        "/task/submitAnnotateTask",
-      )
+      console.log("点击了提交");
+      this.curTask.tags = JSON.parse(JSON.stringify(this.curEditTask.tags));
+      this.curTask.status = "已标";
+      this.setCurrent(this.curTask,1);
+      this.refreshTaskProgress();
+      // this.$axios.post(
+      //   "/task/submitAnnotateTask",
+      // )
     },
     transFormAllLabel2Array(labelsStr){
       for(var i=0;i< labelsStr.length;i++){
@@ -333,13 +533,31 @@ export default {
           this.transFormAllLabel2Array(mLabel.ClusterChilds);
         }
       }
+    },
+    sous: function(ev){
+      console.log("按下了 keycode ： "+ev.keycode);
+    },
+    down: function(){
+      console.log("按下了 keycode ： down");
+      this.nowInAssociates++;
+      if(this.nowInAssociates >= this.associateLabels.length)
+        this.nowInAssociates = -1;
+      // this.inpt = this.lists[this.now];
+    },
+    // ↑ 选择值，控制 li 的 .bgc
+    up: function(){
+      console.log("按下了 keycode ： up");
+      this.nowInAssociates--;
+      if(this.nowInAssociates < -1)
+        this.nowInAssociates = this.associateLabels.length - 1;
+      // this.inpt = this.lists[this.now];
     }
   },
 
   created() {
     console.log("create==================");
     this.getLableList();
-    this.getAnnotateTask();
+    this.getAnnotateTaskList();
   }
 };
 </script>
@@ -399,6 +617,7 @@ export default {
 }
 .el-tabs__content{
   height: 100%;
+  overflow-y: scroll;
 }
 .el-tabs{
   float: right;
@@ -442,18 +661,28 @@ export default {
 .associate-label_ul{
   width: 250px;
   max-height: 500px;
-  overflow-y:auto;
+  overflow-y:scroll;
   margin-top: 0px;
-  margin-left: 30px;
+  padding-left: 16px;
   background-color:aliceblue;
+  list-style-type:decimal;
   border: black 2px;
   position: absolute;
   z-index: 1;
 }
+.bgc {
+  background-color: skyblue;
+}
+ol{
+  margin-left: 20px;
+}
+.el-dropdown-menu__item{
+  list-style:decimal;
+}
 .associate-label_li{
   position: relative;
   background-color:aliceblue;
-  list-style-type:none;
+  /* list-style-type:none; */
   padding: 5px;
 }
 .all-labels{
