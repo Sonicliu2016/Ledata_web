@@ -13,18 +13,22 @@
           <!-- 导航菜单 -->
           <el-menu :default-active="activeIndex" class="el_menu" mode="horizontal" @select="handleSelect"
                     text-color="#fff" active-text-color="#ffd04b" background-color="#545c64">
-            <el-menu-item index="1" class="menu_title">
+            
+            <el-menu-item index="1" class="menu_title" v-show="isAdmin">
               <router-link :to="{name:'userList'}">用户管理</router-link>
             </el-menu-item>
+
             <el-menu-item index="2" class="menu_title">
-              <router-link :to="{name:'mediaList'}">图片管理</router-link>
+              <router-link :to="{name:'mediaList'}">任务管理</router-link>
             </el-menu-item>
-            <el-submenu index="3" class="menu_title">
+
+            <!-- <el-submenu index="3" class="menu_title">
               <template slot="title" class="menu_title">标注管理</template>
               <el-menu-item index="3-1" class="menu_label">选项1</el-menu-item>
               <el-menu-item index="3-2" class="menu_label">选项2</el-menu-item>
               <el-menu-item index="3-3" class="menu_label">选项3</el-menu-item>
-            </el-submenu>
+            </el-submenu> -->
+
             <el-submenu index="4" class="menu_title">
               <template slot="title">标注任务</template>
               <router-link :to="{name:'taggingImage'}">
@@ -33,6 +37,7 @@
               <el-menu-item index="4-2">选项2</el-menu-item>
               <el-menu-item index="4-3">选项3</el-menu-item>
             </el-submenu>
+
           </el-menu>
           <!-- 导航菜单 -->
         </div>
@@ -64,6 +69,7 @@
      return {
       username:'',
       activeIndex: '2',
+      isAdmin:true,
     };
    },
    methods: {
@@ -81,10 +87,15 @@
       }
    },
    components: {
-
+     
    },
    created(){
      this.username = user.methods.getUserName();
+     if(this.username == "admin"){
+       this.isAdmin = true;
+     }else{
+       this.isAdmin = false;
+     }
    }
  }
 </script>

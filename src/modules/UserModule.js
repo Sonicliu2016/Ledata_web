@@ -1,8 +1,7 @@
-
  export default {
    data () {
      return {
-
+       
      }
    },
    methods: {
@@ -15,7 +14,7 @@
      },
      removeUser(){
        localStorage.removeItem("current_user");
-     }
+     },
    },
    components: {
 
