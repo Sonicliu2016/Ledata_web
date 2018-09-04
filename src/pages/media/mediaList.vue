@@ -16,12 +16,24 @@
                     :on-change="changeFile" 
                     :before-upload="beforeUpload" 
                     :on-exceed="onExceed" 
-                    :show-file-list="false" >
-          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
+                    :show-file-list="true" >
+          <el-button slot="trigger" size="medium" type="primary">上传图片</el-button>
         </el-upload>
       </el-header>
-      <el-main>Main</el-main>
+
+      <el-main v-show="isShowTask">
+        <!-- 任务列表 -->
+        <el-row  :gutter="20">
+          <el-col :span="6" v-for="(task, index) in tasksList" :key="index" >
+            <el-card >
+              <div class="task">
+                <span>{{task.taskname}}</span>
+                <el-button style="position:absolute; margin-top: 25px;" type="text" class="button">点击查看详情</el-button>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-main>
 
       <!-- 上传预览 -->
       <el-dialog :visible.sync="dialogVisible" width="80%">
@@ -38,22 +50,29 @@
           </el-col>
         </el-row>
       </el-dialog>
+      
     </el-container>
   </div>
 </template>
 
 <script>
-export default {
+  import User from '../../modules/UserModule.js';
+  var user = User;
+  export default {
     data(){
-        return{
-          col:4,  //设定一行显示4张图片
-          rows:0, //一共有几行
-          cols:[],//每一行的列数
-          filesList:[], //选中要上传的图片
-          waitUpLoadList:[],//等待上传的图片列表
-          dialogVisible: false,
-          limit:500, //单次上传限制图片张数
-        }
+      return{
+        col:4,  //设定一行显示4张图片
+        rows:0, //一共有几行
+        cols:[],//每一行的列数
+        filesList:[], //选中要上传的图片
+        waitUpLoadList:[],//等待上传的图片列表
+        dialogVisible: false,
+        limit:500, //单次上传限制图片张数
+        userList: [],
+        username:'',
+        isShowTask:true,
+        tasksList:[],
+      }
     },
     methods:{
       uploadSuccess(response, file, fileList){
@@ -96,9 +115,6 @@ export default {
       onExceed(files, fileList){
         this.$message.error('一次最多上传'+this.limit + '张照片!');
       },
-      submitUpload() {
-        this.$refs.upload.submit();
-      },
       calRowCols(){  //计算上传过程中的图片展示的行列数
         //算出会有多少行
         this.rows = Math.ceil(this.waitUpLoadList.length / this.col);
@@ -112,7 +128,6 @@ export default {
           this.cols[this.rows-1] = this.waitUpLoadList.length % this.col;
         }
       },
-      //判断未上传文件列表中是否有指定图片，并返回下标
       findIndex(files,url){
         for(var i = 0;i<files.length;i++){
           if(files[i].url == url){
@@ -120,25 +135,41 @@ export default {
           }
         }
         return -1;
-    }
+      },
+    },
+    created(){
+      console.log("medialist----->created");
+      this.userList = this.$parent.userList;
+      this.username = user.methods.getUserName();
+      if(this.username == "admin"){
+        this.isShowTask = true;
+      }else{
+        this.isShowTask = false;
+      }
+    },
+    mounted(){
+     console.log("medialist----->mounted:" + this.tasksList.length);
+     this.tasksList.push({'user':'noallo','taskname':'未分配的任务列表'});
+     this.tasksList.push({'user':'alloed','taskname':'已分配的任务列表'});
+     for(var i=0;i<this.userList.length;i++){
+        this.tasksList.push({'user':this.userList[i].username,'taskname':this.userList[i].username+'的任务列表'});
+      }
+    },
   }
-}
 </script>
 
 <style scoped>
 .el-header {
     width: 100%;
-    height: 60px;
+    height: 65px;
+    padding: 15px;
     text-align: center;
-    background-color: #b3c0d1;
-    background: lawngreen;
 }
 
 .el-main {
-    background-color: #e9eef3;
+    /* background-color: #e9eef3; */
     color: #333;
     text-align: center;
-    line-height: 160px;
 }
 
 .el-dialog,
@@ -158,5 +189,12 @@ export default {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 100px auto;
+}
+
+.task{
+  height: 250px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 </style>

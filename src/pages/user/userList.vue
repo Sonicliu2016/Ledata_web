@@ -89,6 +89,8 @@
 </template>
 
 <script>
+  import User from '../../modules/UserModule.js';
+  var user = User;
   export default {
     data() {
       return {
@@ -149,7 +151,7 @@
           console.log("请求成功:" + res.data.code);
           if(res.data.code == 200){
             this.$message({message: '密码修改成功!', type: 'success'});
-            this.getUserList();
+            this.$parent.getUserList();
             this.showEditUserDialog = false;
           }else{
             this.$message.error('密码修改失败！');
@@ -174,45 +176,11 @@
           console.log("请求成功:" + res.data.code);
           if(res.data.code == 200){
             this.$message({message: '删除用户成功!', type: 'success'});
-            this.getUserList();
+            this.$parent.getUserList();
             this.showDeleteUserDialog = false;
           }else{
             this.$message.error('删除用户失败！');
             this.showDeleteUserDialog = false;
-          }
-        })
-        .catch(err=>{
-          console.log("error:" + err);
-          alert("服务器出现故障，请稍后再试！");
-        })
-      },
-      //获取用户列表
-      getUserList(){
-        var params = new URLSearchParams();
-        params.append('username', 'admin'); 
-        params.append('page', 0);
-        params.append('pageSize', 100);
-        this.$axios({
-            method: 'post',
-            url:this.getAllUserUrl,
-            data:params
-        })
-        .then(res=>{
-          console.log("请求成功:" + res.data.code);
-          if(res.data.code == 200){
-            var userinfo = res.data.data.userinfo;
-            console.log(userinfo);
-            this.userList.splice(0,this.userList.length); //先清空数组
-            for(var i = 0;i<userinfo.length;i++){
-              this.userList.push({
-                'createtime':userinfo[i].Created,
-                'username':userinfo[i].UserName,
-                'password':userinfo[i].UserPass,
-                'showDelete':userinfo[i].UserName == "admin" ? false:true,
-              });
-            }
-          }else{
-            this.$message.error('获取信息失败！');
           }
         })
         .catch(err=>{
@@ -227,6 +195,8 @@
       addNewUser(){
         if(this.strIsNull(this.addUserForm.userName) || this.strIsNull(this.addUserForm.passWord)){
           this.$message.error('新增用户名和密码不能为空！');
+        }else if(this.addUserForm.userName == "noallo" || this.addUserForm.userName == "alloed"){//noallo:未分配，alloed：已分配
+
         }else{
           this.addUserForm.userName = this.addUserForm.userName.replace(/\s+/g, "");
           this.addUserForm.passWord = this.addUserForm.passWord.replace(/\s+/g, "");
@@ -244,7 +214,7 @@
             console.log("请求成功:" + res.data.code);
             if(res.data.code == 200){
               this.$message({message: '成功添加新用户!', type: 'success'});
-              this.getUserList();
+              this.$parent.getUserList();
               this.showAddUserDialog = false;
               this.addUserForm.userName = '';
               this.addUserForm.passWord = '';
@@ -262,10 +232,12 @@
       strIsNull(str){
         return (str.length === 0 || !str.trim()); 
       }
+
     },
     //数据装载DOM上后，各种数据已经就位,将数据渲染到DOM上，DOM已经生成
     mounted(){
-      this.getUserList();
+      console.log("userlist-->mounted");
+      this.userList = this.$parent.userList;
     },
   }
 </script>
