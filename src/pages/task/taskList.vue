@@ -16,7 +16,7 @@
                     :on-change="changeFile" 
                     :before-upload="beforeUpload" 
                     :on-exceed="onExceed" 
-                    :show-file-list="true" >
+                    :show-file-list="false" >
           <el-button slot="trigger" size="medium" type="primary">上传图片</el-button>
         </el-upload>
       </el-header>
@@ -26,10 +26,12 @@
         <el-row  :gutter="20">
           <el-col :span="6" v-for="(task, index) in tasksList" :key="index" >
             <el-card >
+              <!-- <router-link :to="{name:'taskAssign'}"> -->
               <div class="task">
                 <span>{{task.taskname}}</span>
-                <el-button style="position:absolute; margin-top: 25px;" type="text" class="button">点击查看详情</el-button>
+                <el-button style="position:absolute; margin-top: 25px;" type="text" class="button" @click="taskDetail(task.taskowner)">点击查看详情</el-button>
               </div>
+              <!-- </router-link :to="{name:'taskAssign'}"> -->
             </el-card>
           </el-col>
         </el-row>
@@ -67,7 +69,7 @@
         filesList:[], //选中要上传的图片
         waitUpLoadList:[],//等待上传的图片列表
         dialogVisible: false,
-        limit:500, //单次上传限制图片张数
+        limit:1000, //单次上传限制图片张数
         userList: [],
         username:'',
         isShowTask:true,
@@ -136,9 +138,22 @@
         }
         return -1;
       },
+      taskDetail(taskowner){
+        console.log("taskDetail:" + taskowner);
+        if(taskowner == 'noallo' || taskowner == 'alloed'){
+          this.$router.push({
+                  name:'taskAssign',
+                  params:{
+                    dataObj:taskowner,
+                  },
+                });
+        }else{
+          
+        }
+      }
     },
     created(){
-      console.log("medialist----->created");
+      console.log("tasklist----->created");
       this.userList = this.$parent.userList;
       this.username = user.methods.getUserName();
       if(this.username == "admin"){
@@ -148,11 +163,11 @@
       }
     },
     mounted(){
-     console.log("medialist----->mounted:" + this.tasksList.length);
-     this.tasksList.push({'user':'noallo','taskname':'未分配的任务列表'});
-     this.tasksList.push({'user':'alloed','taskname':'已分配的任务列表'});
+     console.log("tasklist----->mounted:" + this.tasksList.length);
+     this.tasksList.push({'taskowner':'noallo','taskname':'未分配的任务列表'});
+     this.tasksList.push({'taskowner':'alloed','taskname':'已分配的任务列表'});
      for(var i=0;i<this.userList.length;i++){
-        this.tasksList.push({'user':this.userList[i].username,'taskname':this.userList[i].username+'的任务列表'});
+        this.tasksList.push({'taskowner':this.userList[i].username,'taskname':this.userList[i].username+'的任务列表'});
       }
     },
   }

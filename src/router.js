@@ -6,7 +6,8 @@ import Login from './pages/Login.vue';
 import NotFound from './pages/404.vue';
 import Home from './pages/home.vue';
 import UserList from './pages/user/userList.vue';
-import MediaList from './pages/media/mediaList.vue';
+import TaskList from './pages/task/taskList.vue';
+import TaskAssign from './pages/task/taskAssign.vue';
 import TaggingImage from './pages/tagging/taggingImage.vue';
 import User from './modules/UserModule.js';
 
@@ -21,14 +22,15 @@ const routes = [
   //首页重定向，设置默认首页页面
   {path: '/',redirect:{name:'login'}},
   {name:'home',path:'/home',component:Home,
-    redirect:'/home/mediaList',
+    redirect:'/home/taskList',
     meta: {
       requireLogin: true,
     },
     children:[
       {name:'userList',path:'userList',component:UserList},
-      {name:'mediaList',path:'mediaList',component:MediaList},
-      {name:'taggingImage',path:'taggingImg',component:TaggingImage}
+      {name:'taskList',path:'taskList',component:TaskList},
+      {name:'taggingImage',path:'taggingImg',component:TaggingImage},
+      {name:'taskAssign',path:'taskAssign',component:TaskAssign}
     ]
   },
   // 404页面(当输入地址错误时，显示404页面)
