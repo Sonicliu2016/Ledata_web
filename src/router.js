@@ -8,7 +8,7 @@ import Home from './pages/home.vue';
 import UserList from './pages/user/userList.vue';
 import TaskList from './pages/task/taskList.vue';
 import TaskAssign from './pages/task/taskAssign.vue';
-import TaggingImage from './pages/tagging/taggingImage.vue';
+import TaggingImage from './pages/task/taggingImage.vue';
 import User from './modules/UserModule.js';
 
 //注册全局组件

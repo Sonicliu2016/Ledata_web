@@ -319,8 +319,24 @@ export default {
           return;
         }
       }
-      this.curEditTask.tags.push({ cluster_name: labelStr, type: "" });
+      this.findAllLabels(this.data4,labelStr,"");
+      // this.curEditTask.tags.push({ cluster_name: labelStr, type: "" });
       console.log("添加成功");
+    },
+    findAllLabels(labelsStr,tarLabel,parentLabel){
+      for(var i = 0; i < labelsStr.length;i++){
+        var mLabel = labelsStr[i];
+        if(mLabel.EnglishStr == tarLabel){
+          if(parentLabel != ""){
+            this.curEditTask.tags.push({ cluster_name: parentLabel, type: "" });
+          }
+          this.curEditTask.tags.push({ cluster_name: mLabel.EnglishStr, type: "" });
+          break;
+        }
+        if(mLabel.ClusterChilds!="[]"){
+          this.findAllLabels(mLabel.ClusterChilds,tarLabel,mLabel.EnglishStr);
+        }
+      }
     },
     // 从已选tag中删除
     remove(tag) {
@@ -456,8 +472,8 @@ export default {
     getAnnotateTaskList() {
       this.$axios
         .post(
-          "/task/getTaskByUserName",
-          // "/task/getAnnotateTask",
+          // "/task/getTaskByUserName",
+          "/task/getAnnotateTask",
           {
             page:1,
             pagesize:100000,
