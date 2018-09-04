@@ -7,7 +7,7 @@ import NotFound from './pages/404.vue';
 import Home from './pages/home.vue';
 import UserList from './pages/user/userList.vue';
 import MediaList from './pages/media/mediaList.vue';
-import TaggingImage from './pages/tagging/taggingImage.vue';
+import TaggingImage from './pages/task/taggingImage.vue';
 import User from './modules/UserModule.js';
 
 //注册全局组件
