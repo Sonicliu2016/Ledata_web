@@ -193,7 +193,6 @@
       },
       //添加新用户
       addNewUser(){
-        console.log("hahaha--->" + this.trim(this.addUserForm.userName));
         if(this.strIsNull(this.addUserForm.userName) || this.strIsNull(this.addUserForm.passWord)){
           this.$message.error('新增用户名和密码不能为空！');
         }else if(this.trim(this.addUserForm.userName) == "noallo" || this.trim(this.addUserForm.userName) == "alloed"){//noallo:未分配，alloed：已分配

@@ -53,6 +53,10 @@
         </el-row>
       </el-dialog>
       
+      <el-dialog :visible.sync="showUserDetail">
+
+      </el-dialog>
+
     </el-container>
   </div>
 </template>
@@ -72,7 +76,8 @@
         limit:1000, //单次上传限制图片张数
         userList: [],
         username:'',
-        isShowTask:true,
+        isShowTask:true, //如果是admin就展示任务列表，如果是普通用户，就不展示
+        showUserDetail:false, //点击查看用户的任务详情
         tasksList:[],
       }
     },
