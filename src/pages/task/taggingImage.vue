@@ -36,7 +36,7 @@
           <div class="commit-box">
             <span class="commit-btn-box">
               <el-button type="danger" round>删除</el-button>
-              <el-button type="warning" round>上报</el-button>
+              <el-button type="warning" round>错误</el-button>
               <el-button type="primary" round @click="submitAnnotateTask">提交</el-button>
             </span>
           </div>

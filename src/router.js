@@ -8,6 +8,7 @@ import Home from './pages/home.vue';
 import UserList from './pages/user/userList.vue';
 import MediaList from './pages/media/mediaList.vue';
 import TaggingImage from './pages/task/taggingImage.vue';
+import VerificationTask from './pages/task/verificationTask.vue';
 import User from './modules/UserModule.js';
 
 //注册全局组件
@@ -28,7 +29,8 @@ const routes = [
     children:[
       {name:'userList',path:'userList',component:UserList},
       {name:'mediaList',path:'mediaList',component:MediaList},
-      {name:'taggingImage',path:'taggingImg',component:TaggingImage}
+      {name:'taggingImage',path:'taggingImg',component:TaggingImage},
+      {name:'verificationTask',path:'verificationTask',component:VerificationTask}
     ]
   },
   // 404页面(当输入地址错误时，显示404页面)
