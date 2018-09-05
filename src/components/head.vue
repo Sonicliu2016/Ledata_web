@@ -19,7 +19,7 @@
             </el-menu-item>
 
             <el-menu-item index="2" class="menu_title">
-              <router-link :to="{name:'mediaList'}">任务管理</router-link>
+              <router-link :to="{name:'taskList'}">任务管理</router-link>
             </el-menu-item>
 
             <!-- <el-submenu index="3" class="menu_title">

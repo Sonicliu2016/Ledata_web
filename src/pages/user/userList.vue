@@ -195,8 +195,8 @@
       addNewUser(){
         if(this.strIsNull(this.addUserForm.userName) || this.strIsNull(this.addUserForm.passWord)){
           this.$message.error('新增用户名和密码不能为空！');
-        }else if(this.addUserForm.userName == "noallo" || this.addUserForm.userName == "alloed"){//noallo:未分配，alloed：已分配
-
+        }else if(this.trim(this.addUserForm.userName) == "noallo" || this.trim(this.addUserForm.userName) == "alloed"){//noallo:未分配，alloed：已分配
+          this.$message.error('该用户名不能使用，请换其他用户名！');
         }else{
           this.addUserForm.userName = this.addUserForm.userName.replace(/\s+/g, "");
           this.addUserForm.passWord = this.addUserForm.passWord.replace(/\s+/g, "");
@@ -231,8 +231,11 @@
       //判断字符串是否为空
       strIsNull(str){
         return (str.length === 0 || !str.trim()); 
+      },
+      //去掉字符串中的空格符
+      trim(str){
+        return str.replace(/\s*/g,"");
       }
-
     },
     //数据装载DOM上后，各种数据已经就位,将数据渲染到DOM上，DOM已经生成
     mounted(){

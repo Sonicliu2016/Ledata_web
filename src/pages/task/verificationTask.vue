@@ -10,7 +10,7 @@
         <el-card :body-style="{ padding: '0px' }">
           <div class="img-box">
             <a v-bind:href="task" target="_blank"><img v-bind:src="baserul+task" /></a>
-            <img src="../../assets/icon_jia_red.png">
+            <img class="" src="../../assets/icon_jia_red.png">
           </div>
         </el-card>
       </el-col>

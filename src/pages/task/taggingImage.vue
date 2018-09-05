@@ -121,6 +121,7 @@ export default {
   data() {
     return {
       baserul:"http://10.5.11.127:8080/",
+      currentUser:"",
       activeTabName:"first",
       taskProgress:"",
       searchTv:"",
@@ -472,22 +473,32 @@ export default {
     },
     // 获取当前用户任务列表
     getAnnotateTaskList() {
-      this.$axios
-        .post(
-          // "/task/getTaskByUserName",
-          "/task/getAnnotateTask",
-          {
-            page:0,
-            pagesize:100000,
-            username: "lixiang"
-          },
-          {
-            //跨域请求配置参数
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        )
+      var params = new URLSearchParams();
+        params.append('page', 0);
+        params.append('pagesize', 1000);
+        params.append('username', this.currentUser);
+        this.$axios({
+            method: 'post',
+            url:"/task/getAnnotateTask",
+            data:params
+        })
+      // this.$axios
+      //   .post(
+      //     // "/task/getTaskByUserName",
+      //     "/task/getAnnotateTask",
+      //     {
+      //       page:0,
+      //       pagesize:1000,
+      //       // username:"lixiang"
+      //       username:this.currentUser //获取当前登录的用户
+      //     },
+      //     {
+      //       //跨域请求配置参数
+      //       headers: {
+      //         "Content-Type": "application/x-www-form-urlencoded"
+      //       }
+      //     }
+      //   )
         .then(res => {
           if(res.data.code == 200){
             // this.curTask = JSON.parse(JSON.stringify(res.data.data));
@@ -573,8 +584,11 @@ export default {
 
   created() {
     console.log("create==================");
+    this.currentUser = user.methods.getUserName(); //获取当前登录的用户
     this.getLableList();
     this.getAnnotateTaskList();
+
+    console.log("username:"+this.currentUser);
   }
 };
 </script>
