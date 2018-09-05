@@ -115,6 +115,8 @@
 </template>
 
 <script>
+import User from '../../modules/UserModule.js';
+var user = User;
 export default {
   data() {
     return {
@@ -475,9 +477,8 @@ export default {
           // "/task/getTaskByUserName",
           "/task/getAnnotateTask",
           {
-            page:1,
+            page:0,
             pagesize:100000,
-            assignusername:'lixiang',
             username: "lixiang"
           },
           {
