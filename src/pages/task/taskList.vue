@@ -24,7 +24,7 @@
       <el-main v-show="isShowTask">
         <!-- 任务列表 -->
         <el-row  :gutter="20">
-          <el-col :span="6" v-for="(task, index) in tasksList" :key="index" >
+          <el-col :span="6" v-for="(task, index) in tasksList" :key="index" style="padding: 5px;">
             <el-card >
               <!-- <router-link :to="{name:'taskAssign'}"> -->
               <div class="task">
@@ -53,8 +53,20 @@
         </el-row>
       </el-dialog>
       
-      <el-dialog :visible.sync="showUserDetail">
+      <el-dialog :title="userTaskTitle" :visible.sync="showUserDetail">
+        <el-form :model="userTaskDetail">
+          <el-form-item label="已完成" :label-width="formLabelWidth">
+            <span>({{userTaskDetail.completed}}张)</span>
+          </el-form-item>
+          <el-form-item label="未完成" :label-width="formLabelWidth">
+            <span>({{userTaskDetail.undone}}张)</span>
+          </el-form-item>
+        </el-form>
 
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="showUserDetail = false">关闭</el-button>
+          <!-- <el-button type="primary" @click="assignTask">确 定</el-button> -->
+        </div>
       </el-dialog>
 
     </el-container>
@@ -78,7 +90,13 @@
         username:'',
         isShowTask:true, //如果是admin就展示任务列表，如果是普通用户，就不展示
         showUserDetail:false, //点击查看用户的任务详情
+        userTaskTitle:'', //点击查看用的任务详情的标题
+        userTaskDetailUrl:'',
         tasksList:[],
+        userTaskDetail:{
+          completed:0,
+          undone:0,
+        }
       }
     },
     methods:{
@@ -153,8 +171,31 @@
                   },
                 });
         }else{
-          
+          this.showUserDetail = true;
+          this.userTaskTitle = taskowner + "的任务详情";
         }
+      },
+      selectUserDetail(taskowner){ //查看用户的任务完成情况
+        var params = new URLSearchParams();
+        // params.append('username', this.currentUser);
+        // params.append('assignusername', this.taskForm.taskOwner);
+        this.$axios({
+              method: 'post',
+              url:this.userTaskDetailUrl,
+              data:params
+          })
+        .then(res=>{
+            console.log("请求成功:" + res.data.code);
+            if(res.data.code == 200){
+              
+            }else{
+              this.$message.error('请求失败！');
+            }
+          })
+        .catch(err=>{
+            console.log("error:" + err);
+            alert("服务器出现故障，请稍后再试！");
+          })
       }
     },
     created(){
@@ -216,5 +257,6 @@
   display:flex;
   justify-content:center;
   align-items:center;
+  
 }
 </style>

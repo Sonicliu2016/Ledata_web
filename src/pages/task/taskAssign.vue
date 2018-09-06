@@ -7,7 +7,7 @@
 
       <el-main >
         <el-row  :gutter="20">
-          <el-col :span="6" v-for="(tag, index) in tagsList" :key="index" >
+          <el-col :span="6" v-for="(tag, index) in tagsList" :key="index" style="padding: 5px;">
             <el-card >
               <div class="tag">
                 <!-- <span>{{tag.tagname}}</span> -->
