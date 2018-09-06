@@ -85,6 +85,9 @@
                   name:'login'
                 });
         }
+      },
+      getNavIndex(){
+        this.activeIndex = this.$store.state.navIndex;
       }
    },
    components: {
@@ -97,6 +100,11 @@
      }else{
        this.isAdmin = false;
      }
+   },
+   watch:{
+     '$store.state.navIndex':function(){
+       this.getNavIndex();
+     },
    }
  }
 </script>

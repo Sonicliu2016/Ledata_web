@@ -10,6 +10,7 @@ import Moment from 'moment';
 import App from './App.vue';
 import Global from './common/global.vue'
 import router from './router'
+import store from './store/store'
 
 //给Vue原型挂载一个属性
 Vue.prototype.global=Global;
@@ -28,5 +29,6 @@ Vue.use(ElementUI);//挂载ElementUI
 new Vue({
   el: '#app',
   router,//这里可以简写
+  store,
   render: h => h(App)
 })

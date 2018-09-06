@@ -55,10 +55,10 @@
       
       <el-dialog :title="userTaskTitle" :visible.sync="showUserDetail">
         <el-form :model="userTaskDetail">
-          <el-form-item label="已完成" :label-width="formLabelWidth">
+          <el-form-item label="已完成">
             <span>({{userTaskDetail.completed}}张)</span>
           </el-form-item>
-          <el-form-item label="未完成" :label-width="formLabelWidth">
+          <el-form-item label="未完成">
             <span>({{userTaskDetail.undone}}张)</span>
           </el-form-item>
         </el-form>
@@ -199,7 +199,7 @@
       }
     },
     created(){
-      console.log("tasklist----->created");
+      this.$store.state.navIndex = '2';
       this.userList = this.$parent.userList;
       this.username = user.methods.getUserName();
       if(this.username == "admin"){
