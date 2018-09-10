@@ -5,7 +5,9 @@ Vue.use(Vuex)
 const module = {
   state:{
     navIndex:'2',
+    users:[],
   }
+
 }
 
 const store = new Vuex.Store(module);

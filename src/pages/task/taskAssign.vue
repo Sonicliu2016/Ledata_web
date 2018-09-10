@@ -100,6 +100,7 @@
           console.log("请求成功:" + res.data.code);
           if(res.data.code == 200){
             this.$message({message: '任务分配成功!', type: 'success'});
+            this.getTags(this.taskName);
           }else{
             this.$message.error('任务分配失败！');
           }
@@ -141,7 +142,7 @@
       },
    },
    components: {
-
+     
    },
    //组件创建后,  数据已经完成初始化，但是DOM还未生成
    created(){

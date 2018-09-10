@@ -11,7 +11,22 @@
       <el-col :span="17">
         <div class="nav-content">
           <!-- 导航菜单 -->
-          <el-menu :default-active="activeIndex" class="el_menu" mode="horizontal" @select="handleSelect"
+          <el-menu :default-active="$router.path" router class="el_menu" mode="horizontal" text-color="#fff" active-text-color="#ffd04b" background-color="#545c64">
+            <template  v-for="(item,i) in navList">
+              <el-submenu :index="item.name" v-if="item.hasChild">
+                <template slot="title">{{item.menuName}}</template>
+                <el-menu-item v-for="(itemChild,index) in item.children" :index="itemChild.name" :key="index">
+            　　  {{itemChild.menuName}}
+                </el-menu-item>
+              </el-submenu>
+              <el-menu-item :index="item.name" v-else>
+                {{item.menuName}}
+              </el-menu-item>
+            </template>
+
+          </el-menu>
+
+          <!-- <el-menu :default-active="activeIndex" class="el_menu" mode="horizontal" @select="handleSelect"
                     text-color="#fff" active-text-color="#ffd04b" background-color="#545c64">
 
             <el-menu-item index="1" class="menu_title" v-show="isAdmin">
@@ -22,16 +37,9 @@
               <router-link :to="{name:'taskList'}">任务管理</router-link>
             </el-menu-item>
 
-            <!-- <el-submenu index="3" class="menu_title">
-              <template slot="title" class="menu_title">标注管理</template>
-              <el-menu-item index="3-1" class="menu_label">选项1</el-menu-item>
-              <el-menu-item index="3-2" class="menu_label">选项2</el-menu-item>
-              <el-menu-item index="3-3" class="menu_label">选项3</el-menu-item>
-            </el-submenu> -->
-
             <el-submenu index="4" class="menu_title">
               <template slot="title">标注任务</template>
-              <router-link :to="{name:'taggingImage'}">
+              <router-link :to="{name:'taggingImg'}">
                 <el-menu-item index="4-1">标注任务</el-menu-item>
               </router-link>
               <router-link :to="{name:'verificationTask'}">
@@ -39,7 +47,7 @@
               </router-link>
             </el-submenu>
 
-          </el-menu>
+          </el-menu> -->
           <!-- 导航菜单 -->
         </div>
       </el-col>
@@ -71,12 +79,19 @@
       username:'',
       activeIndex: '2',
       isAdmin:true,
+      navList:[
+        {name:'userList',menuName:'用户管理',hasChild:false},
+        {name:'taskList',menuName:'任务管理',hasChild:false},
+        {name:'taggingImg',menuName:'我的任务',hasChild:true,
+              children:[
+                {name:'taggingImg',menuName:'标注任务'},
+                {name:'verificationTask',menuName:'验证任务'}
+              ]
+        },
+      ],
     };
    },
    methods: {
-      handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-      },
       handleCommand(command){
         if(command == "logout"){
           console.log("注销登录");
@@ -103,7 +118,7 @@
    },
    watch:{
      '$store.state.navIndex':function(){
-       this.getNavIndex();
+      //  this.getNavIndex();
      },
    }
  }

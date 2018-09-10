@@ -91,7 +91,7 @@
         isShowTask:true, //如果是admin就展示任务列表，如果是普通用户，就不展示
         showUserDetail:false, //点击查看用户的任务详情
         userTaskTitle:'', //点击查看用的任务详情的标题
-        userTaskDetailUrl:'',
+        userTaskDetailUrl:'http://10.5.11.127:8080/task/getUserTasksInfo',
         tasksList:[],
         userTaskDetail:{
           completed:0,
@@ -163,21 +163,22 @@
       },
       taskDetail(taskowner){
         console.log("taskDetail:" + taskowner);
-        if(taskowner == 'noallo' || taskowner == 'alloed'){
+        if(taskowner == 'noallo' || taskowner == 'alloed' || taskowner == 'verify'){
           this.$router.push({
                   name:'taskAssign',
                   params:{
                     dataObj:taskowner,
                   },
                 });
-        }else{
+        } else{
           this.showUserDetail = true;
           this.userTaskTitle = taskowner + "的任务详情";
+          this.selectUserDetail(taskowner);
         }
       },
       selectUserDetail(taskowner){ //查看用户的任务完成情况
         var params = new URLSearchParams();
-        // params.append('username', this.currentUser);
+        params.append('username', taskowner);
         // params.append('assignusername', this.taskForm.taskOwner);
         this.$axios({
               method: 'post',
@@ -187,7 +188,8 @@
         .then(res=>{
             console.log("请求成功:" + res.data.code);
             if(res.data.code == 200){
-              
+              this.userTaskDetail.completed = res.data.data.completed;
+              this.userTaskDetail.undone = res.data.data.uncomplete;
             }else{
               this.$message.error('请求失败！');
             }
@@ -212,6 +214,7 @@
      console.log("tasklist----->mounted:" + this.tasksList.length);
      this.tasksList.push({'taskowner':'noallo','taskname':'未分配的任务列表'});
      this.tasksList.push({'taskowner':'alloed','taskname':'已分配的任务列表'});
+     this.tasksList.push({'taskowner':'verify','taskname':'待验证的任务列表'});
      for(var i=0;i<this.userList.length;i++){
         this.tasksList.push({'taskowner':this.userList[i].username,'taskname':this.userList[i].username+'的任务列表'});
       }
