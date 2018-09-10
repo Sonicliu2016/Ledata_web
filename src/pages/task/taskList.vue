@@ -198,6 +198,15 @@
             console.log("error:" + err);
             alert("服务器出现故障，请稍后再试！");
           })
+      },
+      setUserList(){
+        this.tasksList.splice(0,this.tasksList.length); //先清空数组
+        this.tasksList.push({'taskowner':'noallo','taskname':'未分配的任务列表'});
+        this.tasksList.push({'taskowner':'alloed','taskname':'已分配的任务列表'});
+        this.tasksList.push({'taskowner':'verify','taskname':'待验证的任务列表'});
+        for(var i=0;i<this.userList.length;i++){
+          this.tasksList.push({'taskowner':this.userList[i].username,'taskname':this.userList[i].username+'的任务列表'});
+        }
       }
     },
     created(){
@@ -212,13 +221,14 @@
     },
     mounted(){
      console.log("tasklist----->mounted:" + this.tasksList.length);
-     this.tasksList.push({'taskowner':'noallo','taskname':'未分配的任务列表'});
-     this.tasksList.push({'taskowner':'alloed','taskname':'已分配的任务列表'});
-     this.tasksList.push({'taskowner':'verify','taskname':'待验证的任务列表'});
-     for(var i=0;i<this.userList.length;i++){
-        this.tasksList.push({'taskowner':this.userList[i].username,'taskname':this.userList[i].username+'的任务列表'});
-      }
+     this.setUserList();
     },
+    watch:{
+      '$parent.userList':function(){
+        console.log("hahahahahahahahahaahahahahahahaahahahahahahahahah");
+        this.setUserList();
+      }
+    }
   }
 </script>
 
