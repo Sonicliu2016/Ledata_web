@@ -9,8 +9,8 @@
       <el-col :span="6" v-for="(task, index) in articles" :key="index" style="padding: 5px; ">
         <el-card :body-style="{ padding: '0px' }">
           <div class="img-box">
-            <a v-bind:href="task" target="_blank"><img v-bind:src="baserul+task" /></a>
             <img class="" src="../../assets/icon_jia_red.png">
+            <a v-bind:href="task" target="_blank"><img v-bind:src="baserul+task" /></a>
           </div>
         </el-card>
       </el-col>
