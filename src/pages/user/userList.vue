@@ -237,6 +237,9 @@
         return str.replace(/\s*/g,"");
       }
     },
+    created(){
+      this.$store.state.navIndex = '1';
+    },
     //数据装载DOM上后，各种数据已经就位,将数据渲染到DOM上，DOM已经生成
     mounted(){
       console.log("userlist-->mounted");

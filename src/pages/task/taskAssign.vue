@@ -7,7 +7,7 @@
 
       <el-main >
         <el-row  :gutter="20">
-          <el-col :span="6" v-for="(tag, index) in tagsList" :key="index" >
+          <el-col :span="6" v-for="(tag, index) in tagsList" :key="index" style="padding: 5px;">
             <el-card >
               <div class="tag">
                 <!-- <span>{{tag.tagname}}</span> -->
@@ -100,6 +100,7 @@
           console.log("请求成功:" + res.data.code);
           if(res.data.code == 200){
             this.$message({message: '任务分配成功!', type: 'success'});
+            this.getTags(this.taskName);
           }else{
             this.$message.error('任务分配失败！');
           }
@@ -141,10 +142,11 @@
       },
    },
    components: {
-
+     
    },
    //组件创建后,  数据已经完成初始化，但是DOM还未生成
    created(){
+     this.$store.state.navIndex = '2';
      let routerParam = this.$route.params.dataObj;
      this.taskName = routerParam; //获取是已分配还是未分配的任务
      this.userList = this.$parent.userList; //获取用户列表

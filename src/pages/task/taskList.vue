@@ -24,7 +24,7 @@
       <el-main v-show="isShowTask">
         <!-- 任务列表 -->
         <el-row  :gutter="20">
-          <el-col :span="6" v-for="(task, index) in tasksList" :key="index" >
+          <el-col :span="6" v-for="(task, index) in tasksList" :key="index" style="padding: 5px;">
             <el-card >
               <!-- <router-link :to="{name:'taskAssign'}"> -->
               <div class="task">
@@ -53,8 +53,20 @@
         </el-row>
       </el-dialog>
       
-      <el-dialog :visible.sync="showUserDetail">
+      <el-dialog :title="userTaskTitle" :visible.sync="showUserDetail">
+        <el-form :model="userTaskDetail">
+          <el-form-item label="已完成">
+            <span>({{userTaskDetail.completed}}张)</span>
+          </el-form-item>
+          <el-form-item label="未完成">
+            <span>({{userTaskDetail.undone}}张)</span>
+          </el-form-item>
+        </el-form>
 
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="showUserDetail = false">关闭</el-button>
+          <!-- <el-button type="primary" @click="assignTask">确 定</el-button> -->
+        </div>
       </el-dialog>
 
     </el-container>
@@ -78,7 +90,13 @@
         username:'',
         isShowTask:true, //如果是admin就展示任务列表，如果是普通用户，就不展示
         showUserDetail:false, //点击查看用户的任务详情
+        userTaskTitle:'', //点击查看用的任务详情的标题
+        userTaskDetailUrl:'http://10.5.11.127:8080/task/getUserTasksInfo',
         tasksList:[],
+        userTaskDetail:{
+          completed:0,
+          undone:0,
+        }
       }
     },
     methods:{
@@ -145,20 +163,54 @@
       },
       taskDetail(taskowner){
         console.log("taskDetail:" + taskowner);
-        if(taskowner == 'noallo' || taskowner == 'alloed'){
+        if(taskowner == 'noallo' || taskowner == 'alloed' || taskowner == 'verify'){
           this.$router.push({
                   name:'taskAssign',
                   params:{
                     dataObj:taskowner,
                   },
                 });
-        }else{
-          
+        } else{
+          this.showUserDetail = true;
+          this.userTaskTitle = taskowner + "的任务详情";
+          this.selectUserDetail(taskowner);
+        }
+      },
+      selectUserDetail(taskowner){ //查看用户的任务完成情况
+        var params = new URLSearchParams();
+        params.append('username', taskowner);
+        // params.append('assignusername', this.taskForm.taskOwner);
+        this.$axios({
+              method: 'post',
+              url:this.userTaskDetailUrl,
+              data:params
+          })
+        .then(res=>{
+            console.log("请求成功:" + res.data.code);
+            if(res.data.code == 200){
+              this.userTaskDetail.completed = res.data.data.completed;
+              this.userTaskDetail.undone = res.data.data.uncomplete;
+            }else{
+              this.$message.error('请求失败！');
+            }
+          })
+        .catch(err=>{
+            console.log("error:" + err);
+            alert("服务器出现故障，请稍后再试！");
+          })
+      },
+      setUserList(){
+        this.tasksList.splice(0,this.tasksList.length); //先清空数组
+        this.tasksList.push({'taskowner':'noallo','taskname':'未分配的任务列表'});
+        this.tasksList.push({'taskowner':'alloed','taskname':'已分配的任务列表'});
+        this.tasksList.push({'taskowner':'verify','taskname':'待验证的任务列表'});
+        for(var i=0;i<this.userList.length;i++){
+          this.tasksList.push({'taskowner':this.userList[i].username,'taskname':this.userList[i].username+'的任务列表'});
         }
       }
     },
     created(){
-      console.log("tasklist----->created");
+      this.$store.state.navIndex = '2';
       this.userList = this.$parent.userList;
       this.username = user.methods.getUserName();
       if(this.username == "admin"){
@@ -169,12 +221,14 @@
     },
     mounted(){
      console.log("tasklist----->mounted:" + this.tasksList.length);
-     this.tasksList.push({'taskowner':'noallo','taskname':'未分配的任务列表'});
-     this.tasksList.push({'taskowner':'alloed','taskname':'已分配的任务列表'});
-     for(var i=0;i<this.userList.length;i++){
-        this.tasksList.push({'taskowner':this.userList[i].username,'taskname':this.userList[i].username+'的任务列表'});
-      }
+     this.setUserList();
     },
+    watch:{
+      '$parent.userList':function(){
+        console.log("hahahahahahahahahaahahahahahahaahahahahahahahahah");
+        this.setUserList();
+      }
+    }
   }
 </script>
 
@@ -216,5 +270,6 @@
   display:flex;
   justify-content:center;
   align-items:center;
+  
 }
 </style>

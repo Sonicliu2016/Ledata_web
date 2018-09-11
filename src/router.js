@@ -29,7 +29,7 @@ const routes = [
     },
     children:[
       {name:'userList',path:'userList',component:UserList},
-      {name:'taggingImage',path:'taggingImg',component:TaggingImage},
+      {name:'taggingImg',path:'taggingImg',component:TaggingImage},
       {name:'taskList',path:'taskList',component:TaskList},
       {name:'taskAssign',path:'taskAssign',component:TaskAssign},
       {name:'verificationTask',path:'verificationTask',component:VerificationTask}

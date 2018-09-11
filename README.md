@@ -31,3 +31,4 @@ git push --set-upstream origin dev
   -关于post跨域请求解决方案：https://www.cnblogs.com/snowhite/p/7872503.html
 
 4.引入Moment：`npm install moment --save`
+5.引入vuex：`npm install vuex --save`
