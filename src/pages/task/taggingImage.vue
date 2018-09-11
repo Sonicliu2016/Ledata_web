@@ -4,7 +4,7 @@
         <!-- <div>{{curEditTask.}}</div> -->
         <div class="img-box">
           <!-- <img src="http://10.5.11.127:8080/" + {{curTask.media_url}}/> -->
-          <img v-bind:src="baserul+curEditTask.media_url" />
+          <img v-bind:src="baseurl+curEditTask.media_url" />
           <!-- <img src="http://pic2016.5442.com:82/2016/0120/16/3.jpg%21960.jpg"/> -->
           <!-- <img src="static/img/upload/machine/0036.jpg"/> -->
           <!-- <img src="http://h.hiphotos.baidu.com/zhidao/pic/item/0b46f21fbe096b637948dd670d338744ebf8acb0.jpg"/> -->
@@ -43,7 +43,6 @@
           </div>
         </div>
       </div>
-
       <el-tabs v-model="activeTabName" type="border-card" >
         <el-tab-pane label="标注任务列表" name="first">
           <span style="float:right;font-size:12px;color:gray;padding:5px;">{{taskProgress}}</span>
@@ -55,23 +54,23 @@
             @current-change="handleCurrentChange"
             style="width: 100%">
             <el-table-column
-              property="Id"
+              property="id"
               label="编号"
               width="50">
             </el-table-column>
             <el-table-column
-              property="MediaNetUrl"
+              property="media_url"
               label="URL"
-              width="120">
+              width="180">
             </el-table-column>
-            <el-table-column property="MediaMasterCluster" label="标签">
+            <el-table-column property="mainCluster" label="主标签">
               <!-- <template slot-scope="scope">
                 <span v-for="(item, index) in scope.row.tags" :key="index">
                   {{item.cluster_name}} </span>
               </template> -->
             </el-table-column>
             <el-table-column
-              property="MediaAnnotatedState"
+              property="status"
               label="状态"
               width="120"
               :filters="[{ text: '未标', value: '未标'}, { text: '已标', value: '已标'}, { text: '错误', value: '错误'}, { text: '删除', value: '删除'}]"
@@ -118,7 +117,7 @@ var user = User;
 export default {
   data() {
     return {
-      baserul:"http://10.5.11.127:8080/",
+      baseurl:"http://10.5.11.127:8080/",
       currentUser:"",
       activeTabName:"first",
       taskProgress:"",
@@ -140,128 +139,8 @@ export default {
         media_url:"",
         tags:[]
       },
-      taskList:[
-        // {
-        //   "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-        //   "media_url": "static/img/upload/machine/0037.jpg",
-        //   "status":'已标',
-        //   "tags": [
-        //     {
-        //       "cluster_name": "person",
-        //       "cluster_id": 1
-        //     },
-        //     {
-        //       "cluster_name": "smile",
-        //       "cluster_id": 2
-        //     }
-        //   ]
-        // },
-        // {
-        //   "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-        //   "media_url": "static/img/upload/machine/0036.jpg",
-        //   "status":'未标',
-        //   "tags": [
-        //     {
-        //       "cluster_name": "person",
-        //       "cluster_id": 1
-        //     },
-        //     {
-        //       "cluster_name": "smile",
-        //       "cluster_id": 2
-        //     }submitAnnotateTask
-        //   ]
-        // },
-        // {
-        //   "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-        //   "media_url": "static/img/upload/machine/0039.jpg",
-        //   "status":'错误',
-        //   "tags": [
-        //     {
-        //       "cluster_name": "person",
-        //       "cluster_id": 1
-        //     },
-        //     {
-        //       "cluster_name": "smile",
-        //       "cluster_id": 2
-        //     }
-        //   ]
-        // },
-        // {
-        //   "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-        //   "media_url": "static/img/upload/machine/0040.jpg",
-        //   "status":'删除',
-        //   "tags": [
-        //     {
-        //       "cluster_name": "person",
-        //       "cluster_id": 1
-        //     },
-        //     {
-        //       "cluster_name": "smile",
-        //       "cluster_id": 2
-        //     }
-        //   ]
-        // },
-        // {
-        //   "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-        //   "media_url": "static/img/upload/machine/0041.jpg",
-        //   "status":'已标',
-        //   "tags": [
-        //     {
-        //       "cluster_name": "person",
-        //       "cluster_id": 1
-        //     },
-        //     {
-        //       "cluster_name": "smile",
-        //       "cluster_id": 2
-        //     }
-        //   ]
-        // },
-        // {
-        //   "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-        //   "media_url": "static/img/upload/machine/0042.jpg",
-        //   "status":'错误',
-        //   "tags": [
-        //     {
-        //       "cluster_name": "person",
-        //       "cluster_id": 1
-        //     },
-        //     {
-        //       "cluster_name": "smile",
-        //       "cluster_id": 2
-        //     }
-        //   ]
-        // },
-        // {
-        //   "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-        //   "media_url": "static/img/upload/machine/0043.jpg",
-        //   "status":'删除',
-        //   "tags": [
-        //     {
-        //       "cluster_name": "person",
-        //       "cluster_id": 1
-        //     },
-        //     {
-        //       "cluster_name": "smile",
-        //       "cluster_id": 2
-        //     }
-        //   ]
-        // },
-        // {
-        //   "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-        //   "media_url": "static/img/upload/machine/0044.jpg",
-        //   "status":'未标',
-        //   "tags": [
-        //     {
-        //       "cluster_name": "person",
-        //       "cluster_id": 1
-        //     },
-        //     {
-        //       "cluster_name": "smile",
-        //       "cluster_id": 2
-        //     }
-        //   ]
-        // }
-      ]
+      // curUrl:this.baseurl+this.curEditTask.media_url,
+      taskList:[]
     };
   },
   watch: {
@@ -422,7 +301,7 @@ export default {
     handleCurrentChange(val) {
       this.curTask = val;
       // this.curEditTask = JSON.parse(JSON.stringify(val));
-      this.curEditTask = this.requestForTaskDetail(val.MediaMD5);
+      this.curEditTask = this.requestForTaskDetail(val.media_md5);
     },
     formatter(row, column) {
         return row.status;
@@ -476,8 +355,19 @@ export default {
         .then(res => {
           console.log("请求成功: getAnnotateTaskList: " + res.data.code);
           if(res.data.code == 200){
+            var tasks = res.data.data.taskinfo;
+            this.taskList.splice(0,this.taskList.length);
+            for(var i=0; i<tasks.length;i++){
+              this.taskList.push({
+                'id':tasks[i].Id,
+                'media_url':tasks[i].MediaNetUrl,
+                'media_md5':tasks[i].MediaMD5,
+                'status':this.getTaskStatus(tasks[i].MediaAnnotatedState),
+                'mainCluster':tasks[i].MediaMasterCluster
+              })
+            }
             // this.curTask = JSON.parse(JSON.stringify(res.data.data));
-            this.taskList = res.data.data.taskinfo;
+            // this.taskList = res.data.data.taskinfo;
             console.log("请求成功: getAnnotateTaskList: " + this.taskList);
             this.setCurrent(this.taskList[0],0);
             console.log("请求成功: getAnnotateTaskList" + this.curTask);
@@ -513,6 +403,18 @@ export default {
     refreshTaskProgress(){
       this.taskProgress="共"+this.taskList.length+"个，未标："+this.filterTaskList(0).length
                                 +"，错误："+this.filterTaskList(2).length+"，删除："+this.filterTaskList(3).length;
+    },
+    getTaskStatus(status){
+      switch(status){
+        case 0:
+          return "未标";
+        case 1:
+          return "已标";
+        case 2:
+          return "错误";
+        case 3:
+          return "删除";
+      }
     },
     filterTaskList(a){
       if(a == 0){
