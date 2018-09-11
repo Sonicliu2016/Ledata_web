@@ -114,6 +114,7 @@
        this.isAdmin = true;
      }else{
        this.isAdmin = false;
+       this.navList.shift();
      }
    },
    watch:{
