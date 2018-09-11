@@ -225,7 +225,6 @@
     },
     watch:{
       '$parent.userList':function(){
-        console.log("hahahahahahahahahaahahahahahahaahahahahahahahahah");
         this.setUserList();
       }
     }
