@@ -1,9 +1,10 @@
 <template>
     <div class="tagging-img">
       <div class="box">
+        <!-- <div>{{curEditTask.}}</div> -->
         <div class="img-box">
           <!-- <img src="http://10.5.11.127:8080/" + {{curTask.media_url}}/> -->
-          <img v-bind:src="baserul+curTask.media_url" />
+          <img v-bind:src="baseurl+curEditTask.media_url" />
           <!-- <img src="http://pic2016.5442.com:82/2016/0120/16/3.jpg%21960.jpg"/> -->
           <!-- <img src="static/img/upload/machine/0036.jpg"/> -->
           <!-- <img src="http://h.hiphotos.baidu.com/zhidao/pic/item/0b46f21fbe096b637948dd670d338744ebf8acb0.jpg"/> -->
@@ -35,14 +36,13 @@
           </span>
           <div class="commit-box">
             <span class="commit-btn-box">
-              <el-button type="danger" round>删除</el-button>
-              <el-button type="warning" round>错误</el-button>
-              <el-button type="primary" round @click="submitAnnotateTask">提交</el-button>
+              <el-button type="danger" round @click="submitAnnotateTask(3)">删除</el-button>
+              <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button>
+              <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
             </span>
           </div>
         </div>
       </div>
-
       <el-tabs v-model="activeTabName" type="border-card" >
         <el-tab-pane label="标注任务列表" name="first">
           <span style="float:right;font-size:12px;color:gray;padding:5px;">{{taskProgress}}</span>
@@ -54,19 +54,20 @@
             @current-change="handleCurrentChange"
             style="width: 100%">
             <el-table-column
-              type="index"
+              property="id"
+              label="编号"
               width="50">
             </el-table-column>
             <el-table-column
               property="media_url"
               label="URL"
-              width="120">
+              width="180">
             </el-table-column>
-            <el-table-column  label="标签">
-              <template slot-scope="scope">
+            <el-table-column property="mainCluster" label="主标签">
+              <!-- <template slot-scope="scope">
                 <span v-for="(item, index) in scope.row.tags" :key="index">
                   {{item.cluster_name}} </span>
-              </template>
+              </template> -->
             </el-table-column>
             <el-table-column
               property="status"
@@ -74,10 +75,6 @@
               width="120"
               :filters="[{ text: '未标', value: '未标'}, { text: '已标', value: '已标'}, { text: '错误', value: '错误'}, { text: '删除', value: '删除'}]"
               :filter-method="filterTaskStatusHandler">
-            </el-table-column>
-            <el-table-column
-              property="date"
-              label="更新日期">
             </el-table-column>
           </el-table>
         </el-tab-pane>
@@ -87,7 +84,7 @@
               <i class="el-input__icon el-icon-search"></i>
             </span>
             <input v-model="searchTv" type="text" v-on:input ="searchAssociate" autocomplete="off"
-              @keyup="sous($event)" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask"
+              @keyup="sous($event)" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(1)"
               placeholder="请输入标签名称" class="el-input__inner" @keyup.enter="addFromSearch2Select()">
           </div>
           <div class="associate-label_ul">
@@ -120,7 +117,7 @@ var user = User;
 export default {
   data() {
     return {
-      baserul:"http://10.5.11.127:8080/",
+      baseurl:"http://10.5.11.127:8080/",
       currentUser:"",
       activeTabName:"first",
       taskProgress:"",
@@ -138,129 +135,12 @@ export default {
       data4: [],
       allLabelsArray:[],
       curTask:{},
-      curEditTask:{},
-      taskList:[
-        {
-          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-          "media_url": "static/img/upload/machine/0037.jpg",
-          "status":'已标',
-          "tags": [
-            {
-              "cluster_name": "person",
-              "cluster_id": 1
-            },
-            {
-              "cluster_name": "smile",
-              "cluster_id": 2
-            }
-          ]
-        },
-        {
-          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-          "media_url": "static/img/upload/machine/0036.jpg",
-          "status":'未标',
-          "tags": [
-            {
-              "cluster_name": "person",
-              "cluster_id": 1
-            },
-            {
-              "cluster_name": "smile",
-              "cluster_id": 2
-            }
-          ]
-        },
-        {
-          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-          "media_url": "static/img/upload/machine/0039.jpg",
-          "status":'错误',
-          "tags": [
-            {
-              "cluster_name": "person",
-              "cluster_id": 1
-            },
-            {
-              "cluster_name": "smile",
-              "cluster_id": 2
-            }
-          ]
-        },
-        {
-          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-          "media_url": "static/img/upload/machine/0040.jpg",
-          "status":'删除',
-          "tags": [
-            {
-              "cluster_name": "person",
-              "cluster_id": 1
-            },
-            {
-              "cluster_name": "smile",
-              "cluster_id": 2
-            }
-          ]
-        },
-        {
-          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-          "media_url": "static/img/upload/machine/0041.jpg",
-          "status":'已标',
-          "tags": [
-            {
-              "cluster_name": "person",
-              "cluster_id": 1
-            },
-            {
-              "cluster_name": "smile",
-              "cluster_id": 2
-            }
-          ]
-        },
-        {
-          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-          "media_url": "static/img/upload/machine/0042.jpg",
-          "status":'错误',
-          "tags": [
-            {
-              "cluster_name": "person",
-              "cluster_id": 1
-            },
-            {
-              "cluster_name": "smile",
-              "cluster_id": 2
-            }
-          ]
-        },
-        {
-          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-          "media_url": "static/img/upload/machine/0043.jpg",
-          "status":'删除',
-          "tags": [
-            {
-              "cluster_name": "person",
-              "cluster_id": 1
-            },
-            {
-              "cluster_name": "smile",
-              "cluster_id": 2
-            }
-          ]
-        },
-        {
-          "media_md5": "78b0a31a8cc84a3c62f8e34d46f40903",
-          "media_url": "static/img/upload/machine/0044.jpg",
-          "status":'未标',
-          "tags": [
-            {
-              "cluster_name": "person",
-              "cluster_id": 1
-            },
-            {
-              "cluster_name": "smile",
-              "cluster_id": 2
-            }
-          ]
-        }
-      ]
+      curEditTask:{
+        media_url:"",
+        tags:[]
+      },
+      // curUrl:this.baseurl+this.curEditTask.media_url,
+      taskList:[]
     };
   },
   watch: {
@@ -416,12 +296,12 @@ export default {
           }
         }
       }
-
       this.$refs.singleTable.setCurrentRow(row);
     },
     handleCurrentChange(val) {
       this.curTask = val;
-      this.curEditTask = JSON.parse(JSON.stringify(val));
+      // this.curEditTask = JSON.parse(JSON.stringify(val));
+      this.curEditTask = this.requestForTaskDetail(val.media_md5);
     },
     formatter(row, column) {
         return row.status;
@@ -456,19 +336,9 @@ export default {
           this.data4 = res.data.ClusterChilds;
           this.allLabelsArray=[]
           this.transFormAllLabel2Array(this.data4);
-          // this.data4 = JSON.parse(JSON.stringify(res.data.ClusterChilds));
-          // if(res.data.code == 200){
-          //   this.loginData = res.data.data;
-          //   this.$router.push({
-          //     // name:'home'
-          //   });
-          // }else{
-          //   alert("账号或密码错误！");
-          // }
         })
         .catch(err => {
           console.log("error:" + err);
-          // alert("服务器出现故障，请稍后再试！");
         });
     },
     // 获取当前用户任务列表
@@ -482,32 +352,26 @@ export default {
             url:"/task/getAnnotateTask",
             data:params
         })
-      // this.$axios
-      //   .post(
-      //     // "/task/getTaskByUserName",
-      //     "/task/getAnnotateTask",
-      //     {
-      //       page:0,
-      //       pagesize:1000,
-      //       // username:"lixiang"
-      //       username:this.currentUser //获取当前登录的用户
-      //     },
-      //     {
-      //       //跨域请求配置参数
-      //       headers: {
-      //         "Content-Type": "application/x-www-form-urlencoded"
-      //       }
-      //     }
-      //   )
         .then(res => {
+          console.log("请求成功: getAnnotateTaskList: " + res.data.code);
           if(res.data.code == 200){
+            var tasks = res.data.data.taskinfo;
+            this.taskList.splice(0,this.taskList.length);
+            for(var i=0; i<tasks.length;i++){
+              this.taskList.push({
+                'id':tasks[i].Id,
+                'media_url':tasks[i].MediaNetUrl,
+                'media_md5':tasks[i].MediaMD5,
+                'status':this.getTaskStatus(tasks[i].MediaAnnotatedState),
+                'mainCluster':tasks[i].MediaMasterCluster
+              })
+            }
             // this.curTask = JSON.parse(JSON.stringify(res.data.data));
+            // this.taskList = res.data.data.taskinfo;
+            console.log("请求成功: getAnnotateTaskList: " + this.taskList);
             this.setCurrent(this.taskList[0],0);
             console.log("请求成功: getAnnotateTaskList" + this.curTask);
             this.refreshTaskProgress();
-            this.$router.push({
-              // name:'home'
-            });
           }else{
             showMsg("获取任务失败！","error")
           }
@@ -517,9 +381,40 @@ export default {
           // alert("服务器出现故障，请稍后再试！");
         });
     },
+    // 根据任务Id获取任务详情信息
+    requestForTaskDetail(mediamd5){
+      var params = new URLSearchParams();
+      params.append("mediamd5",mediamd5);
+      this.$axios({
+        method:'post',
+        url:"/label/getClustersById",
+        data:params
+      })
+      .then(res => {
+        console.log("requestForTaskDetail 请求成功");
+        if(res.data.code == 200){
+          this.curEditTask = res.data.data;
+        }
+      })
+      .catch(err =>{
+        console.log("requestForTaskDetail, taskId:"+taskId+" error:"+err);
+      });
+    },
     refreshTaskProgress(){
       this.taskProgress="共"+this.taskList.length+"个，未标："+this.filterTaskList(0).length
                                 +"，错误："+this.filterTaskList(2).length+"，删除："+this.filterTaskList(3).length;
+    },
+    getTaskStatus(status){
+      switch(status){
+        case 0:
+          return "未标";
+        case 1:
+          return "已标";
+        case 2:
+          return "错误";
+        case 3:
+          return "删除";
+      }
     },
     filterTaskList(a){
       if(a == 0){
@@ -540,16 +435,44 @@ export default {
         });
       }
     },
-    //提交当前任务
-    submitAnnotateTask(){
-      console.log("点击了提交");
-      this.curTask.tags = JSON.parse(JSON.stringify(this.curEditTask.tags));
-      this.curTask.status = "已标";
-      this.setCurrent(this.curTask,1);
-      this.refreshTaskProgress();
-      // this.$axios.post(
-      //   "/task/submitAnnotateTask",
-      // )
+    //提交当前任务 submitType:(0:提交 1：错误 2：删除)
+    submitAnnotateTask(submitType){
+      var params = new URLSearchParams();
+      params.append("type",submitType);
+      params.append("clusters",this.transFormTags2Str(this.curEditTask.tags));
+      params.append("username",this.currentUser);
+      // console.log("requestForTaskDetail 用户名："+this.currentUser);
+      params.append("tasktype",0);
+      params.append("mediamd5",this.curEditTask.media_md5);
+      console.log("requestForTaskDetail 请求ready:"+this.transFormTags2Str(this.curEditTask.tags));
+      this.$axios({
+        method:'post',
+        url:"/task/submitAnnotateTask",
+        data:params
+      })
+      .then(res => {
+        console.log("requestForTaskDetail 请求成功"+res.data.code);
+        if(res.data.code == 200){
+          this.curEditTask = res.data.data;
+          console.log("点击了提交");
+          // this.curTask.tags = JSON.parse(JSON.stringify(this.curEditTask.tags));
+          this.curTask.MediaAnnotatedState = submitType;
+          this.setCurrent(this.curTask,1);
+          this.refreshTaskProgress();
+        }
+      })
+      .catch(err =>{
+        console.log("requestForTaskDetail, taskId:"+taskId+" error:"+err);
+      });
+      //
+    },
+    transFormTags2Str(tagsJson){
+      var str="";
+      for(var i=0;i <tagsJson.length;i++){
+        str+=(tagsJson[i].cluster_name+",");
+      }
+      console.log("transFormTags2Str: "+str);
+      return str;
     },
     transFormAllLabel2Array(labelsStr){
       for(var i=0;i< labelsStr.length;i++){
