@@ -10,6 +10,7 @@ import TaskList from './pages/task/taskList.vue';
 import TaskAssign from './pages/task/taskAssign.vue';
 import TaggingImage from './pages/task/taggingImage.vue';
 import VerificationTask from './pages/task/verificationTask.vue';
+import DownloadManager from './pages/task/downloadManager.vue';
 import User from './modules/UserModule.js';
 
 //注册全局组件
@@ -32,7 +33,8 @@ const routes = [
       {name:'taggingImg',path:'taggingImg',component:TaggingImage},
       {name:'taskList',path:'taskList',component:TaskList},
       {name:'taskAssign',path:'taskAssign',component:TaskAssign},
-      {name:'verificationTask',path:'verificationTask',component:VerificationTask}
+      {name:'verificationTask',path:'verificationTask',component:VerificationTask},
+      {name:'downloadManager',path:'downloadManager',component:DownloadManager}
     ]
   },
   // 404页面(当输入地址错误时，显示404页面)
