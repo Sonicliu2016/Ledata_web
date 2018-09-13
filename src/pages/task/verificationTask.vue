@@ -30,6 +30,8 @@
           {"media_url":"static/img/upload/machine/test_301.jpg","isSelected":false},
           {"media_url":"static/img/upload/machine/test_424.jpg","isSelected":false},
           {"media_url":"static/img/upload/machine/test_712.jpg","isSelected":false},
+          {"media_url":"static/img/upload/machine/test_332.jpg","isSelected":false},
+          {"media_url":"static/img/upload/machine/test_453.jpg","isSelected":false},
           {"media_url":"static/img/upload/machine/test_203.jpg","isSelected":false}
         ]
       };
