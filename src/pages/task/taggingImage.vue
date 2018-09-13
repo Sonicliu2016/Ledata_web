@@ -1,7 +1,7 @@
 <template>
     <div class="tagging-img">
       <div class="box">
-        <!-- <div>{{curEditTask.}}</div> -->
+        <div>{{curTask.status}}</div>
         <div class="img-box">
           <!-- <img src="http://10.5.11.127:8080/" + {{curTask.media_url}}/> -->
           <img v-bind:src="baseurl+curEditTask.media_url" />
@@ -195,15 +195,7 @@ export default {
         return;
       }
       // this.curEditTask = JSON.parse(JSON.stringify(this.curTask));
-      for (var i = 0; i < this.curEditTask.tags.length; i++) {
-        if (labelStr == this.curEditTask.tags[i].cluster_name) {
-          console.log("不能重复添加:" + this.curEditTask.tags[i].cluster_name);
-          this.showMsg(this.curEditTask.tags[i].cluster_name+"已添加","warning");
-          return;
-        }
-      }
       this.findAllLabels(this.data4,labelStr,"");
-      // this.curEditTask.tags.push({ cluster_name: labelStr, type: "" });
       console.log("添加成功");
     },
     findAllLabels(labelsStr,tarLabel,parentLabel){
@@ -211,15 +203,30 @@ export default {
         var mLabel = labelsStr[i];
         if(mLabel.EnglishStr == tarLabel){
           if(parentLabel != ""){
-            this.curEditTask.tags.push({ cluster_name: parentLabel, type: "" });
+            if(!this.checkLabelExist(parentLabel)){
+              this.curEditTask.tags.push({ cluster_name: parentLabel, type: "" });
+            }
           }
-          this.curEditTask.tags.push({ cluster_name: mLabel.EnglishStr, type: "" });
+          if(!this.checkLabelExist(mLabel.EnglishStr)){
+            this.curEditTask.tags.push({ cluster_name: mLabel.EnglishStr, type: "" });
+          }
           break;
         }
         if(mLabel.ClusterChilds!="[]"){
           this.findAllLabels(mLabel.ClusterChilds,tarLabel,mLabel.EnglishStr);
         }
       }
+    },
+    //核查标签是否已存在
+    checkLabelExist(labelStr){
+      for (var i = 0; i < this.curEditTask.tags.length; i++) {
+        if (labelStr == this.curEditTask.tags[i].cluster_name) {
+          console.log("不能重复添加:" + this.curEditTask.tags[i].cluster_name);
+          this.showMsg(this.curEditTask.tags[i].cluster_name+"已添加","warning");
+          return true;
+        }
+      }
+      return false;
     },
     // 从已选tag中删除
     remove(tag) {
@@ -545,7 +552,8 @@ export default {
   height: 500px;
   position: relative;
   z-index: 1;
-  background-color: #aae9e9e9;
+  background: url(../../assets/img_bg.png);
+  /* background-color: #aae9e9e9; */
 }
 .img-box img {
   position: relative;
@@ -555,6 +563,9 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: -1;
+}
+.el-carousel__arrow{
+  background-color: rgba(31,45,61,.6);
 }
 .select-tag-box {
   width: 100%;
