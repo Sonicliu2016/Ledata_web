@@ -38,21 +38,21 @@
       </el-main>
 
       <!-- 上传预览 -->
-      <el-dialog :visible.sync="dialogVisible" width="80%">
-        <!-- 总共有多少行 -->
+      <!-- <el-dialog :visible.sync="dialogVisible" width="80%">
         <el-row v-for="(ro, ro_id) in rows" :key="ro_id" class="imagelist">
-          <!-- col总共分24份，这里将filesList分割成一个二维数组，算出每行有多少列 -->
           <el-col :span="5" v-for="(co, co_id) in cols[ro_id]" :key="co_id">
             <el-card :body-style="{ padding: '0px' }">
-              <!-- <div class="img2" :style="{backgroundImage: 'url(' + filesList[ro_id * col + co_id].url + ')' }"></div> -->
               <div class="img2" :style="{backgroundImage: 'url(' + filesList[ro_id * col + co_id].url + ')', backgroundSize:'contain'}"></div>
-              <!-- <img :src="filesList[ro_id * col + co_id].url" class="image"> -->
-              <!-- {{ro}}:{{co}}:{{ro_id}}:{{co_id}} -->
             </el-card>
           </el-col>
         </el-row>
+      </el-dialog> -->
+
+      <el-dialog title="正在上传图片" :visible.sync="showUploadProgress">
+        <el-progress :text-inside="true" :stroke-width="18" :percentage="uploadPro"></el-progress>
+
       </el-dialog>
-      
+
       <el-dialog :title="userTaskTitle" :visible.sync="showUserDetail">
         <el-form :model="userTaskDetail">
           <el-form-item label="已完成">
@@ -85,6 +85,9 @@
         filesList:[], //选中要上传的图片
         waitUpLoadList:[],//等待上传的图片列表
         dialogVisible: false,
+        showUploadProgress:false,
+        uploadPro:0, //上传的进度
+        totalCount:0, //要上传的总数量
         limit:1000, //单次上传限制图片张数
         userList: [],
         username:'',
@@ -106,17 +109,20 @@
         if(index > -1){
           this.waitUpLoadList.splice(index,1); //删除指定下标的元素
         }
-        this.calRowCols();
+        // this.calRowCols();
+        var uploadedCount = this.totalCount - this.waitUpLoadList.length;
+        this.uploadPro = (Math.round(parseFloat(uploadedCount) / parseFloat(this.totalCount) * 10000) / 100.00);
         if(this.waitUpLoadList.length == 0){
-          this.dialogVisible = false;
+          // this.dialogVisible = false;
+          this.showUploadProgress = false;
           this.$message({message: '图片上传完毕!', type: 'success'});
         }
       },
       uploadError(err, file, fileList){
-        // console.log("uploadError-->err:" + err + "-->filename:" + file.name);
+        console.log("uploadError-->err:" + err + "-->filename:" + file.name);
       },
       uploadProgress(event, file, fileList){
-        console.log("uploadProgress-->event:" + event.percent + "-->filename:" + file.name + "--->fileList:" + fileList.length);
+        console.log("uploadProgress-->event:" + event.percent + "-->filename:" + file.name + "--->fileList:" + fileList.length + "---->剩下：" + this.waitUpLoadList.length);
       },
       changeFile(file, fileList){
         this.filesList = [].concat(fileList);
@@ -128,8 +134,10 @@
         if (isJPG || isPNG) {
           if(this.filesList.length > 0){
             this.waitUpLoadList = [].concat(this.filesList);
-            this.calRowCols();
-            this.dialogVisible = true;
+            this.totalCount = this.filesList.length;
+            this.showUploadProgress = true;
+            // this.calRowCols();
+            // this.dialogVisible = true;
           }
         }else{
             this.$message.error('上传图片只能是JPG或者PNG格式!');

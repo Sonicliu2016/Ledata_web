@@ -82,6 +82,7 @@
       navList:[
         {name:'userList',menuName:'用户管理',hasChild:false},
         {name:'taskList',menuName:'任务管理',hasChild:false},
+        {name:'downloadManager',menuName:'下载管理',hasChild:false},
         {name:'taggingImg',menuName:'我的任务',hasChild:true,
               children:[
                 {name:'taggingImg',menuName:'标注任务'},
