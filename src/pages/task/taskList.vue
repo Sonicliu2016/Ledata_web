@@ -25,7 +25,7 @@
         <!-- 任务列表 -->
         <el-row  :gutter="20">
           <el-col :span="6" v-for="(task, index) in tasksList" :key="index" style="padding: 5px;">
-            <el-card >
+            <el-card>
               <!-- <router-link :to="{name:'taskAssign'}"> -->
               <div class="task">
                 <span>{{task.taskname}}</span>
@@ -240,43 +240,46 @@
 </script>
 
 <style scoped>
-.el-header {
-    width: 100%;
-    height: 65px;
-    padding: 15px;
-    text-align: center;
-}
+  .el-header {
+      width: 100%;
+      height: 65px;
+      padding: 15px;
+      text-align: center;
+  }
 
-.el-main {
-    /* background-color: #e9eef3; */
-    color: #333;
-    text-align: center;
-}
+  .el-main {
+      /* background-color: #e9eef3; */
+      color: #333;
+      text-align: center;
+  }
 
-.el-dialog,
-.imagelist {
-    text-align: center;
-}
+  .el-dialog,
+  .imagelist {
+      text-align: center;
+  }
 
-.image {
-    width: 250px;
+  .image {
+      width: 250px;
+      height: 250px;
+      display: block;
+  }
+
+  .img2 {
+      width: 200px;
+      height: 250px;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: 100px auto;
+  }
+
+  .task{
     height: 250px;
-    display: block;
-}
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
 
-.img2 {
-    width: 200px;
-    height: 250px;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 100px auto;
-}
-
-.task{
-  height: 250px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  
-}
+  .el-card{
+    /* background: rgb(159, 203, 241); */
+  }
 </style>

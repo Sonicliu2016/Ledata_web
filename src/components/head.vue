@@ -194,8 +194,12 @@
     text-align: center;
   }
 
+  .el-dropdown-menu__item{
+    list-style-type:none;
+  }
+
   /* 去掉router-link链接文字的下划线 */
   a {
-  text-decoration: none;
+    text-decoration: none;
   }
 </style>
