@@ -10,6 +10,8 @@ import TaskList from './pages/task/taskList.vue';
 import TaskAssign from './pages/task/taskAssign.vue';
 import TaggingImage from './pages/task/taggingImage.vue';
 import VerificationTask from './pages/task/verificationTask.vue';
+import AnotateQualityCheckList from './pages/task/AnotateQualityCheckList.vue';
+import AnotateQualityCheck from './pages/task/AnotateQualityCheck.vue'
 import DownloadManager from './pages/task/downloadManager.vue';
 import User from './modules/UserModule.js';
 
@@ -34,6 +36,8 @@ const routes = [
       {name:'taskList',path:'taskList',component:TaskList},
       {name:'taskAssign',path:'taskAssign',component:TaskAssign},
       {name:'verificationTask',path:'verificationTask',component:VerificationTask},
+      {name:'anotateQualityCheckList',path:'anotateQualityCheckList',component:AnotateQualityCheckList},
+      {name:'anotateQualityCheck',path:'anotateQualityCheck',component:AnotateQualityCheck},
       {name:'downloadManager',path:'downloadManager',component:DownloadManager}
     ]
   },

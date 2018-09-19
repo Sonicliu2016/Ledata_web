@@ -522,7 +522,7 @@ export default {
   }
 };
 </script>
-<style scope>
+<style scoped>
 .el-carousel__item h3 {
   color: #475669;
   font-size: 18px;
@@ -660,4 +660,8 @@ ol{
   max-height: 550px;
   overflow-y: auto;
 }
+@media only screen and (min-width: 1200px) {}
+@media only screen and (min-width: 768px) and (max-width: 991px) {}
+@media only screen and (max-width: 767px) {}
+@media only screen and (-webkit-min-device-pixel-ratio: 1.3),only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-resolution: 120dpi) {}
 </style>
