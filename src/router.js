@@ -6,11 +6,14 @@ import Login from './pages/Login.vue';
 import NotFound from './pages/404.vue';
 import Home from './pages/home.vue';
 import UserList from './pages/user/userList.vue';
-import TaskList from './pages/task/taskList.vue';
+import TaskList from './pages/task/taskLists.vue';
 import TaskAssign from './pages/task/taskAssign.vue';
 import TaggingImage from './pages/task/taggingImage.vue';
 import VerificationTask from './pages/task/verificationTask.vue';
 import DownloadManager from './pages/task/downloadManager.vue';
+import LabelTask from './pages/task/labelTask.vue';
+import VerifyTask from './pages/task/verifyTask.vue';
+import UserDetail from './pages/user/userDetail.vue';
 import User from './modules/UserModule.js';
 
 //注册全局组件
@@ -24,17 +27,23 @@ const routes = [
   //首页重定向，设置默认首页页面
   {path: '/',redirect:{name:'login'}},
   {name:'home',path:'/home',component:Home,
-    redirect:'/home/taskList',
+    redirect:'/taskList',
     meta: {
       requireLogin: true,
     },
     children:[
-      {name:'userList',path:'userList',component:UserList},
-      {name:'taggingImg',path:'taggingImg',component:TaggingImage},
-      {name:'taskList',path:'taskList',component:TaskList},
-      {name:'taskAssign',path:'taskAssign',component:TaskAssign},
-      {name:'verificationTask',path:'verificationTask',component:VerificationTask},
-      {name:'downloadManager',path:'downloadManager',component:DownloadManager}
+      {name:'userList',path:'/userList',component:UserList},
+      {name:'taggingImg',path:'/taggingImg',component:TaggingImage},
+      {name:'taskList',path:'/taskList',component:TaskList,
+        redirect:'/labelTask',
+        children:[{name:'labelTask',path:'/labelTask',component:LabelTask},
+                  {name:'verifyTask',path:'/verifyTask',component:VerifyTask},
+                  {name:'taskAssign',path:'/taskAssign',component:TaskAssign},
+                  ]
+      },
+      {name:'verificationTask',path:'/verificationTask',component:VerificationTask},
+      {name:'userDetail',path:'/userDetail',component:UserDetail},
+      {name:'downloadManager',path:'/downloadManager',component:DownloadManager}
     ]
   },
   // 404页面(当输入地址错误时，显示404页面)

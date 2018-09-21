@@ -32,7 +32,7 @@
           </el-form-item>
           <el-form-item label="分配给用户" :label-width="formLabelWidth">
             <el-select v-model="taskForm.taskOwner" placeholder="请选择用户">
-              <el-option v-for="(user,index) in userList" :value="user.username" :key="index"> 
+              <el-option v-for="(user,index) in usersList" :value="user.username" :key="index"> 
               </el-option>
             </el-select>
           </el-form-item>
@@ -59,7 +59,7 @@
    data () {
      return {
        tagsList:[],
-       userList:[],
+       usersList:[],
        taskName:'', //记录当前是已分配的任务还是未分配的任务
        currentUser:'',//当前登录的用户
        getAllTagsUrl:'http://10.5.11.127:8080/task/getTaskCluster',
@@ -124,7 +124,7 @@
           if(res.data.code == 200){
             var tags = res.data.data.clusters;
             console.log(tags);
-            this.tagsList.splice(0,this.userList.length); //先清空数组
+            this.tagsList.splice(0,this.tagsList.length); //先清空数组
             this.tagsList = tags;
             if(this.tagsList != null){
               this.noTask = false;
@@ -136,7 +136,7 @@
           }
         })
         .catch(err=>{
-          console.log("error:" + err);
+          console.log("出现error:" + err);
           alert("服务器出现故障，请稍后再试！");
         })
       },
@@ -146,18 +146,22 @@
    },
    //组件创建后,  数据已经完成初始化，但是DOM还未生成
    created(){
-     this.$store.state.navIndex = '2';
-     let routerParam = this.$route.params.dataObj;
+     let routerParam = this.$route.params.ownr;
      this.taskName = routerParam; //获取是已分配还是未分配的任务
-     this.userList = this.$parent.userList; //获取用户列表
      this.currentUser = user.methods.getUserName(); //获取当前登录的用户
+    //  this.usersList = this.$route.params.users;
+     this.usersList = user.methods.getAllUsers();
      console.log("taskAssign:-->" + this.taskName);
+     console.log("taskassign-->create-->userList:" + this.usersList);
    },
    //数据装载DOM上后，各种数据已经就位,将数据渲染到DOM上，DOM已经生成
    mounted(){
+     console.log("taskAssign:mounted-->" + this.usersList);
      this.getTags(this.taskName);
-
    },
+   destroyed() {
+     console.log("taskAssign:destroyed");
+   }
  }
 </script>
 
