@@ -3,10 +3,10 @@
     <h2 class="title">请标记下列不是{{verifyClassName}}的图片</h2>
 
     <div class="verify-complete">
-      <a href="aaa">验证完成，换一批</a>
+      <el-button type="success">验证完成，换一批</el-button>
     </div>
     <el-row  :gutter="20">
-      <el-col :span="6" v-for="(task, index) in articles" :key="index" style="padding: 5px; ">
+      <el-col :span="4" v-for="(task, index) in articles" :key="index" style="padding: 5px; ">
         <el-card :body-style="{ padding: '0px' }" >
           <div class="img-box" @click="toogle(task)">
             <img v-bind:src="baserul+task.media_url" />
