@@ -106,6 +106,13 @@
       },
       getNavIndex(){
         this.activeIndex = this.$store.state.navIndex;
+      },
+      deleteFromList(list,menuName){
+        for(var i = 0; i<list.length; i++){
+          if(list[i].menuName == menuName){
+            list.splice(i,1);
+          }
+        }
       }
    },
    components: {
@@ -117,7 +124,9 @@
        this.isAdmin = true;
      }else{
        this.isAdmin = false;
-       this.navList.shift();
+       this.deleteFromList(this.navList,'用户管理');
+       this.deleteFromList(this.navList,'用户任务详情');
+      //  this.navList.shift();
      }
    },
    watch:{
