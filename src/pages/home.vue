@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import User from '../modules/UserModule.js';
+var user = User;
 export default {
   data() {
     return {
@@ -32,6 +34,7 @@ export default {
           var userinfo = res.data.data.userinfo;
           console.log(userinfo);
           this.userList.splice(0,this.userList.length); //先清空数组
+          user.methods.removeAllUsers();
           for(var i = 0;i<userinfo.length;i++){
             this.userList.push({
               'createtime':userinfo[i].Created,
@@ -40,6 +43,8 @@ export default {
               'showDelete':userinfo[i].UserName == "admin" ? false:true,
             });
           }
+          //保存所有用户信息
+          user.methods.storeUsers(this.userList);
         }else{
           this.$message.error('获取信息失败！');
         }

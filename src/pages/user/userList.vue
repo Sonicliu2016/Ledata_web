@@ -1,52 +1,53 @@
 <template>
-  <div>
-    <el-row >
+  <div class="content">
+    <el-row class="top_content">
       <el-button type="primary" @click="AddUserDialog">添加用户</el-button>
-      <!-- <el-button type="danger">删除用户</el-button> -->
     </el-row>
 
-    <el-table
-      :data="userList"
-      style="width: 100%"
-      align="center"
-      :row-class-name="tableRowClassName">
-      <el-table-column
+    <el-row class="main_content">
+      <el-table
+        :data="userList"
+        style="width: 100%;"
         align="center"
-        label="创建时间"
-        width="300">
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.createtime | convertDate}}</span>
-        </template>
-      </el-table-column>
+        :row-class-name="tableRowClassName">
+        <el-table-column
+          align="center"
+          label="创建时间"
+          width="300">
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span style="margin-left: 10px">{{ scope.row.createtime | convertDate}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        align="center"
-        label="账号"
-        width="300">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.username }}</span>
-        </template>
-      </el-table-column>
+        <el-table-column
+          align="center"
+          label="账号"
+          width="300">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.username }}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        align="center"
-        label="密码">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.password }}</span>
-        </template>
-      </el-table-column>
+        <el-table-column
+          align="center"
+          label="密码">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.password }}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        label="操作"
-        align="center"
-        width="800">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="editUserDialog(scope.$index, scope.row)">修改用户密码</el-button>
-          <el-button @click="deleteUserDialog(scope.row)" type="text" size="small" v-show="scope.row.showDelete">删除该用户</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          label="操作"
+          align="center"
+          width="800">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="editUserDialog(scope.$index, scope.row)">修改用户密码</el-button>
+            <el-button @click="deleteUserDialog(scope.row)" type="text" size="small" v-show="scope.row.showDelete">删除该用户</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-row>
     <!-- 新增用户对话框 -->
     <el-dialog title="新增用户" :visible.sync="showAddUserDialog">
       <el-form :model="addUserForm">
@@ -256,6 +257,21 @@
   .el-table .success-row {
     background: #f0f9eb;
   }
+
+  /* .content{
+    min-height:100vh;
+    display:flex
+  }
+
+  .top_content{
+    height: 15vh;
+  }*/
+
+  .el-table{
+    min-height: 600px;
+    border-spacing: 0;
+    border-collapse:separate;/* 如果值为collapse，则element表格下方会出现滚动条*/
+  } 
 
   .el-row{
     padding: 15px;
