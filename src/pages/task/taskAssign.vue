@@ -115,6 +115,7 @@
      getTags(task){
         var params = new URLSearchParams();
         params.append('assignusername', task);
+        params.append('tasktype','0');
         this.$axios({
             method: 'post',
             url:this.getAllTagsUrl,
