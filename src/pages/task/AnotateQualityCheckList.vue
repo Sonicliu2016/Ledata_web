@@ -1,25 +1,20 @@
 <template>
   <div class='quality-check'>
-    <el-dropdown split-button type="primary" @click="handleClick">
-      更多菜单
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>food</el-dropdown-item>
-        <el-dropdown-item>person</el-dropdown-item>
-        <el-dropdown-item>park</el-dropdown-item>
-        <el-dropdown-item>fire</el-dropdown-item>
-        <el-dropdown-item>car</el-dropdown-item>
+    <el-dropdown split-button type="primary">
+      {{labelName}}
+      <el-dropdown-menu slot="dropdown" >
+        <el-dropdown-item v-for="(label,index) in labels" :key="index" @click.native="itemClick(index)">{{label}}</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <div style="float:right">
-      <el-button type="danger">验证</el-button>
-      <el-button type="success">通过</el-button>
+      <el-button type="danger" @click="toVerification()">验证</el-button>
     </div>
     <el-row  :gutter="30">
       <el-col :span="12" style="padding: 10px; ">
-        <el-card style="height:500px">
+        <el-card>
           <div slot="header" class="clearfix" style="position:flex">
             <span>Machine</span>
-            <el-button style="float: right; padding: 3px 0" type="text">全选</el-button>
+            <el-button style="float: right; padding: 3px 0" type="text" @click="selectAll(0)">{{mSelectTv}}</el-button>
           </div>
           <div style="overflow-y:hiden">
             <el-row :gutter="10">
@@ -39,11 +34,11 @@
         <el-card>
           <div slot="header" class="clearfix" style="position:flex">
             <span>Human</span>
-            <el-button style="float: right; padding: 3px 0" type="text">全选</el-button>
+            <el-button style="float: right; padding: 3px 0" type="text" @click="selectAll(1)">{{hSelectTv}}</el-button>
           </div>
           <div>
             <el-row :gutter="10">
-              <el-col :span="8" v-for="(m,index) in mechineList" :key="index" style="padding: 5px; ">
+              <el-col :span="8" v-for="(m,index) in humanList" :key="index" style="padding: 5px; ">
                 <el-card :body-style="{ padding: '0px' }">
                   <div class="img-box" @click="toogle(m)">
                     <img v-bind:src="baseurl+m.media_url"/>
@@ -63,34 +58,126 @@ export default {
   data () {
     return {
       baseurl:"http://10.5.11.127:8080/",
+      labelName:"更多",
+      labels:["food","person"],
+      mSelectTv:"全选",
+      hSelectTv:"全选",
       mechineList:[
-        {"media_url":"static/img/upload/machine/test_526.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/test_301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_424.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_712.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_526.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/test_301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_424.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_712.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_526.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/test_301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_424.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_712.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/test_332.jpg","isSelected":false}
-      ]
+        {"media_url":"static/img/upload/machine/106.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
+        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
+        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
+        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/332.jpg","isSelected":false}
+      ],
+      humanList:[
+        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
+        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
+        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
+        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
+        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false}
+      ],
+      selectList:[]
     }
   },
   methods:{
+    itemClick(index) {
+      this.labelName = this.labels[index];
+    },
     toogle(task){
-        if(task.isSelected){
-          task.isSelected = false;
-        }else{
-          task.isSelected = true;
+      if(task.isSelected){
+        task.isSelected = false;
+      }else{
+        task.isSelected = true;
+      }
+    },
+    //获取某个列表选中的item
+    getSelected(){
+      var selects=[];
+      for(var i=0; i<this.mechineList.length; i++){
+        if(this.mechineList[i].isSelected){
+          selects.push({"media_url":"static/img/upload/machine/test_526.jpg"});
         }
       }
+      for(var i=0; i<this.humanList.length; i++){
+        if(this.humanList[i].isSelected){
+          selects.push({"media_url":"static/img/upload/machine/test_526.jpg"});
+        }
+      }
+      this.selectList = selects;
+      return selects;
+    },
+    isAllSelected(type){
+      var m=0;
+      var tarList=[];
+      if(type == 0){
+        tarList = this.mechineList;
+      }else{
+        tarList = this.humanList;
+      }
+      for(var i=0; i<tarList.length;i++){
+        if(tarList[i].isSelected){
+          m++;
+        }else{
+          break;
+        }
+      }
+
+      if(m<=tarList.length-1){
+        return false;
+      }
+      return true;
+    },
+    selectAll(type){
+      var tarList=[];
+      if(type == 0){
+        tarList = this.mechineList;
+      }else{
+        tarList = this.humanList;
+      }
+      if(this.isAllSelected(type)){
+        for(var i=0; i<tarList.length; i++){
+          tarList[i].isSelected = false;
+        }
+        if(type == 0){
+          this.mSelectTv = "全选";
+        }else{
+          this.hSelectTv = "全选";
+        }
+      }else{
+        for(var i=0; i<tarList.length; i++){
+          tarList[i].isSelected = true;
+        }
+        if(type == 0){
+          this.mSelectTv = "取消全选";
+        }else{
+          this.hSelectTv = "取消全选";
+        }
+      }
+    },
+    toVerification(){
+      var selectList = this.getSelected();
+      console.log("selectList length:"+selectList.length);
+    }
   }
 }
 </script>
