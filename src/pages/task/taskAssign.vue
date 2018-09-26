@@ -91,6 +91,7 @@
        params.append('allowed', this.taskName);
        params.append('count', this.taskForm.assignCount);
        params.append('clustername', this.taskForm.tagName);
+       params.append('tasktype','0');
        this.$axios({
             method: 'post',
             url:this.assignTaskUrl,
@@ -114,6 +115,7 @@
      getTags(task){
         var params = new URLSearchParams();
         params.append('assignusername', task);
+        params.append('tasktype','0');
         this.$axios({
             method: 'post',
             url:this.getAllTagsUrl,

@@ -17,6 +17,7 @@ import DownloadManager from './pages/task/downloadManager.vue';
 import LabelTask from './pages/task/labelTask.vue';
 import VerifyTask from './pages/task/verifyTask.vue';
 import UserDetail from './pages/user/userDetail.vue';
+import UnrecognizedPage from './pages/task/unrecognizedPage.vue';
 import User from './modules/UserModule.js';
 
 //注册全局组件
