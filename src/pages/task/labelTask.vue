@@ -35,9 +35,9 @@
                   name:'taskAssign',
                   params:{
                     ownr:taskowner,
+                    taskType:'0', //0为标注任务,1为验证任务
                   },
                 });
-
         }else if(taskowner == 'evaluated'){
           this.$router.push({
             name:'evaluateTaskList'
@@ -53,7 +53,7 @@
 
    },
    created(){
-
+     
    },
    mounted(){
      this.setTaskList();
