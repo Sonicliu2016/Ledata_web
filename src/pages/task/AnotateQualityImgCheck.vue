@@ -1,5 +1,5 @@
 <template>
-  <div>标注图像质量检查</div>
+  <div>单图检查</div>
 </template>
 <script>
 export default {
