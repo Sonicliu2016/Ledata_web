@@ -8,10 +8,11 @@ import Home from './pages/home.vue';
 import UserList from './pages/user/userList.vue';
 import TaskList from './pages/task/taskLists.vue';
 import TaskAssign from './pages/task/taskAssign.vue';
+import EvaluateTaskList from './pages/task/evaluateTaskList.vue';
 import TaggingImage from './pages/task/taggingImage.vue';
 import VerificationTask from './pages/task/verificationTask.vue';
-import AnotateQualityCheckList from './pages/task/AnotateQualityCheckList.vue';
-import AnotateQualityCheck from './pages/task/AnotateQualityCheck.vue'
+import AnotateQualityLabelCheckList from './pages/task/AnotateQualityLabelCheckList.vue';
+import AnotateQualityImgCheck from './pages/task/AnotateQualityImgCheck.vue'
 import DownloadManager from './pages/task/downloadManager.vue';
 import LabelTask from './pages/task/labelTask.vue';
 import VerifyTask from './pages/task/verifyTask.vue';
@@ -41,13 +42,14 @@ const routes = [
         children:[{name:'labelTask',path:'/labelTask',component:LabelTask},
                   {name:'verifyTask',path:'/verifyTask',component:VerifyTask},
                   {name:'taskAssign',path:'/taskAssign',component:TaskAssign},
+                  {name:'evaluateTaskList',path:'/evaluateTaskList',component:EvaluateTaskList}
                   ]
       },
       {name:'verificationTask',path:'/verificationTask',component:VerificationTask},
       {name:'userDetail',path:'/userDetail',component:UserDetail},
       {name:'downloadManager',path:'/downloadManager',component:DownloadManager},
-      {name:'anotateQualityCheckList',path:'/anotateQualityCheckList',component:AnotateQualityCheckList},
-      {name:'anotateQualityCheck',path:'/anotateQualityCheck',component:AnotateQualityCheck},
+      {name:'anotateQualityLabelCheckList',path:'/anotateQualityLabelCheckList',component:AnotateQualityLabelCheckList},
+      {name:'anotateQualityImgCheck',path:'/anotateQualityImgCheck',component:AnotateQualityImgCheck},
     ]
   },
   // 404页面(当输入地址错误时，显示404页面)

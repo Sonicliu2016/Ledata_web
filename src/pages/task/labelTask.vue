@@ -25,7 +25,7 @@
         this.tasksList.splice(0,this.tasksList.length); //先清空数组
         this.tasksList.push({'taskowner':'noallo','taskname':'未分配的任务列表'});
         this.tasksList.push({'taskowner':'alloed','taskname':'已分配的任务列表'});
-        this.tasksList.push({'taskowner':'null','taskname':'评价任务'});
+        this.tasksList.push({'taskowner':'evaluated','taskname':'评价任务'});
         this.tasksList.push({'taskowner':'null','taskname':'未识别图片列表'});
         //添加任务质量和不合规的照骗
       },
@@ -35,9 +35,13 @@
           this.$router.push({
                   name:'taskAssign',
                   params:{
-                    ownr:taskowner,                    
+                    ownr:taskowner,
                   },
                 });
+        }else if(taskowner == 'evaluated'){
+          this.$router.push({
+            name:'evaluateTaskList'
+          })
         }
       },
    },
@@ -45,7 +49,7 @@
 
    },
    created(){
-     
+
    },
    mounted(){
      this.setTaskList();
@@ -60,5 +64,5 @@
     justify-content:center;
     align-items:center;
   }
- 
+
 </style>

@@ -87,8 +87,7 @@
         {name:'taggingImg',menuName:'我的任务',hasChild:true,
               children:[
                 {name:'taggingImg',menuName:'标注任务'},
-                {name:'verificationTask',menuName:'验证任务'},
-                {name:'anotateQualityCheckList',menuName:'标注质量检查'}
+                {name:'verificationTask',menuName:'验证任务'}
               ]
         },
       ],
