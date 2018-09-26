@@ -42,6 +42,7 @@ const routes = [
         children:[{name:'labelTask',path:'/labelTask',component:LabelTask},
                   {name:'verifyTask',path:'/verifyTask',component:VerifyTask},
                   {name:'taskAssign',path:'/taskAssign',component:TaskAssign},
+                  {name:'unrecognized',path:'/unrecognized',component:UnrecognizedPage}
                   ]
       },
       {name:'verificationTask',path:'/verificationTask',component:VerificationTask},

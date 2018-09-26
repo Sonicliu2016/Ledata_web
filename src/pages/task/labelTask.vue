@@ -1,6 +1,6 @@
 <template>
  <div>
-   <el-row  :gutter="20">
+  <el-row  :gutter="20">
     <el-col :span="6" v-for="(task, index) in tasksList" :key="index" style="padding: 5px;">
       <el-card>
         <div class="task">
@@ -43,7 +43,9 @@
             name:'anotateQualityCheckList',
           });
         }else if(taskowner == 'unrecognized'){
-          
+          this.$router.push({
+            name:'unrecognized',
+          });
         }
       },
    },
