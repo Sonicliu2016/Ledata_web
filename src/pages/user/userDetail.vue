@@ -13,8 +13,8 @@
             <!-- <div>{{'已完成 ' + task.labelTaskCompleted + '张'}}</div>
             <div>{{'未完成 ' + task.labelTaskUndone + '张'}}</div> -->
             <span class="task-title">验证任务：</span>
-            <p>已完成 <span style="color:#409EFF">{{0}}</span>张</p>
-            <p>未完成 <span style="color:#f00">{{0}}</span>张</p>
+            <p>已完成 <span style="color:#409EFF">{{task.verifyTaskCompleted}}</span>张</p>
+            <p>未完成 <span style="color:#f00">{{task.verifyTaskUndone}}</span>张</p>
           </div>
         </el-card>
       </el-col>
@@ -49,7 +49,22 @@
        .then(res=>{
            console.log("请求成功:" + res.data.code);
            if(res.data.code == 200){
-             this.userDetails.push({'username':taskowner,'labelTaskCompleted':res.data.data.completed,'labelTaskUndone':res.data.data.uncomplete});
+             var LabelTasks = res.data.data.LabelTasks;
+             var VerifiTasks = res.data.data.VerifiTasks;
+             var label_completed = 0;
+             var label_uncomplete = 0;
+             var verify_completed = 0;
+             var verify_uncomplete = 0;
+             console.log("LabelTasks:" + LabelTasks.length);
+             for(var i = 0;i<LabelTasks.length;i++){
+               label_completed += LabelTasks[i].TaskCompeteCount;
+               label_uncomplete += LabelTasks[i].TaskCount - LabelTasks[i].TaskCompeteCount;
+             }
+             for(var j = 0;j<VerifiTasks.length;j++){
+               verify_completed += VerifiTasks[i].TaskCompeteCount;
+               verify_uncomplete += VerifiTasks[i].TaskCount - VerifiTasks[i].TaskCompeteCount;
+             }
+             this.userDetails.push({'username':taskowner,'labelTaskCompleted':label_completed,'labelTaskUndone':label_uncomplete,'verifyTaskCompleted':verify_completed,'verifyTaskUndone':verify_uncomplete});
            }else{
              this.$message.error('请求失败！');
            }
