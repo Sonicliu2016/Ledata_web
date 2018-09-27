@@ -38,7 +38,6 @@
           </div>
         </div>
       </div>
-      <!-- <button style="position:relative;float:right;z-index:1;">完成</button> -->
 
       <el-tabs v-model="activeTabName" type="border-card" style="position:positive;z-index:-1;">
 
@@ -360,8 +359,6 @@ export default {
     // 获取当前用户任务列表
     getAnnotateTaskList() {
       var params = new URLSearchParams();
-        params.append('page', 0);
-        params.append('pagesize', 1000);
         params.append('username', this.currentUser);
         this.$axios({
             method: 'post',
