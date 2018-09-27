@@ -111,12 +111,16 @@
         return -1;
       },
       onTabClick(tab,e){
-        console.log(this.tabs[tab.index].name);
         if(this.tabs[tab.index].name == '标签任务'){
-          this.$router.push({ name: 'labelTask'});
+          this.$router.push({
+                  name:'labelTask'
+                });
         }else if(this.tabs[tab.index].name == '验证任务'){
-          this.$router.push({ name: 'verifyTask' });
+          this.$router.push({
+                  name:'verifyTask'
+                });
         }
+        console.log(this.tabs[tab.index].name);
       },
     },
     created(){

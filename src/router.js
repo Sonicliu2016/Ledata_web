@@ -40,10 +40,12 @@ const routes = [
       {name:'taggingImg',path:'/taggingImg',component:TaggingImage},
       {name:'taskList',path:'/taskList',component:TaskList,
         redirect:'/labelTask',
-        children:[{name:'labelTask',path:'/labelTask',component:LabelTask},
+        children:[
+                  {name:'labelTask',path:'/labelTask',component:LabelTask},
                   {name:'verifyTask',path:'/verifyTask',component:VerifyTask},
                   {name:'taskAssign',path:'/taskAssign',component:TaskAssign},
-                  {name:'evaluateTaskList',path:'/evaluateTaskList',component:EvaluateTaskList}
+                  {name:'unrecognized',path:'/unrecognized',component:UnrecognizedPage},
+                  {name:'evaluateTaskList',path:'/evaluateTaskList',component:EvaluateTaskList},
                   ]
       },
       {name:'verificationTask',path:'/verificationTask',component:VerificationTask},

@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-container>
-      <el-header>
+      <!-- <el-header>
         <el-button type="primary" @click="backLast">返回任务列表</el-button>
-      </el-header>
+      </el-header> -->
 
       <el-main >
         <el-row  :gutter="20">
@@ -62,6 +62,7 @@
        usersList:[],
        taskName:'', //记录当前是已分配的任务还是未分配的任务
        currentUser:'',//当前登录的用户
+       taskType:'0', //当前的任务类型（0为标注任务,1为验证任务）
        getAllTagsUrl:'http://10.5.11.127:8080/task/getTaskCluster',
        assignTaskUrl:'http://10.5.11.127:8080/task/assignTaskToUser',
        showAssignTask:false,
@@ -91,7 +92,7 @@
        params.append('allowed', this.taskName);
        params.append('count', this.taskForm.assignCount);
        params.append('clustername', this.taskForm.tagName);
-       params.append('tasktype','0');
+       params.append('tasktype',this.taskType);//0为标注任务,1为验证任务
        this.$axios({
             method: 'post',
             url:this.assignTaskUrl,
@@ -115,7 +116,7 @@
      getTags(task){
         var params = new URLSearchParams();
         params.append('assignusername', task);
-        params.append('tasktype','0');
+        params.append('tasktype',this.taskType);//0为标注任务,1为验证任务
         this.$axios({
             method: 'post',
             url:this.getAllTagsUrl,
@@ -148,12 +149,12 @@
    },
    //组件创建后,  数据已经完成初始化，但是DOM还未生成
    created(){
-     let routerParam = this.$route.params.ownr;
-     this.taskName = routerParam; //获取是已分配还是未分配的任务
+     this.taskName = this.$route.params.ownr;//获取是已分配还是未分配的任务
+     this.taskType = this.$route.params.taskType;
      this.currentUser = user.methods.getUserName(); //获取当前登录的用户
     //  this.usersList = this.$route.params.users;
      this.usersList = user.methods.getAllUsers();
-     console.log("taskAssign:-->" + this.taskName);
+     console.log("taskAssign:-->" + this.taskName + "------" + this.taskType);
      console.log("taskassign-->create-->userList:" + this.usersList);
    },
    //数据装载DOM上后，各种数据已经就位,将数据渲染到DOM上，DOM已经生成
