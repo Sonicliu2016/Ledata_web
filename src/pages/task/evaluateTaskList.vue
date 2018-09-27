@@ -51,7 +51,28 @@ export default {
     },
     checkSingleImg(task){
       this.$router.push({name:'anotateQualityImgCheck'});
+    },
+    getEvaluteTaskList(){
+      var params = new URLSearchParams();
+        this.$axios({
+            method: 'post',
+            url:"/task/getEvaluateTasks",
+            data:params
+        })
+        .then(res => {
+          if(res.data.code == 200){
+
+          }else{
+          }
+        })
+        .catch(err => {
+          console.log("error:" + err);
+          // alert("服务器出现故障，请稍后再试！");
+        });
     }
+  },
+  created(){
+    this.getEvaluteTaskList();
   }
 }
 </script>
