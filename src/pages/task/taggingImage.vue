@@ -3,12 +3,7 @@
       <div class="box">
         <div>{{curTask.status}}</div>
         <div class="img-box">
-          <!-- <img src="http://10.5.11.127:8080/" + {{curTask.media_url}}/> -->
           <img v-bind:src="baseurl+curEditTask.media_url" />
-          <!-- <img src="http://pic2016.5442.com:82/2016/0120/16/3.jpg%21960.jpg"/> -->
-          <!-- <img src="static/img/upload/machine/0036.jpg"/> -->
-          <!-- <img src="http://h.hiphotos.baidu.com/zhidao/pic/item/0b46f21fbe096b637948dd670d338744ebf8acb0.jpg"/> -->
-          <!-- <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533731103890&di=78dec1f0391d3bb1e478e67051c282f1&imgtype=0&src=http%3A%2F%2Fimg008.hc360.cn%2Fy4%2FM03%2F9C%2FCF%2FwKhQiFTyp1yECzkDAAAAAGM5rfM432.jpg"/> -->
           <button type="button" class="el-carousel__arrow el-carousel__arrow--left"
             @click="setCurrent(curTask,-1)">
             <i class="el-icon-arrow-left"></i>
@@ -43,8 +38,15 @@
           </div>
         </div>
       </div>
-      <el-tabs v-model="activeTabName" type="border-card" >
+      <!-- <button style="position:relative;float:right;z-index:1;">完成</button> -->
+
+      <el-tabs v-model="activeTabName" type="border-card" style="position:positive;z-index:-1;">
+
         <el-tab-pane label="标注任务列表" name="first">
+          <el-progress :text-inside="true" :stroke-width="18" :percentage=progress style="width:80%;float:left"></el-progress>
+          <el-button type="success" size="small" style="width:18%;float:left；margin-left:18px;" @click="completeTask">
+            完成任务
+          </el-button>
           <span style="float:right;font-size:12px;color:gray;padding:5px;">{{taskProgress}}</span>
           <el-table
             ref="singleTable"
@@ -79,7 +81,11 @@
           </el-table>
         </el-tab-pane>
         <el-tab-pane label="标签列表" name="second">
-          <div class="el-transfer-panel__filter el-input el-input--small el-input--prefix ">
+          <el-progress :text-inside="true" :stroke-width="18" :percentage=progress style="width:80%;float:left"></el-progress>
+          <el-button type="success" size="small" style="width:18%;float:left；margin-left:18px;" @click="completeTask">
+            完成任务
+          </el-button>
+          <div class="el-transfer-panel__filter el-input el-input--small el-input--prefix " style="margin-top:10px;">
             <span class="el-input__prefix">
               <i class="el-input__icon el-icon-search"></i>
             </span>
@@ -108,6 +114,7 @@
         </el-tab-pane>
       </el-tabs>
 
+
     </div>
 </template>
 
@@ -123,6 +130,7 @@ export default {
       taskProgress:"",
       searchTv:"",
       searchTvs:[],
+      progress:0,
       allLabelsProps: {
         children: "ClusterChilds",
         label: "EnglishStr"
@@ -133,6 +141,7 @@ export default {
       associateLabels:[],
       nowInAssociates:-1,
       data4: [],
+      taskId:-1,
       allLabelsArray:[],
       curTask:{},
       curEditTask:{
@@ -362,6 +371,8 @@ export default {
         .then(res => {
           console.log("请求成功: getAnnotateTaskList: " + res.data.code);
           if(res.data.code == 200){
+            this.taskId = res.data.data.taskid;
+            console.log("get  taskid:"+this.taskId);
             var tasks = res.data.data.taskinfo;
             this.taskList.splice(0,this.taskList.length);
             for(var i=0; i<tasks.length;i++){
@@ -410,6 +421,7 @@ export default {
     refreshTaskProgress(){
       this.taskProgress="共"+this.taskList.length+"个，未标："+this.filterTaskList(0).length
                                 +"，错误："+this.filterTaskList(2).length+"，删除："+this.filterTaskList(3).length;
+      this.progress=(this.taskList.length-this.filterTaskList(0).length)* 100/this.taskList.length ;
     },
     getTaskStatus(status){
       switch(status){
@@ -460,10 +472,10 @@ export default {
       .then(res => {
         console.log("requestForTaskDetail 请求成功"+res.data.code);
         if(res.data.code == 200){
-          this.curEditTask = res.data.data;
-          console.log("点击了提交");
+          // this.curEditTask = res.data.data;
+          console.log("点击了提交 before:"+this.curTask.MediaNetUrl);
           // this.curTask.tags = JSON.parse(JSON.stringify(this.curEditTask.tags));
-          this.curTask.MediaAnnotatedState = submitType;
+          this.curTask.status = this.getTaskStatus(submitType);
           this.setCurrent(this.curTask,1);
           this.refreshTaskProgress();
         }
@@ -490,6 +502,36 @@ export default {
         if(mLabel.ClusterChilds!="[]"){
           this.transFormAllLabel2Array(mLabel.ClusterChilds);
         }
+      }
+    },
+    completeTask(){
+      var rest = this.filterTaskList(0).length;
+      console.log("rest:"+rest);
+      if(rest == 0){
+        var params = new URLSearchParams();
+        params.append("taskid",this.taskId);
+        console.log("taskid: "+this.taskId)
+        this.$axios({
+          method:'post',
+          url:"/task/completeAnnotateTask",
+          data:params
+        })
+        .then(res => {
+          console.log("requestForTaskDetail 请求成功"+res.data.code);
+          if(res.data.code == 200){
+            // this.curEditTask = res.data.data;
+            console.log("点击了提交 before:"+this.curTask.MediaNetUrl);
+            // this.curTask.tags = JSON.parse(JSON.stringify(this.curEditTask.tags));
+            this.getAnnotateTaskList();
+          }else{
+            this.showMsg("网络错误，提交失败");
+          }
+        })
+        .catch(err =>{
+          console.log("requestForTaskDetail, taskId:"+taskId+" error:"+err);
+        });
+      }else{
+        this.showMsg("还有"+this.filterTaskList(0).length+"张未标，提交失败");
       }
     },
     sous: function(ev){
