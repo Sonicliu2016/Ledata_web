@@ -8,8 +8,8 @@
             <el-card >
               <div>
                 <!-- <span>{{tag.tagname}}</span> -->
-                图片数量：{{task.imgcount}}<br/>
-                标注者：{{task.anocator}}<br/>
+                图片数量：{{task.TaskCount}}<br/>
+                标注者：{{task.UserName}}<br/>
                 <el-button  type="text" class="button" @click="checkSingleImg(task)">单图检查</el-button>
                 <el-button  type="text" class="button" @click="checkSingleLabel(task)">单标签检查</el-button><br/>
                 <el-button type="danger" plain size="small" @click="showAssignTaskDialog(tag)">重标</el-button>
@@ -26,17 +26,7 @@
 export default {
   data(){
     return{
-      evaluateTaskList:[
-        {'imgcount':23,'anocator':"Jeff"},
-        {'imgcount':66,'anocator':"henry"},
-        {'imgcount':46,'anocator':"nake"},
-        {'imgcount':88,'anocator':"mary"},
-        {'imgcount':233,'anocator':"timi"},
-        {'imgcount':789,'anocator':"lixiang"},
-        {'imgcount':896,'anocator':"sandy"},
-        {'imgcount':565,'anocator':"oven"},
-        {'imgcount':234,'anocator':"stiven"}
-      ],
+      evaluateTaskList:[],
     }
   },
   methods:{
@@ -47,11 +37,42 @@ export default {
       return this.evaluateTaskList.length;
     },
     checkSingleLabel(task){
-      this.$router.push({name:'anotateQualityLabelCheckList'});
+      this.$router.push({
+        name:'anotateQualityLabelCheckList',
+        params:{
+          taskId:task.TaskUniqueId
+        }
+      });
     },
     checkSingleImg(task){
-      this.$router.push({name:'anotateQualityImgCheck'});
+      this.$router.push({
+        name:'anotateQualityImgCheck',
+        params:{
+          taskId:task.TaskUniqueId
+        }
+      });
+    },
+    getEvaluteTaskList(){
+      var params = new URLSearchParams();
+        this.$axios({
+            method: 'post',
+            url:"/task/getEvaluateTasks",
+            data:params
+        })
+        .then(res => {
+          if(res.data.code == 200){
+            this.evaluateTaskList = res.data.data.tasks;
+          }else{
+          }
+        })
+        .catch(err => {
+          console.log("error:" + err);
+          // alert("服务器出现故障，请稍后再试！");
+        });
     }
+  },
+  created(){
+    this.getEvaluteTaskList();
   }
 }
 </script>

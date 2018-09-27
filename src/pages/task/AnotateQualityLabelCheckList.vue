@@ -58,6 +58,7 @@ export default {
   data () {
     return {
       baseurl:"http://10.5.11.127:8080/",
+      taskId:-1,
       labelName:"更多",
       labels:["food","person"],
       mSelectTv:"全选",
@@ -178,6 +179,10 @@ export default {
       var selectList = this.getSelected();
       console.log("selectList length:"+selectList.length);
     }
+  },
+  created(){
+    this.taskId = this.$route.params.taskId;
+    console.log("taskID:"+this.taskId);
   }
 }
 </script>
