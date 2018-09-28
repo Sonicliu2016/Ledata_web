@@ -95,10 +95,9 @@
   export default {
     data() {
       return {
-        getAllUserUrl:'http://10.5.11.127:8080/user/getalluser',
-        addNewUserUrl:'http://10.5.11.127:8080/user/create',
-        editUserUrl:'http://10.5.11.127:8080/user/updateuserpass',
-        deleteUserUrl:'http://10.5.11.127:8080/user/deleteuser',
+        addNewUserUrl:'user/create',
+        editUserUrl:'user/updateuserpass',
+        deleteUserUrl:'user/deleteuser',
         showAddUserDialog:false,
         showEditUserDialog:false,
         showDeleteUserDialog:false,
