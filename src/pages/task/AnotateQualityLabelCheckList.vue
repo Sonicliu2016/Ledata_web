@@ -178,11 +178,29 @@ export default {
     toVerification(){
       var selectList = this.getSelected();
       console.log("selectList length:"+selectList.length);
+    },
+    getEvaluateTaskSingleLabelCluster(){
+      var params = new URLSearchParams();
+      params.append("taskid",this.taskId);
+      this.$axios({
+        method:'post',
+        url:"/task/getEvaluateTaskSingleLabelCluster",
+        data:params
+      })
+      .then(res => {
+        if(res.data.code == 200){
+          this.curEditTask = res.data.data;
+        }
+      })
+      .catch(err =>{
+        console.log("requestForImgDetail, taskId:"+taskId+" error:"+err);
+      });
     }
   },
   created(){
     this.taskId = this.$route.params.taskId;
     console.log("taskID:"+this.taskId);
+    this.getEvaluateTaskSingleLabelCluster();
   }
 }
 </script>
