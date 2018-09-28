@@ -3,7 +3,7 @@
     <el-dropdown split-button type="primary">
       {{labelName}}
       <el-dropdown-menu slot="dropdown" >
-        <el-dropdown-item v-for="(label,index) in labels" :key="index" @click.native="itemClick(index)">{{label}}</el-dropdown-item>
+        <el-dropdown-item v-for="(label,index) in labels" :key="index" @click.native="itemClick(index)">{{label.cluster_name}}</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <div style="float:right">
@@ -60,7 +60,7 @@ export default {
       baseurl:"http://10.5.11.127:8080/",
       taskId:-1,
       labelName:"更多",
-      labels:["food","person"],
+      labels:[],
       mSelectTv:"全选",
       hSelectTv:"全选",
       mechineList:[
@@ -102,7 +102,8 @@ export default {
   },
   methods:{
     itemClick(index) {
-      this.labelName = this.labels[index];
+      this.labelName = this.labels[index].cluster_name;
+      this.getEvaluateTaskSingleLabelInfo(this.labelName);
     },
     toogle(task){
       if(task.isSelected){
@@ -189,7 +190,25 @@ export default {
       })
       .then(res => {
         if(res.data.code == 200){
-          this.curEditTask = res.data.data;
+          this.labels = res.data.data.clusters;
+        }
+      })
+      .catch(err =>{
+        console.log("requestForImgDetail, taskId:"+taskId+" error:"+err);
+      });
+    },
+    getEvaluateTaskSingleLabelInfo(clustername){
+      var params = new URLSearchParams();
+      params.append("taskid",this.taskId);
+      params.append("clustername",clustername);
+      this.$axios({
+        method:'post',
+        url:"/task/getEvaluateTaskSingleLabelInfo",
+        data:params
+      })
+      .then(res => {
+        if(res.data.code == 200){
+          res.data.data;
         }
       })
       .catch(err =>{
