@@ -18,7 +18,7 @@
           </div>
           <div style="overflow-y:hiden">
             <el-row :gutter="10">
-              <el-col :span="8" v-for="(m,index) in mechineList" :key="index" style="padding: 5px; ">
+              <el-col :span="8" v-for="(m,index) in machineList" :key="index" style="padding: 5px; ">
                 <el-card :body-style="{ padding: '0px' }">
                   <div class="img-box" @click="toogle(m)">
                     <img v-bind:src="baseurl+m.media_url"/>
@@ -63,40 +63,8 @@ export default {
       labels:[],
       mSelectTv:"全选",
       hSelectTv:"全选",
-      mechineList:[
-        {"media_url":"static/img/upload/machine/106.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/332.jpg","isSelected":false}
-      ],
-      humanList:[
-        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/712.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/526.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/206.jpg","isSelected":true},
-        {"media_url":"static/img/upload/machine/301.jpg","isSelected":false},
-        {"media_url":"static/img/upload/machine/424.jpg","isSelected":false}
-      ],
+      machineList:[],
+      humanList:[],
       selectList:[]
     }
   },
@@ -115,14 +83,14 @@ export default {
     //获取某个列表选中的item
     getSelected(){
       var selects=[];
-      for(var i=0; i<this.mechineList.length; i++){
-        if(this.mechineList[i].isSelected){
-          selects.push({"media_url":"static/img/upload/machine/test_526.jpg"});
+      for(var i=0; i<this.machineList.length; i++){
+        if(this.machineList[i].isSelected){
+          selects.push(this.machineList[i].img_md5);
         }
       }
       for(var i=0; i<this.humanList.length; i++){
         if(this.humanList[i].isSelected){
-          selects.push({"media_url":"static/img/upload/machine/test_526.jpg"});
+          selects.push(this.humanList[i].img_md5);
         }
       }
       this.selectList = selects;
@@ -132,7 +100,7 @@ export default {
       var m=0;
       var tarList=[];
       if(type == 0){
-        tarList = this.mechineList;
+        tarList = this.machineList;
       }else{
         tarList = this.humanList;
       }
@@ -152,7 +120,7 @@ export default {
     selectAll(type){
       var tarList=[];
       if(type == 0){
-        tarList = this.mechineList;
+        tarList = this.machineList;
       }else{
         tarList = this.humanList;
       }
@@ -179,6 +147,23 @@ export default {
     toVerification(){
       var selectList = this.getSelected();
       console.log("selectList length:"+selectList.length);
+      var params = new URLSearchParams();
+      params.append("taskid",this.taskId);
+      params.append("this.taskId",this.labelName);
+      params.append("checklist",selectList);
+      this.$axios({
+        methods:'post',
+        url:"/task/recvEvaluateTaskSingleLabelInfo",
+        data:params
+      })
+      .then(res => {
+        if(res.data.code == 200){
+
+        }
+      })
+      .catch(err =>{
+        console.log("toVerification,  error:"+err);
+      })
     },
     getEvaluateTaskSingleLabelCluster(){
       var params = new URLSearchParams();
@@ -194,7 +179,7 @@ export default {
         }
       })
       .catch(err =>{
-        console.log("requestForImgDetail, taskId:"+taskId+" error:"+err);
+        console.log("getEvaluateTaskSingleLabelCluster,  error:"+err);
       });
     },
     getEvaluateTaskSingleLabelInfo(clustername){
@@ -208,13 +193,27 @@ export default {
       })
       .then(res => {
         if(res.data.code == 200){
-          res.data.data;
+          var machines=res.data.data.machines;
+          this.machineList.splice(0,this.machineList.length);
+          for(var i=0; i<machines.length;i++){
+            this.machineList.push(
+              {"media_url":machines[i].MediaNetUrl,"img_md5":machines[i].MediaMD5,"isSelected":false}
+            );
+          }
+          var humans=res.data.data.humans;
+          this.humanList.splice(0,this.humanList.length);
+          for(var i=0; i<humans.length;i++){
+            this.humanList.push(
+              {"media_url":humans[i].MediaNetUrl,"img_md5":humans[i].MediaMD5,"isSelected":false}
+            );
+          }
         }
       })
       .catch(err =>{
-        console.log("requestForImgDetail, taskId:"+taskId+" error:"+err);
+        console.log("getEvaluateTaskSingleLabelInfo,  error:"+err);
       });
     }
+
   },
   created(){
     this.taskId = this.$route.params.taskId;
