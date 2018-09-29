@@ -11,7 +11,7 @@ var user = User;
 export default {
   data() {
     return {
-      getAllUserUrl:'http://10.5.11.127:8080/user/getalluser',
+      getAllUserUrl:'user/getalluser',
       userList: [],
     };
   },

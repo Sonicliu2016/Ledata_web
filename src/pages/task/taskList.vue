@@ -7,7 +7,7 @@
                     ref="upload" 
                     multiple 
                     name="files[]" 
-                    action="http://10.5.11.127:8080/uploadfiles" 
+                    action="uploadfiles" 
                     :limit="limit" 
                     :on-success="uploadSuccess" 
                     :on-error="uploadError" 
@@ -94,7 +94,7 @@
         isShowTask:true, //如果是admin就展示任务列表，如果是普通用户，就不展示
         showUserDetail:false, //点击查看用户的任务详情
         userTaskTitle:'', //点击查看用的任务详情的标题
-        userTaskDetailUrl:'http://10.5.11.127:8080/task/getUserTasksInfo',
+        userTaskDetailUrl:'task/getUserTasksInfo',
         tasksList:[],
         userTaskDetail:{
           completed:0,

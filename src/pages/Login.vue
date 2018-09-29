@@ -48,7 +48,7 @@
         },
         isAutoLogin: true,
         loginData:[],
-        url:'http://10.5.11.127:8080/user/login',
+        url:'user/login',
      }
    },
    methods: {

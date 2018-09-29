@@ -16,7 +16,7 @@
  export default {
    data () {
      return {
-       url:'http://10.5.11.127:8080/static/img/upload/machine/106.jpg',
+       url:'static/img/upload/machine/106.jpg',
        getUnrecognizedImgUrl:'',
        
      }

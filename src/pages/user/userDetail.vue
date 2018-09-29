@@ -28,7 +28,7 @@
      return {
        userList:[],
        userDetails:[],
-       userTaskDetailUrl:'http://10.5.11.127:8080/task/getUserTasksInfo',
+       userTaskDetailUrl:'task/getUserTasksInfo',
      }
    },
    methods: {

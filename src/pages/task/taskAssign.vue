@@ -63,8 +63,8 @@
        taskName:'', //记录当前是已分配的任务还是未分配的任务
        currentUser:'',//当前登录的用户
        taskType:'0', //当前的任务类型（0为标注任务,1为验证任务）
-       getAllTagsUrl:'http://10.5.11.127:8080/task/getTaskCluster',
-       assignTaskUrl:'http://10.5.11.127:8080/task/assignTaskToUser',
+       getAllTagsUrl:'task/getTaskCluster',
+       assignTaskUrl:'task/assignTaskToUser',
        showAssignTask:false,
        noTask:false,
        taskForm:{

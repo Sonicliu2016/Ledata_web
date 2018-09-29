@@ -6,7 +6,7 @@
                     ref="upload" 
                     multiple 
                     name="files[]" 
-                    action="http://10.5.11.127:8080/uploadfiles" 
+                    action="uploadfiles" 
                     :limit="limit" 
                     :on-success="uploadSuccess" 
                     :on-error="uploadError" 
