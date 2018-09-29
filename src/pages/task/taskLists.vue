@@ -6,7 +6,7 @@
                     ref="upload" 
                     multiple 
                     name="files[]" 
-                    action="uploadfiles" 
+                    action="http://10.5.11.127:8080/uploadfiles" 
                     :limit="limit" 
                     :on-success="uploadSuccess" 
                     :on-error="uploadError" 
@@ -85,18 +85,18 @@
       },
       // 图片准备上传时()
       beforeUpload(file){
-        // const isJPG = file.type === 'image/jpg';
-        // const isPNG = file.type === 'image/png';
-        // if (isJPG || isPNG) {
+        const isJPG = file.type === 'image/jpeg';
+        const isPNG = file.type === 'image/png';
+        if (isJPG || isPNG) {
           if(this.filesList.length > 0){
             this.waitUpLoadList = [].concat(this.filesList);
             this.totalCount = this.filesList.length;
             this.showUploadProgress = true;
           }
-        // }else{
-            // this.$message.error('上传图片只能是JPG或者PNG格式!');
-        // }
-        // return isJPG || isPNG;
+        }else{
+            this.$message.error('上传图片只能是JPG或者PNG格式!');
+        }
+        return isJPG || isPNG;
       },
       // 文件超出个数限制时
       onExceed(files, fileList){
