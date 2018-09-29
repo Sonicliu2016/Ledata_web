@@ -150,9 +150,9 @@ export default {
       var params = new URLSearchParams();
       params.append("taskid",this.taskId);
       params.append("this.taskId",this.labelName);
-      params.append("checklist",selectList);
+      // params.append("checklist",selectList);
       this.$axios({
-        methods:'post',
+        method:'post',
         url:"/task/recvEvaluateTaskSingleLabelInfo",
         data:params
       })
