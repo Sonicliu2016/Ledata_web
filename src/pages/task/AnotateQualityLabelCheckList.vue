@@ -197,14 +197,14 @@ export default {
           this.machineList.splice(0,this.machineList.length);
           for(var i=0; i<machines.length;i++){
             this.machineList.push(
-              {"media_url":machines[i].MediaNetUrl,"img_md5":machines[i].MediaMD5,"isSelected":false}
+              {"media_url":machines[i].MediaNetUrl,"img_md5":machines[i].MediaMD5,"isSelected":machines[i].EnterVerify}
             );
           }
           var humans=res.data.data.humans;
           this.humanList.splice(0,this.humanList.length);
           for(var i=0; i<humans.length;i++){
             this.humanList.push(
-              {"media_url":humans[i].MediaNetUrl,"img_md5":humans[i].MediaMD5,"isSelected":false}
+              {"media_url":humans[i].MediaNetUrl,"img_md5":humans[i].MediaMD5,"isSelected":machines[i].EnterVerify}
             );
           }
         }
