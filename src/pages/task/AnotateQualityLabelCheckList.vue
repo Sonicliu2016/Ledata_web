@@ -202,9 +202,10 @@ export default {
           }
           var humans=res.data.data.humans;
           this.humanList.splice(0,this.humanList.length);
+          console.log("getEvaluateTaskSingleLabelInfo: "+humans.length);
           for(var i=0; i<humans.length;i++){
             this.humanList.push(
-              {"media_url":humans[i].MediaNetUrl,"img_md5":humans[i].MediaMD5,"isSelected":machines[i].EnterVerify}
+              {"media_url":humans[i].MediaNetUrl,"img_md5":humans[i].MediaMD5,"isSelected":humans[i].EnterVerify}
             );
           }
         }
