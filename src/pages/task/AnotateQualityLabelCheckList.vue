@@ -149,8 +149,8 @@ export default {
       console.log("selectList length:"+selectList.length);
       var params = new URLSearchParams();
       params.append("taskid",this.taskId);
-      params.append("this.taskId",this.labelName);
-      // params.append("checklist",selectList);
+      params.append("clustername",this.labelName);
+      params.append("checklist",selectList.toString);
       this.$axios({
         method:'post',
         url:"/task/recvEvaluateTaskSingleLabelInfo",
