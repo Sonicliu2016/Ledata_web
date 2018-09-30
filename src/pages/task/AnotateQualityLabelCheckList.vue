@@ -176,6 +176,10 @@ export default {
       .then(res => {
         if(res.data.code == 200){
           this.labels = res.data.data.clusters;
+          if(this.labels.length > 0){
+            this.labelName = this.labels[0].cluster_name;
+            this.getEvaluateTaskSingleLabelInfo(this.labelName);
+          }
         }
       })
       .catch(err =>{
