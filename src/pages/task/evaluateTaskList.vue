@@ -12,8 +12,8 @@
                 标注者：{{task.UserName}}<br/>
                 <el-button  type="text" class="button" @click="checkSingleImg(task)">单图检查</el-button>
                 <el-button  type="text" class="button" @click="checkSingleLabel(task)">单标签检查</el-button><br/>
-                <el-button type="danger" plain size="small" @click="relabelEvaluateTaskToAnnotate(task)">重标</el-button>
-                <el-button type="success" plain size="small" @click="submitEvaluateTask(task)">保存</el-button>
+                <el-button type="danger" plain size="small" @click="showDialog(task,1)">重标</el-button>
+                <el-button type="success" plain size="small" @click="showDialog(task,0)">保存</el-button>
               </div>
             </el-card>
           </el-col>
@@ -68,6 +68,33 @@ export default {
       .catch(err => {
         console.log("getEvaluteTaskList , error:" + err);
         // alert("服务器出现故障，请稍后再试！");
+      });
+    },
+    showDialog(task,type) {
+      var content = "";
+      var msg = "";
+      if(type == 0){
+        content = "确定要保存该任务吗？";
+        msg = "保存成功！";
+      }else{
+        content = "确定要重置该任务吗？";
+        msg = "重置成功！";
+      }
+      this.$confirm(content, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if(type == 0){
+          this.submitEvaluateTask(task);
+        }else if(type == 1){
+          this.relabelEvaluateTaskToAnnotate(task);
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        });
       });
     },
     relabelEvaluateTaskToAnnotate(task){

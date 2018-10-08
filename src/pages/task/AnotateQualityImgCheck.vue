@@ -117,7 +117,7 @@ export default {
       .catch(err =>{
         console.log("requestForImgDetail, taskId:"+taskId+" error:"+err);
       });
-    },
+    }
   },
   created(){
     this.taskId = this.$route.params.taskId;
