@@ -6,7 +6,7 @@
       <el-button type="success">验证完成，换一批</el-button>
     </div>
     <el-row  :gutter="20">
-      <el-col :span="4" v-for="(task, index) in articles" :key="index" style="padding: 5px; ">
+      <el-col :span="4" v-for="(task, index) in imgList" :key="index" style="padding: 5px; ">
         <el-card :body-style="{ padding: '0px' }" >
           <div class="img-box" @click="toogle(task)">
             <img v-bind:src="baserul+task.media_url" />
@@ -19,12 +19,15 @@
 </template>
 
 <script>
+  import User from '../../modules/UserModule.js';
+  var user = User;
   export default {
     data(){
       return{
         baserul:"http://10.5.11.127:8080/",
-        verifyClassName:"person",
-        articles:[
+        curUser:"",
+        verifyClassName:"dog",
+        imgList:[
           {"media_url":"static/img/upload/machine/test_526.jpg","isSelected":false},
           {"media_url":"static/img/upload/machine/test_206.jpg","isSelected":true},
           {"media_url":"static/img/upload/machine/test_301.jpg","isSelected":false},
@@ -43,10 +46,37 @@
         }else{
           task.isSelected = true;
         }
+      },
+      getVerifyTask(){
+        var params = new URLSearchParams();
+        params.append("username",this.curUser);
+        params.append("tasklimit",12);
+        this.$axios({
+          method:'post',
+          url:"/task/getVerifyTask",
+          data:params
+        })
+        .then(res => {
+          if(res.data.code == 200){
+            var tasks = res.data.data.taskinfo;
+            this.verifyClassName = res.data.data.taskcluster;
+            this.imgList.splice(0,this.imgList.length);
+            for(var i=0;i<tasks.length;i++){
+              this.imgList.push({
+                'media_url':tasks[i].MediaNetUrl,
+                'isSelected':false
+              })
+            }
+          }
+        })
+        .catch(err =>{
+          console.log("getVerifyTask,  error:"+err);
+        })
       }
     },
     created(){
-
+      this.curUser = user.methods.getUserName();
+      this.getVerifyTask();
     }
   }
 </script>
