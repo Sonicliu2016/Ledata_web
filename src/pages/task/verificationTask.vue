@@ -3,7 +3,7 @@
     <h2 class="title">请标记下列不是{{verifyClassName}}的图片</h2>
 
     <div class="verify-complete">
-      <el-button type="success">验证完成，换一批</el-button>
+      <el-button type="success" @click="verifyComplete()">验证完成，换一批</el-button>
     </div>
     <el-row  :gutter="20">
       <el-col :span="4" v-for="(task, index) in imgList" :key="index" style="padding: 5px; ">
@@ -26,17 +26,11 @@
       return{
         baserul:"http://10.5.11.127:8080/",
         curUser:"",
-        verifyClassName:"dog",
-        imgList:[
-          {"media_url":"static/img/upload/machine/test_526.jpg","isSelected":false},
-          {"media_url":"static/img/upload/machine/test_206.jpg","isSelected":true},
-          {"media_url":"static/img/upload/machine/test_301.jpg","isSelected":false},
-          {"media_url":"static/img/upload/machine/test_424.jpg","isSelected":false},
-          {"media_url":"static/img/upload/machine/test_712.jpg","isSelected":false},
-          {"media_url":"static/img/upload/machine/test_332.jpg","isSelected":false},
-          {"media_url":"static/img/upload/machine/test_453.jpg","isSelected":false},
-          {"media_url":"static/img/upload/machine/test_203.jpg","isSelected":false}
-        ]
+        taskId:-1,
+        verifyClassName:"",
+        selectedLsit:[],
+        unSelectedList:[],
+        imgList:[]
       };
     },
     methods:{
@@ -59,18 +53,54 @@
         .then(res => {
           if(res.data.code == 200){
             var tasks = res.data.data.taskinfo;
+            this.taskId = res.data.data.taskid;
             this.verifyClassName = res.data.data.taskcluster;
             this.imgList.splice(0,this.imgList.length);
             for(var i=0;i<tasks.length;i++){
               this.imgList.push({
                 'media_url':tasks[i].MediaNetUrl,
-                'isSelected':false
+                'isSelected':false,
+                'img_md5':tasks[i].MediaMD5
               })
             }
           }
         })
         .catch(err =>{
           console.log("getVerifyTask,  error:"+err);
+        })
+      },
+      getSelectedList(){
+        this.selectedLsit=[];
+        this.unSelectedList=[];
+        for(var i=0; i<this.imgList.length;i++){
+          if(this.imgList[i].isSelected){
+            this.selectedLsit.push(this.imgList[i].img_md5);
+          }else{
+            this.unSelectedList.push(this.imgList[i].img_md5);
+          }
+        }
+      },
+      verifyComplete(){
+        console.log("hahahahha");
+        this.getSelectedList();
+        var params = new URLSearchParams();
+        params.append("taskid",this.taskId);
+        params.append("username",this.curUser);
+        params.append("checklist",this.unSelectedList);
+        params.append("nochecklist",this.selectedLsit);
+        params.append("clustername",this.verifyClassName);
+        this.$axios({
+          method:'post',
+          url:"/task/submitVerifyTask",
+          data:params
+        })
+        .then(res => {
+          if(res.data.code == 200){
+            this.getVerifyTask();
+          }
+        })
+        .catch(err =>{
+          console.log("verifyComplete,  error:"+err);
         })
       }
     },
