@@ -65,7 +65,8 @@ export default {
       hSelectTv:"全选",
       machineList:[],
       humanList:[],
-      selectList:[]
+      selectList:[],
+      noSelectList:[]
     }
   },
   methods:{
@@ -82,19 +83,22 @@ export default {
     },
     //获取某个列表选中的item
     getSelected(){
-      var selects=[];
+      this.selectList = [];
+      this.noSelectList = [];
       for(var i=0; i<this.machineList.length; i++){
         if(this.machineList[i].isSelected){
-          selects.push(this.machineList[i].img_md5);
+          this.selectList.push(this.machineList[i].img_md5);
+        }else{
+          this.noSelectList.push(this.machineList[i].img_md5);
         }
       }
       for(var i=0; i<this.humanList.length; i++){
         if(this.humanList[i].isSelected){
-          selects.push(this.humanList[i].img_md5);
+          this.selectList.push(this.humanList[i].img_md5);
+        }else{
+          this.noSelectList.push(this.humanList[i].img_md5);
         }
       }
-      this.selectList = selects;
-      return selects;
     },
     isAllSelected(type){
       var m=0;
@@ -145,12 +149,12 @@ export default {
       }
     },
     toVerification(){
-      var selectList = this.getSelected();
-      console.log("selectList length:"+selectList.length);
+      this.getSelected();
       var params = new URLSearchParams();
       params.append("taskid",this.taskId);
       params.append("clustername",this.labelName);
-      params.append("checklist",selectList);
+      params.append("checklist",this.selectList);
+      params.append("nochecklist",this.noSelectList);
       this.$axios({
         method:'post',
         url:"/task/recvEvaluateTaskSingleLabelInfo",
