@@ -299,13 +299,13 @@ export default {
       if(index != -1){
         if(i == 1){
           if(index+1 >= this.taskList.length){
-            this.showMsg("已是最后一个任务");
+            this.showMsg("已是最后一张图片");
           }else{
             row = this.taskList[index+1];
           }
         }else if(i == -1){
           if(index-1 < 0){
-            this.showMsg("已是第一个任务");
+            this.showMsg("已是第一张图片");
           }else{
             row = this.taskList[index-1];
           }

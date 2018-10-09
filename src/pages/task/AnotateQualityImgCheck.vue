@@ -2,7 +2,7 @@
   <div class="parent-layout">
     <div class="box">
         <div class="img-box">
-          <img v-bind:src="baseurl+curImg.MediaNetUrl" />
+          <img v-bind:src="baseurl+curDetailImg.media_url" />
           <button type="button" class="el-carousel__arrow el-carousel__arrow--left"
             @click="setCurrent(curImg,-1)">
             <i class="el-icon-arrow-left"></i>
@@ -15,10 +15,9 @@
         <div class='select-tag-box'>
           <span class="only-select-tag-box">
             <el-tag
-              :props="selectLabelsProps"
-              v-for="tag in curImg.tags"
-              :key="tag.name">
-              {{tag}}
+              v-for="tag in curDetailImg.tags"
+              :key="tag.cluster_name">
+              {{tag.cluster_name}}
             </el-tag>
           </span>
         </div>
@@ -26,8 +25,8 @@
       <el-table
         class="table-list"
         ref="singleTable"
+        :height=tableHeight
         :data="imgList"
-        height="500px"
         highlight-current-row
         @current-change="handleCurrentChange">
         <el-table-column
@@ -49,13 +48,25 @@
 export default {
   data () {
     return {
+      tableHeight: -100,
       baseurl:"http://10.5.11.127:8080/",
       taskId:-1,
       curImg:{},
+      curDetailImg:{},
       imgList:[]
     }
   },
   methods:{
+    showMsg(msg,msgType){
+      this.$message({
+            showClose: true,
+            message: msg,
+            type: msgType
+          });
+    },
+    getHeight(){
+      this.tableHeight = document.body.clientHeight;
+    },
     getSingleImgTaskList(){
       var params = new URLSearchParams();
       params.append('taskid', this.taskId);
@@ -67,7 +78,7 @@ export default {
         .then(res => {
           if(res.data.code == 200){
             this.imgList = res.data.data.picinfos;
-            this.curImg = this.imgList[0];
+            this.setCurrent(this.imgList[0],0);
           }else{
 
           }
@@ -78,27 +89,28 @@ export default {
     },
     setCurrent(row,i) {
       // this.onRowClick(row)
-      console.log("选择了 ： "+this.taskList.indexOf(row));
-      var index = this.taskList.indexOf(row);
+      console.log("选择了 ： "+this.imgList.indexOf(row));
+      var index = this.imgList.indexOf(row);
       if(index != -1){
         if(i == 1){
-          if(index+1 >= this.taskList.length){
-            this.showMsg("已是最后一个任务");
+          if(index+1 >= this.imgList.length){
+            this.showMsg("已是最后一张图片");
           }else{
-            row = this.taskList[index+1];
+            row = this.imgList[index+1];
           }
         }else if(i == -1){
           if(index-1 < 0){
-            this.showMsg("已是第一个任务");
+            this.showMsg("已是第一张图片");
           }else{
-            row = this.taskList[index-1];
+            row = this.imgList[index-1];
           }
         }
       }
       this.$refs.singleTable.setCurrentRow(row);
     },
     handleCurrentChange(val) {
-      this.curImg = this.requestForImgDetail(val.MediaMD5);
+      this.curImg = val;
+      this.curDetailImg = this.requestForImgDetail(val.MediaMD5);
     },
     requestForImgDetail(mediamd5){
       console.log("md5:"+mediamd5);
@@ -106,12 +118,12 @@ export default {
       params.append("mediamd5",mediamd5);
       this.$axios({
         method:'post',
-        url:"/task/",
+        url:"/label/getClusterFromEvaluateSinglePic",
         data:params
       })
       .then(res => {
         if(res.data.code == 200){
-          this.curEditTask = res.data.data;
+          this.curDetailImg = res.data.data;
         }
       })
       .catch(err =>{
@@ -122,6 +134,12 @@ export default {
   created(){
     this.taskId = this.$route.params.taskId;
     this.getSingleImgTaskList();
+  },
+  mounted: function () {
+    //原生获取屏幕高度
+    var orderHight = document.documentElement.clientHeight;
+    console.log("mounted: "+orderHight);
+    this.tableHeight = orderHight - 100;
   }
 }
 </script>
@@ -131,7 +149,7 @@ export default {
 }
 .box {
   float: left;
-  width: 65%;
+  width: 55%;
   overflow: hidden;
 }
 .img-box {
@@ -162,7 +180,11 @@ export default {
   height: 100px;
 }
 .table-list{
-  width: 30%;
+  width: 40%;
   float: right;
+  overflow: hidden;
+}
+.el-tag{
+  margin-right: 10px;
 }
 </style>
