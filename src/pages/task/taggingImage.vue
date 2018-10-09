@@ -369,23 +369,27 @@ export default {
           console.log("请求成功: getAnnotateTaskList: " + res.data.code);
           if(res.data.code == 200){
             this.taskId = res.data.data.taskid;
-            console.log("get  taskid:"+this.taskId);
             var tasks = res.data.data.taskinfo;
             this.taskList.splice(0,this.taskList.length);
-            for(var i=0; i<tasks.length;i++){
-              this.taskList.push({
-                'id':tasks[i].Id,
-                'media_url':tasks[i].MediaNetUrl,
-                'media_md5':tasks[i].MediaMD5,
-                'status':this.getTaskStatus(tasks[i].MediaAnnotatedState),
-                'mainCluster':tasks[i].MediaMasterCluster
-              })
+            if(tasks!= null){
+              for(var i=0; i<tasks.length;i++){
+                this.taskList.push({
+                  'id':tasks[i].Id,
+                  'media_url':tasks[i].MediaNetUrl,
+                  'media_md5':tasks[i].MediaMD5,
+                  'status':this.getTaskStatus(tasks[i].MediaAnnotatedState),
+                  'mainCluster':tasks[i].MediaMasterCluster
+                })
+              }
+              // this.curTask = JSON.parse(JSON.stringify(res.data.data));
+              // this.taskList = res.data.data.taskinfo;
+              console.log("请求成功: getAnnotateTaskList: " + this.taskList);
+              this.setCurrent(this.taskList[0],0);
+            }else{
+              console.log("哈哈哈哈哈哈");
+              this.curTask = [];
+              this.curEditTask = [];
             }
-            // this.curTask = JSON.parse(JSON.stringify(res.data.data));
-            // this.taskList = res.data.data.taskinfo;
-            console.log("请求成功: getAnnotateTaskList: " + this.taskList);
-            this.setCurrent(this.taskList[0],0);
-            console.log("请求成功: getAnnotateTaskList" + this.curTask);
             this.refreshTaskProgress();
           }else{
             showMsg("获取任务失败！","error")
