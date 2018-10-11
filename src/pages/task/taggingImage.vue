@@ -119,6 +119,7 @@
 
 <script>
 import User from '../../modules/UserModule.js';
+import Global from '../../common/global.vue';
 var user = User;
 export default {
   data() {
@@ -557,6 +558,8 @@ export default {
 
   created() {
     console.log("create==================");
+    this.baseurl = Global.BASE_URL;
+    console.log("create==================baseurl :"+this.baseurl);
     this.currentUser = user.methods.getUserName(); //获取当前登录的用户
     this.getLableList();
     this.getAnnotateTaskList();
