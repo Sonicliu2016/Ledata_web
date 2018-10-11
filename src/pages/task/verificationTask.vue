@@ -19,12 +19,13 @@
 </template>
 
 <script>
+  import Global from '../../common/global.vue';
   import User from '../../modules/UserModule.js';
   var user = User;
   export default {
     data(){
       return{
-        baserul:"http://10.5.11.127:8080/",
+        baserul:"",
         curUser:"",
         taskId:-1,
         verifyClassName:"",
@@ -105,6 +106,7 @@
       }
     },
     created(){
+      this.baseurl = Global.BASE_URL;
       this.curUser = user.methods.getUserName();
       this.getVerifyTask();
     }

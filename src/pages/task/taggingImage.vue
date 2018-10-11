@@ -124,7 +124,7 @@ var user = User;
 export default {
   data() {
     return {
-      baseurl:"http://10.5.11.127:8080/",
+      baseurl:"",
       currentUser:"",
       activeTabName:"first",
       taskProgress:"",

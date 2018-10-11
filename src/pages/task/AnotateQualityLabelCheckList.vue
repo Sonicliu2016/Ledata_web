@@ -54,10 +54,11 @@
   </div>
 </template>
 <script>
+import Global from '../../common/global.vue';
 export default {
   data () {
     return {
-      baseurl:"http://10.5.11.127:8080/",
+      baseurl:"",
       taskId:-1,
       labelName:"更多",
       labels:[],
@@ -225,6 +226,7 @@ export default {
 
   },
   created(){
+    this.baseurl = Global.BASE_URL;
     this.taskId = this.$route.params.taskId;
     console.log("taskID:"+this.taskId);
     this.getEvaluateTaskSingleLabelCluster();
