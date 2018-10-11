@@ -6,7 +6,7 @@
                     ref="upload" 
                     multiple 
                     name="files[]" 
-                    action="http://10.5.11.127:8080/uploadfiles" 
+                    :action="uploadUrl" 
                     :limit="limit" 
                     :on-success="uploadSuccess" 
                     :on-error="uploadError" 
@@ -41,7 +41,9 @@
 
 <script>
   import User from '../../modules/UserModule.js';
+  import Global from '../../common/global';
   var user = User;
+  var global = Global;
   export default {
     data(){
       return{
@@ -49,6 +51,7 @@
           {name:'标签任务'},
           {name:'验证任务'}
           ],
+        uploadUrl:'',
         userList:[],
         filesList:[], //选中要上传的图片
         waitUpLoadList:[],//等待上传的图片列表
@@ -126,12 +129,13 @@
     created(){
       this.userList = this.$parent.userList; //获取用户列表
       this.username = user.methods.getUserName();
+      this.uploadUrl = global.BASE_URL + 'uploadfiles';
       if(this.username == "admin"){
         this.isShowTask = true;
       }else{
         this.isShowTask = false;
       }
-      console.log("tasklist-->create-->userList:" + this.userList.length);
+      console.log("tasklist-->create-->userList:" + this.userList.length + "--->url:" + this.uploadUrl);
     },
     mounted(){
       
