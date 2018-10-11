@@ -9,7 +9,7 @@
       <el-col :span="4" v-for="(task, index) in imgList" :key="index" style="padding: 5px; ">
         <el-card :body-style="{ padding: '0px' }" >
           <div class="img-box" @click="toogle(task)">
-            <img v-bind:src="baserul+task.media_url" />
+            <img v-bind:src="baseurl+task.media_url" />
             <img class="flag" v-show="task.isSelected" src="../../assets/icon_jia_red.png">
           </div>
         </el-card>
@@ -25,7 +25,7 @@
   export default {
     data(){
       return{
-        baserul:"",
+        baseurl:"",
         curUser:"",
         taskId:-1,
         verifyClassName:"",
