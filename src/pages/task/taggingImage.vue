@@ -526,11 +526,12 @@ export default {
             // this.curTask.tags = JSON.parse(JSON.stringify(this.curEditTask.tags));
             this.getAnnotateTaskList();
           }else{
-            this.showMsg("网络错误，提交失败");
+            this.showMsg("网络错误，提交失败 code:"+res.data.code);
           }
         })
         .catch(err =>{
           console.log("requestForTaskDetail, taskId:"+taskId+" error:"+err);
+          this.showMsg("网络错误，提交失败 error:"+err);
         });
       }else{
         this.showMsg("还有"+this.filterTaskList(0).length+"张未标，提交失败");

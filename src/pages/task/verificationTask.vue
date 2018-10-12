@@ -35,6 +35,13 @@
       };
     },
     methods:{
+      showMsg(msg,msgType){
+        this.$message({
+              showClose: true,
+              message: msg,
+              type: msgType
+            });
+      },
       toogle(task){
         if(task.isSelected){
           task.isSelected = false;
@@ -98,9 +105,12 @@
         .then(res => {
           if(res.data.code == 200){
             this.getVerifyTask();
+          }else{
+            this.showMsg("请求失败，code:"+res.data.code);
           }
         })
         .catch(err =>{
+          this.showMsg("error:"+err);
           console.log("verifyComplete,  error:"+err);
         })
       }

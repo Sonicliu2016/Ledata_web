@@ -71,6 +71,13 @@ export default {
     }
   },
   methods:{
+    showMsg(msg,msgType){
+      this.$message({
+            showClose: true,
+            message: msg,
+            type: msgType
+          });
+    },
     itemClick(index) {
       this.labelName = this.labels[index].cluster_name;
       this.getEvaluateTaskSingleLabelInfo(this.labelName);
@@ -163,10 +170,13 @@ export default {
       })
       .then(res => {
         if(res.data.code == 200){
-
+          this.showMsg("验证暂存成功");
+        }else{
+          this.showMsg("验证暂存失败");
         }
       })
       .catch(err =>{
+        this.showMsg("验证暂存失败");
         console.log("toVerification,  error:"+err);
       })
     },
