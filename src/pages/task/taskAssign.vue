@@ -117,6 +117,7 @@
         var params = new URLSearchParams();
         params.append('assignusername', task);
         params.append('tasktype',this.taskType);//0为标注任务,1为验证任务
+        console.log("assignusername:" + task + "--->tasktype:" + this.taskType);
         this.$axios({
             method: 'post',
             url:this.getAllTagsUrl,
