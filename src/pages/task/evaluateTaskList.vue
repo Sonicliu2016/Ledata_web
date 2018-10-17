@@ -30,6 +30,13 @@ export default {
     }
   },
   methods:{
+    showMsg(msg,msgType){
+      this.$message({
+            showClose: true,
+            message: msg,
+            type: msgType
+          });
+    },
     backLast(){
       this.$router.go(-1);
     },
@@ -108,12 +115,15 @@ export default {
       .then(res => {
         if(res.data.code == 200){
           console.log("请求成功，重标");
+          this.showMsg("返回重标成功");
           this.getEvaluteTaskList();
         }else{
+          this.showMsg("返回重标失败，code:"+res.data.code);
           console.log("请求失败，重标 code"+res.data.code);
         }
       })
       .catch(err => {
+        this.showMsg("返回重标失败，error:"+err);
         console.log("relabelEvaluateTaskToAnnotate , error:" + err);
         // alert("服务器出现故障，请稍后再试！");
       });
@@ -129,12 +139,15 @@ export default {
       .then(res => {
         if(res.data.code == 200){
           console.log("请求成功，保存");
+          this.showMsg("保存成功");
           this.getEvaluteTaskList();
         }else{
+          this.showMsg("保存失败，code:"+res.data.code);
           console.log("请求失败，保存 code"+res.data.code);
         }
       })
       .catch(err => {
+        this.showMsg("error:"+err);
         console.log("submitEvaluateTask , error:" + err);
         // alert("服务器出现故障，请稍后再试！");
       });
