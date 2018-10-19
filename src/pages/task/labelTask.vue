@@ -1,7 +1,7 @@
 <template>
  <div>
   <el-row  :gutter="20">
-    <el-col :span="6" v-for="(task, index) in tasksList" :key="index" style="padding: 5px;">
+    <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="6" v-for="(task, index) in tasksList" :key="index" style="padding: 5px;">
       <el-card>
         <div class="task">
           <span>{{task.taskname}}</span>
@@ -53,7 +53,7 @@
 
    },
    created(){
-     
+
    },
    mounted(){
      this.setTaskList();
