@@ -158,7 +158,7 @@ export default {
     associateLabels: function(nw,old){
       console.log("watch associateLabels new : "+nw+" old: "+old);
       if(old != nw)
-        this.now = -1;
+        this.nowInAssociatesnow = -1;
     }
   },
   methods: {
@@ -277,9 +277,10 @@ export default {
     },
     getAssociateList(text){
       this.associateLabels=[];
+      this.nowInAssociatesnow = -1;
       for(var i=0; i<this.allLabelsArray.length;i++){
         var label = this.allLabelsArray[i];
-        if(text!="" && label.indexOf(text)!=-1){
+        if(text!="" && label.toLowerCase().indexOf(text.toLowerCase())!=-1){
           this.associateLabels.push(label);
         }
       }
@@ -543,17 +544,19 @@ export default {
     down: function(){
       console.log("按下了 keycode ： down");
       this.nowInAssociates++;
-      if(this.nowInAssociates >= this.associateLabels.length)
+      if(this.nowInAssociates >= this.associateLabels.length){
         this.nowInAssociates = -1;
-      // this.inpt = this.lists[this.now];
+      }
+      this.searchTv = this.associateLabels[this.nowInAssociates];
     },
     // ↑ 选择值，控制 li 的 .bgc
     up: function(){
       console.log("按下了 keycode ： up");
       this.nowInAssociates--;
-      if(this.nowInAssociates < -1)
+      if(this.nowInAssociates < -1){
         this.nowInAssociates = this.associateLabels.length - 1;
-      // this.inpt = this.lists[this.now];
+      }
+      this.searchTv = this.associateLabels[this.nowInAssociates];
     }
   },
 
