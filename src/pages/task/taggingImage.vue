@@ -158,7 +158,7 @@ export default {
     associateLabels: function(nw,old){
       console.log("watch associateLabels new : "+nw+" old: "+old);
       if(old != nw)
-        this.nowInAssociatesnow = -1;
+        this.nowInAssociates = -1;
     }
   },
   methods: {
@@ -277,7 +277,6 @@ export default {
     },
     getAssociateList(text){
       this.associateLabels=[];
-      this.nowInAssociatesnow = -1;
       for(var i=0; i<this.allLabelsArray.length;i++){
         var label = this.allLabelsArray[i];
         if(text!="" && label.toLowerCase().indexOf(text.toLowerCase())!=-1){
