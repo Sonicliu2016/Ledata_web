@@ -43,6 +43,8 @@
 </template>
 
 <script>
+ import Global from '../../common/global'; 
+ var global = Global;
  export default {
    data () {
      return {
@@ -50,6 +52,7 @@
        firstNum:'',
        secondNum:'',
        searchTag:'',
+       file_urls:[],
      }
    },
    methods: {
@@ -61,12 +64,22 @@
            method: 'post',
            url:this.downloadAllFilesUrl,
            data:params,
-           responseType: 'blob' // 表明返回服务器返回的数据类型
+          //  responseType: 'blob' // 表明返回服务器返回的数据类型
         })
        .then(res=>{
          console.log("请求成功:" + res.data.code);
          if(res.data.code == 200){
-           this.download(res);
+           this.file_urls = res.data.data.files_url;
+           console.log("file_urls-->" + this.file_urls);
+          //  this.download(res);
+          if(this.file_urls.length > 0){
+            for(var i = 0;i<this.file_urls.length;i++){
+              this.downFile(global.BASE_URL + this.file_urls[i].img_url);
+              this.downFile(global.BASE_URL + this.file_urls[i].xml_url);
+            }
+          }else{
+            this.$message.error('没有可下载的照片！');
+          }
          }
        })
        .catch(err=>{
@@ -108,23 +121,31 @@
          
        }
      },
-     // 下载文件
-     download (data) {
-       if (!data) {
-          return;
-       }
-       let blob = new Blob([data]);
-       let filename = '我的照片.rar';
-       let url = window.URL.createObjectURL(blob);
-       let aTag = document.createElement('a');
-       aTag.download = fileName;
-       aTag.style.display = 'none';
-       aTag.href = url;
-       document.body.appendChild(aTag);
-       aTag.click();
-       URL.revokeObjectURL(url);
-       document.body.removeChild(aTag)
-    },
+     downFile(imgsrc){
+        var a = document.createElement("a"), //创建a标签
+        e = document.createEvent("MouseEvents"); //创建鼠标事件对象
+        e.initEvent("click", false, false); //初始化事件对象
+        a.href = imgsrc;  //设置下载地址
+        a.download = "";  //设置下载文件名
+        a.dispatchEvent(e); //给指定的元素，执行事件click事件
+     },
+    //  // 下载文件
+    //  download (data) {
+    //    if (!data) {
+    //       return;
+    //    }
+    //    let blob = new Blob([data]);
+    //    let filename = '我的照片.rar';
+    //    let url = window.URL.createObjectURL(blob);
+    //    let aTag = document.createElement('a');
+    //    aTag.download = fileName;
+    //    aTag.style.display = 'none';
+    //    aTag.href = url;
+    //    document.body.appendChild(aTag);
+    //    aTag.click();
+    //    URL.revokeObjectURL(url);
+    //    document.body.removeChild(aTag)
+    // },
     //判断字符串是否为空
     strIsNull(str){
       return (str.length === 0 || !str.trim()); 

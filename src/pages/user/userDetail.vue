@@ -55,14 +55,13 @@
              var label_uncomplete = 0;
              var verify_completed = 0;
              var verify_uncomplete = 0;
-             console.log("LabelTasks:" + LabelTasks.length);
              for(var i = 0;i<LabelTasks.length;i++){
                label_completed += LabelTasks[i].TaskCompeteCount;
                label_uncomplete += LabelTasks[i].TaskCount - LabelTasks[i].TaskCompeteCount;
              }
              for(var j = 0;j<VerifiTasks.length;j++){
-               verify_completed += VerifiTasks[i].TaskCompeteCount;
-               verify_uncomplete += VerifiTasks[i].TaskCount - VerifiTasks[i].TaskCompeteCount;
+               verify_completed += VerifiTasks[j].TaskCompeteCount;
+               verify_uncomplete += VerifiTasks[j].TaskCount - VerifiTasks[j].TaskCompeteCount;
              }
              this.userDetails.push({'username':taskowner,'labelTaskCompleted':label_completed,'labelTaskUndone':label_uncomplete,'verifyTaskCompleted':verify_completed,'verifyTaskUndone':verify_uncomplete});
            }else{
