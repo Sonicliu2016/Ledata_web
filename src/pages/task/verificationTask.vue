@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="title">请标记下列不是{{verifyClassName}}的图片</h2>
+    <h2 class="title">请标记下列是{{verifyClassName}}的图片</h2>
 
     <div class="verify-complete">
       <el-button type="success" @click="verifyComplete()">验证完成，换一批</el-button>
@@ -10,7 +10,7 @@
         <el-card :body-style="{ padding: '0px' }" >
           <div class="img-box" @click="toogle(task)">
             <img v-bind:src="baseurl+task.media_url" />
-            <img class="flag" v-show="task.isSelected" src="../../assets/icon_jia_red.png">
+            <img class="flag" v-show="task.isSelected" src="../../assets/icon_selected.png">
           </div>
         </el-card>
       </el-col>
@@ -28,7 +28,7 @@
         baseurl:"",
         curUser:"",
         taskId:-1,
-        verifyClassName:"",
+        verifyClassName:"xx",
         selectedLsit:[],
         unSelectedList:[],
         imgList:[]
