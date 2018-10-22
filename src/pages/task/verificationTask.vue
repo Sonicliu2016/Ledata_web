@@ -94,8 +94,8 @@
         var params = new URLSearchParams();
         params.append("taskid",this.taskId);
         params.append("username",this.curUser);
-        params.append("checklist",this.unSelectedList);
-        params.append("nochecklist",this.selectedLsit);
+        params.append("checklist",this.selectedLsit);
+        params.append("nochecklist",this.unSelectedList);
         params.append("clustername",this.verifyClassName);
         this.$axios({
           method:'post',
