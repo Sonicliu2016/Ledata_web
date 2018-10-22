@@ -218,7 +218,7 @@
           var params = new URLSearchParams();
           params.append('username', this.addUserForm.userName);
           params.append('userpass', this.addUserForm.passWord);
-          params.append('UserRole', this.role);
+          params.append('UserRole', this.addUserForm.role);
           this.$axios({
               method: 'post',
               url:this.addNewUserUrl,
