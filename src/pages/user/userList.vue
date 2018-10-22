@@ -23,7 +23,7 @@
         <el-table-column
           align="center"
           label="账号"
-          width="300">
+          width="100">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.username }}</span>
           </template>
@@ -31,16 +31,25 @@
 
         <el-table-column
           align="center"
+          width="100"
           label="密码">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.password }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="角色"
+          width="100">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px">{{scope.row.role}}</span>
           </template>
         </el-table-column>
 
         <el-table-column
           label="操作"
           align="center"
-          width="800">
+          width="500">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editUserDialog(scope.$index, scope.row)">修改用户密码</el-button>
             <el-button @click="deleteUserDialog(scope.row)" type="text" size="small" v-show="scope.row.showDelete">删除该用户</el-button>
@@ -57,6 +66,10 @@
         <el-form-item label="密码:" :label-width="formLabelWidth">
           <el-input v-model="addUserForm.passWord" auto-complete="off"></el-input>
         </el-form-item>
+        <template>
+          <el-radio v-model="addUserForm.role" label="0">标注员</el-radio>
+          <el-radio v-model="addUserForm.role" label="1">管理员</el-radio>
+        </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="showAddUserDialog = false">取 消</el-button>
@@ -107,6 +120,7 @@
         addUserForm:{
           userName:'',
           passWord:'',
+          role:'0'//添加用户默认选项
         },
         editUserForm:{
           userName:'',
@@ -139,7 +153,7 @@
       //修改用户密码
       editUser(){
         var params = new URLSearchParams();
-        params.append('username', this.editUserForm.username); 
+        params.append('username', this.editUserForm.username);
         params.append('oldpass', this.editUserForm.oldpass);
         params.append('newpass', this.editUserForm.newpass);
         this.$axios({
@@ -165,7 +179,7 @@
       },
       deleteUser(){
         var params = new URLSearchParams();
-        params.append('requestUserName', 'admin'); 
+        params.append('requestUserName', 'admin');
         params.append('deleteUserName', this.deleteUsername);
         this.$axios({
             method: 'post',
@@ -200,11 +214,11 @@
         }else{
           this.addUserForm.userName = this.addUserForm.userName.replace(/\s+/g, "");
           this.addUserForm.passWord = this.addUserForm.passWord.replace(/\s+/g, "");
-          console.log("添加新用户:" + this.addUserForm.userName + "--->" + this.addUserForm.passWord);
+          console.log("添加新用户:" + this.addUserForm.userName + "--->" + this.addUserForm.passWord+ "--->" + this.addUserForm.role);
           var params = new URLSearchParams();
-          params.append('username', this.addUserForm.userName); 
+          params.append('username', this.addUserForm.userName);
           params.append('userpass', this.addUserForm.passWord);
-          params.append('permissions', 0);
+          params.append('UserRole', this.role);
           this.$axios({
               method: 'post',
               url:this.addNewUserUrl,
@@ -218,6 +232,7 @@
               this.showAddUserDialog = false;
               this.addUserForm.userName = '';
               this.addUserForm.passWord = '';
+              this.addUserForm.role = 0;
             }else{
               this.$message.error('该用户已存在！');
             }
@@ -230,7 +245,7 @@
       },
       //判断字符串是否为空
       strIsNull(str){
-        return (str.length === 0 || !str.trim()); 
+        return (str.length === 0 || !str.trim());
       },
       //去掉字符串中的空格符
       trim(str){
@@ -270,7 +285,7 @@
     min-height: 600px;
     border-spacing: 0;
     border-collapse:separate;/* 如果值为collapse，则element表格下方会出现滚动条*/
-  } 
+  }
 
   .el-row{
     padding: 15px;

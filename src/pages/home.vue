@@ -20,7 +20,7 @@ export default {
     getUserList(){
       console.log("home--->收到子类请求:");
       var params = new URLSearchParams();
-      params.append('username', 'admin'); 
+      params.append('username', 'admin');
       params.append('page', 0);
       params.append('pageSize', 100);
       this.$axios({
@@ -40,7 +40,9 @@ export default {
               'createtime':userinfo[i].Created,
               'username':userinfo[i].UserName,
               'password':userinfo[i].UserPass,
-              'showDelete':userinfo[i].UserName == "admin" ? false:true,
+              'role':userinfo[i].UserRole==0 ? '标注员':'管理员',
+              'showDelete':userinfo[i].UserRole == 0 ? false:true,
+              // 'showDelete':userinfo[i].UserName == "admin" ? false:true,
             });
           }
           //保存所有用户信息
