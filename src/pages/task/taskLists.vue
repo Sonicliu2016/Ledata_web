@@ -2,19 +2,19 @@
   <div>
     <el-container>
       <el-header>
-        <el-upload class="upload-demo" 
-                    ref="upload" 
-                    multiple 
-                    name="files[]" 
-                    :action="uploadUrl" 
-                    :limit="limit" 
-                    :on-success="uploadSuccess" 
-                    :on-error="uploadError" 
-                    :on-progress="uploadProgress" 
-                    :file-list="filesList" 
-                    :on-change="changeFile" 
-                    :before-upload="beforeUpload" 
-                    :on-exceed="onExceed" 
+        <el-upload class="upload-demo"
+                    ref="upload"
+                    multiple
+                    name="files[]"
+                    :action="uploadUrl"
+                    :limit="limit"
+                    :on-success="uploadSuccess"
+                    :on-error="uploadError"
+                    :on-progress="uploadProgress"
+                    :file-list="filesList"
+                    :on-change="changeFile"
+                    :before-upload="beforeUpload"
+                    :on-exceed="onExceed"
                     :show-file-list="false" >
           <el-button slot="trigger" size="medium" type="primary">上传图片</el-button>
         </el-upload>
@@ -130,7 +130,7 @@
       this.userList = this.$parent.userList; //获取用户列表
       this.username = user.methods.getUserName();
       this.uploadUrl = global.BASE_URL + 'uploadfiles';
-      if(this.username == "admin"){
+      if(user.methods.isAdmin()){
         this.isShowTask = true;
       }else{
         this.isShowTask = false;
@@ -138,7 +138,7 @@
       console.log("tasklist-->create-->userList:" + this.userList.length + "--->url:" + this.uploadUrl);
     },
     mounted(){
-      
+
     },
   }
 </script>

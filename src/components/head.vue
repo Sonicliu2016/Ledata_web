@@ -119,7 +119,7 @@
    },
    created(){
      this.username = user.methods.getUserName();
-     if(this.username == "admin"){
+     if(user.methods.isAdmin()){
        this.isAdmin = true;
      }else{
        this.isAdmin = false;

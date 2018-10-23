@@ -335,9 +335,7 @@ export default {
       this.$axios
         .post(
           "label/getallcluster",
-          {
-            // username: 'admin'
-          },
+          {},
           {
             //跨域请求配置参数
             headers: {

@@ -72,6 +72,7 @@
                 // localStorage.setItem("current_user",this.ruleForm.username);
                 // localStorage.setItem("currentUser_token",user_token);
                 user.methods.setUserName(this.ruleForm.username);
+                user.methods.setUserRole(res.data.data.UserRole);
                 this.$router.push({
                   name:'home'
                 });
@@ -82,14 +83,14 @@
             .catch(err=>{
               console.log("error:" + err);
               alert("服务器出现故障，请稍后再试！");
-            }) 
+            })
          }
        });
-       
+
      }
    },
    components: {
-     
+
    }
  }
 </script>
@@ -127,7 +128,7 @@
         sans-serif;
     font-weight: 600;
   }
- 
+
   .info > .img{
     padding-bottom: 3px;
   }

@@ -120,7 +120,7 @@
         addUserForm:{
           userName:'',
           passWord:'',
-          role:'0'//添加用户默认选项
+          role:'0' //添加用户默认选项
         },
         editUserForm:{
           userName:'',
@@ -179,7 +179,7 @@
       },
       deleteUser(){
         var params = new URLSearchParams();
-        params.append('requestUserName', 'admin');
+        params.append('requestUserName', this.$parent.curUserName);
         params.append('deleteUserName', this.deleteUsername);
         this.$axios({
             method: 'post',
@@ -218,7 +218,7 @@
           var params = new URLSearchParams();
           params.append('username', this.addUserForm.userName);
           params.append('userpass', this.addUserForm.passWord);
-          params.append('UserRole', this.addUserForm.role);
+          params.append('userrole', this.addUserForm.role);
           this.$axios({
               method: 'post',
               url:this.addNewUserUrl,
@@ -232,7 +232,7 @@
               this.showAddUserDialog = false;
               this.addUserForm.userName = '';
               this.addUserForm.passWord = '';
-              this.addUserForm.role = 0;
+              this.addUserForm.role = '0';
             }else{
               this.$message.error('该用户已存在！');
             }
