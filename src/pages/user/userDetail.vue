@@ -8,13 +8,13 @@
           </div>
           <div>
             <span class="task-title">标签任务：</span>
-            <p>已完成 <span style="color:#409EFF">{{task.labelTaskCompleted}}</span>张</p>
-            <p>未完成 <span style="color:#f00">{{task.labelTaskUndone}}</span>张</p>
+            <!-- <p>已完成 <span style="color:#409EFF">{{task.labelTaskCompleted}}</span>张</p> -->
+            <p>进行中 <span style="color:#f00">{{task.labelTaskUndone}}</span>张</p>
             <!-- <div>{{'已完成 ' + task.labelTaskCompleted + '张'}}</div>
             <div>{{'未完成 ' + task.labelTaskUndone + '张'}}</div> -->
             <span class="task-title">验证任务：</span>
-            <p>已完成 <span style="color:#409EFF">{{task.verifyTaskCompleted}}</span>张</p>
-            <p>未完成 <span style="color:#f00">{{task.verifyTaskUndone}}</span>张</p>
+            <!-- <p>已完成 <span style="color:#409EFF">{{task.verifyTaskCompleted}}</span>张</p> -->
+            <p>进行中 <span style="color:#f00">{{task.verifyTaskUndone}}</span>张</p>
           </div>
         </el-card>
       </el-col>

@@ -90,6 +90,7 @@
                 {name:'verificationTask',menuName:'验证任务'}
               ]
         },
+        {name:'helpDoc',menuName:'帮助',hasChild:false}
       ],
     };
    },
@@ -125,6 +126,7 @@
        this.isAdmin = false;
        this.deleteFromList(this.navList,'用户管理');
        this.deleteFromList(this.navList,'用户任务详情');
+       this.deleteFromList(this.navList,'下载管理');
       //  this.navList.shift();
      }
    },
