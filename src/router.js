@@ -16,7 +16,6 @@ import AnotateQualityImgCheck from './pages/task/AnotateQualityImgCheck.vue'
 import DownloadManager from './pages/task/downloadManager.vue';
 import LabelTask from './pages/task/labelTask.vue';
 import VerifyTask from './pages/task/verifyTask.vue';
-import HelpDoc from './pages/help/helpDoc.vue';
 import UserDetail from './pages/user/userDetail.vue';
 import UnrecognizedPage from './pages/task/unrecognizedPage.vue';
 import User from './modules/UserModule.js';
@@ -54,7 +53,6 @@ const routes = [
       {name:'downloadManager',path:'/downloadManager',component:DownloadManager},
       {name:'anotateQualityLabelCheckList',path:'/anotateQualityLabelCheckList',component:AnotateQualityLabelCheckList},
       {name:'anotateQualityImgCheck',path:'/anotateQualityImgCheck',component:AnotateQualityImgCheck},
-      {name:'helpDoc',path:'/helpDoc',component:HelpDoc},
     ]
   },
   // 404页面(当输入地址错误时，显示404页面)
