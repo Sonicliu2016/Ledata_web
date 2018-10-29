@@ -11,6 +11,8 @@ import App from './App.vue';
 import Global from './common/global.vue'
 import router from './router'
 import store from './store/store'
+import HelpDoc from './pages/help';
+Vue.use(HelpDoc)
 
 //给Vue原型挂载一个属性
 Vue.prototype.global=Global;

@@ -1,7 +1,7 @@
  export default {
    data () {
      return {
-       
+
      }
    },
    methods: {
@@ -15,8 +15,21 @@
      removeUser(){
        localStorage.removeItem("current_user");
      },
+     setUserRole(role){
+      localStorage.setItem("is_admin",role);
+     },
+     getUserRole(){
+      return localStorage.getItem("is_admin");
+     },
+     isAdmin(){
+       if(this.getUserRole() == 0){
+         return false;
+       }else{
+         return true;
+       }
+     },
      //将数组转成json存储
-     storeUsers(users){ 
+     storeUsers(users){
        sessionStorage.setItem("users",window.JSON.stringify(users));
      },
      getAllUsers(){

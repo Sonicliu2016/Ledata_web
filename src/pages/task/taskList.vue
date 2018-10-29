@@ -3,19 +3,19 @@
     <el-container>
       <el-header>
         <!--  -->
-        <el-upload class="upload-demo" 
-                    ref="upload" 
-                    multiple 
-                    name="files[]" 
-                    action="uploadfiles" 
-                    :limit="limit" 
-                    :on-success="uploadSuccess" 
-                    :on-error="uploadError" 
-                    :on-progress="uploadProgress" 
-                    :file-list="filesList" 
-                    :on-change="changeFile" 
-                    :before-upload="beforeUpload" 
-                    :on-exceed="onExceed" 
+        <el-upload class="upload-demo"
+                    ref="upload"
+                    multiple
+                    name="files[]"
+                    action="uploadfiles"
+                    :limit="limit"
+                    :on-success="uploadSuccess"
+                    :on-error="uploadError"
+                    :on-progress="uploadProgress"
+                    :file-list="filesList"
+                    :on-change="changeFile"
+                    :before-upload="beforeUpload"
+                    :on-exceed="onExceed"
                     :show-file-list="false" >
           <el-button slot="trigger" size="medium" type="primary">上传图片</el-button>
         </el-upload>
@@ -221,7 +221,7 @@
       this.$store.state.navIndex = '2';
       this.userList = this.$parent.userList;
       this.username = user.methods.getUserName();
-      if(this.username == "admin"){
+      if(user.methods.isAdmin()){
         this.isShowTask = true;
       }else{
         this.isShowTask = false;

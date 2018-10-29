@@ -61,6 +61,7 @@
             <el-dropdown-menu slot="dropdown">
               <!-- <el-dropdown-item command="usercenter">个人中心</el-dropdown-item> -->
               <el-dropdown-item command="logout">注销登录</el-dropdown-item>
+              <el-dropdown-item command="helpDoc">使用指南</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -89,7 +90,7 @@
                 {name:'taggingImg',menuName:'标注任务'},
                 {name:'verificationTask',menuName:'验证任务'}
               ]
-        },
+        }
       ],
     };
    },
@@ -101,6 +102,9 @@
           this.$router.push({
                   name:'login'
                 });
+        }else if(command == "helpDoc"){
+          let url = 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf';
+          this.$showPDF(url);
         }
       },
       getNavIndex(){
@@ -119,12 +123,13 @@
    },
    created(){
      this.username = user.methods.getUserName();
-     if(this.username == "admin"){
+     if(user.methods.isAdmin()){
        this.isAdmin = true;
      }else{
        this.isAdmin = false;
        this.deleteFromList(this.navList,'用户管理');
        this.deleteFromList(this.navList,'用户任务详情');
+       this.deleteFromList(this.navList,'下载管理');
       //  this.navList.shift();
      }
    },

@@ -13,6 +13,7 @@ export default {
     return {
       getAllUserUrl:'user/getalluser',
       userList: [],
+      curUserName:""
     };
   },
   methods: {
@@ -41,7 +42,7 @@ export default {
               'username':userinfo[i].UserName,
               'password':userinfo[i].UserPass,
               'role':userinfo[i].UserRole==0 ? '标注员':'管理员',
-              'showDelete':userinfo[i].UserRole == 0 ? false:true,
+              'showDelete':this.curUserName == userinfo[i].UserName ? false:true,
               // 'showDelete':userinfo[i].UserName == "admin" ? false:true,
             });
           }
@@ -58,6 +59,7 @@ export default {
     },
   },
   created(){
+    this.curUserName = user.methods.getUserName();
     this.getUserList();
   },
   watch:{
