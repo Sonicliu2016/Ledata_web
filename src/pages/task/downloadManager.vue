@@ -2,7 +2,7 @@
   <div class="content">
     <el-row>
       <div class="content1 bg-purple-dark">
-        <el-button type="primary" @click="downloadAllFiles">下载全部照片</el-button>
+        <el-button type="primary" @click="downZipFiles">下载全部照片</el-button>
       </div>
     </el-row>
 
@@ -49,13 +49,42 @@
    data () {
      return {
        downloadAllFilesUrl:'downloadallfiles',
+       downloadZipUrl:'downloadallzip',
        firstNum:'',
        secondNum:'',
        searchTag:'',
        file_urls:[],
+       zips_url:[],
      }
    },
    methods: {
+     downZipFiles(){
+        var params = new URLSearchParams();
+        this.$axios({
+           method: 'post',
+           url:this.downloadZipUrl,
+           data:params,
+        })
+        .then(res=>{
+         console.log("请求成功:" + res.data.code);
+         if(res.data.code == 200){
+           this.zips_url = res.data.data.zips_url;
+           console.log("zips_url-->" + this.zips_url);
+          //  this.download(res);
+          if(this.zips_url.length > 0){
+            for(var i = 0;i<this.zips_url.length;i++){
+              this.downFile(global.BASE_URL + this.zips_url[i].zip_url);
+            }
+          }else{
+            this.$message.error('没有可下载的照片！');
+          }
+         }
+       })
+       .catch(err=>{
+         console.log("error:" + err);
+         alert("服务器出现故障，请稍后再试！");
+       })
+     },
      //下载所有照片的压缩文件
      downloadAllFiles(){
        var params = new URLSearchParams();
@@ -129,23 +158,7 @@
         a.download = "";  //设置下载文件名
         a.dispatchEvent(e); //给指定的元素，执行事件click事件
      },
-    //  // 下载文件
-    //  download (data) {
-    //    if (!data) {
-    //       return;
-    //    }
-    //    let blob = new Blob([data]);
-    //    let filename = '我的照片.rar';
-    //    let url = window.URL.createObjectURL(blob);
-    //    let aTag = document.createElement('a');
-    //    aTag.download = fileName;
-    //    aTag.style.display = 'none';
-    //    aTag.href = url;
-    //    document.body.appendChild(aTag);
-    //    aTag.click();
-    //    URL.revokeObjectURL(url);
-    //    document.body.removeChild(aTag)
-    // },
+    
     //判断字符串是否为空
     strIsNull(str){
       return (str.length === 0 || !str.trim()); 
