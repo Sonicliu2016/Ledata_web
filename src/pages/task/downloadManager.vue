@@ -48,10 +48,10 @@
  export default {
    data () {
      return {
-       downloadAllFilesUrl:'downloadallfiles',
-       downloadZipUrl:'downloadallzip',
+       downloadAllFilesUrl:'file/downloadallfiles',
+       downloadZipUrl:'file/downloadallzip',
        //通知图片开始压缩
-       nitifyZipFiles:'notifyzipallfile',
+       nitifyZipFiles:'file/notifyzipallfile',
        firstNum:'',
        secondNum:'',
        searchTag:'',

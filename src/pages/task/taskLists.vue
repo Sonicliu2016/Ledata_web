@@ -129,7 +129,7 @@
     created(){
       this.userList = this.$parent.userList; //获取用户列表
       this.username = user.methods.getUserName();
-      this.uploadUrl = global.BASE_URL + 'uploadfiles';
+      this.uploadUrl = global.BASE_URL + '/file/uploadfiles';
       if(user.methods.isAdmin()){
         this.isShowTask = true;
       }else{
