@@ -2,7 +2,7 @@
   <div class="content">
     <el-row>
       <div class="content1 bg-purple-dark">
-        <el-button type="primary" @click="downZipFiles">下载全部照片</el-button>
+        <el-button type="primary" @click="notifyZipFiles">下载全部照片</el-button>
       </div>
     </el-row>
 
@@ -50,6 +50,8 @@
      return {
        downloadAllFilesUrl:'downloadallfiles',
        downloadZipUrl:'downloadallzip',
+       //通知图片开始压缩
+       nitifyZipFiles:'notifyzipallfile',
        firstNum:'',
        secondNum:'',
        searchTag:'',
@@ -58,6 +60,25 @@
      }
    },
    methods: {
+     notifyZipFiles(){
+       var params = new URLSearchParams();
+       this.$axios({
+           method: 'post',
+           url:this.nitifyZipFiles,
+           data:params,
+        })
+        .then(res=>{
+         console.log("请求成功:" + res.data.code);
+         if(res.data.code == 200){
+           //延迟2s去获取压缩结果
+           setTimeout(this.downZipFiles, 2000);
+         }
+       })
+       .catch(err=>{
+         console.log("error:" + err);
+         alert("服务器出现故障，请稍后再试！");
+       })
+     },
      downZipFiles(){
         var params = new URLSearchParams();
         this.$axios({
