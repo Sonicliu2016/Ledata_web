@@ -78,18 +78,23 @@
    data () {
      return {
       username:'',
-      activeIndex: '2',
+      activeIndex: 'userList',
       isAdmin:true,
       navList:[
         {name:'userList',menuName:'用户管理',hasChild:false},
         {name:'taskList',menuName:'任务管理',hasChild:false},
         {name:'userDetail',menuName:'用户任务详情',hasChild:false},
-        {name:'downloadManager',menuName:'下载管理',hasChild:false},
+        {name:'downloadManager',menuName:'数据管理',hasChild:true,
+          children:[
+            {name:'downloadManager',menuName:'下载'},
+            {name:'dataSet',menuName:'数据集'}
+          ]
+        },
         {name:'taggingImg',menuName:'我的任务',hasChild:true,
-              children:[
-                {name:'taggingImg',menuName:'标注任务'},
-                {name:'verificationTask',menuName:'验证任务'}
-              ]
+          children:[
+            {name:'taggingImg',menuName:'标注任务'},
+            {name:'verificationTask',menuName:'验证任务'}
+          ]
         }
       ],
     };

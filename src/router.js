@@ -13,7 +13,9 @@ import TaggingImage from './pages/task/taggingImage.vue';
 import VerificationTask from './pages/task/verificationTask.vue';
 import AnotateQualityLabelCheckList from './pages/task/AnotateQualityLabelCheckList.vue';
 import AnotateQualityImgCheck from './pages/task/AnotateQualityImgCheck.vue'
-import DownloadManager from './pages/task/downloadManager.vue';
+import DownloadManager from './pages/dataSet/downloadManager.vue';
+import DataSet from './pages/dataSet/dataSet.vue';
+import ClassifyImages from './pages/dataSet/classifyImages.vue';
 import LabelTask from './pages/task/labelTask.vue';
 import VerifyTask from './pages/task/verifyTask.vue';
 import UserDetail from './pages/user/userDetail.vue';
@@ -51,6 +53,8 @@ const routes = [
       {name:'verificationTask',path:'/verificationTask',component:VerificationTask},
       {name:'userDetail',path:'/userDetail',component:UserDetail},
       {name:'downloadManager',path:'/downloadManager',component:DownloadManager},
+      {name:"dataSet",path:'/dataSet',component:DataSet},
+      {name:"classifyImages",path:'/classifyImages',component:ClassifyImages},
       {name:'anotateQualityLabelCheckList',path:'/anotateQualityLabelCheckList',component:AnotateQualityLabelCheckList},
       {name:'anotateQualityImgCheck',path:'/anotateQualityImgCheck',component:AnotateQualityImgCheck},
     ]

@@ -12,6 +12,9 @@ import Global from './common/global.vue'
 import router from './router'
 import store from './store/store'
 import HelpDoc from './pages/help';
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
+Vue.use(iView);
 Vue.use(HelpDoc)
 
 //给Vue原型挂载一个属性
