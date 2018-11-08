@@ -58,7 +58,7 @@
         showUploadProgress:false,
         uploadPro:0, //上传的进度
         totalCount:0, //要上传的总数量
-        limit:1000, //单次上传限制图片张数
+        limit:2000, //单次上传限制图片张数
         username:'',
         isShowTask:true, //如果是admin就展示任务列表，如果是普通用户，就不展示
       }
@@ -90,6 +90,8 @@
       beforeUpload(file){
         const isJPG = file.type === 'image/jpeg';
         const isPNG = file.type === 'image/png';
+        this.totalCount = 0;
+        this.uploadPro = 0;
         if (isJPG || isPNG) {
           if(this.filesList.length > 0){
             this.waitUpLoadList = [].concat(this.filesList);
@@ -97,7 +99,7 @@
             this.showUploadProgress = true;
           }
         }else{
-            this.$message.error('上传图片只能是JPG或者PNG格式!');
+            this.$message.error('上传图片只能是JPG或者PNG格式!' + file.name);
         }
         return isJPG || isPNG;
       },
