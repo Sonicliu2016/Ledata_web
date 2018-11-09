@@ -5,7 +5,7 @@
         <el-upload class="upload-demo"
                     ref="upload"
                     multiple
-                    name="files[]"
+                    name="imgs"
                     :action="uploadUrl"
                     :limit="limit"
                     :on-success="uploadSuccess"
@@ -131,7 +131,7 @@
     created(){
       this.userList = this.$parent.userList; //获取用户列表
       this.username = user.methods.getUserName();
-      this.uploadUrl = global.BASE_URL + '/file/uploadfiles';
+      this.uploadUrl = global.BASE_URL + 'file/uploadImgs';
       if(user.methods.isAdmin()){
         this.isShowTask = true;
       }else{
