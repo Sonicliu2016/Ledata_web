@@ -75,6 +75,7 @@
         if(this.waitUpLoadList.length == 0){
           this.showUploadProgress = false;
           this.$message({message: '图片上传完毕!', type: 'success'});
+          setTimeout("window.location.reload()",3000);
         }
       },
       uploadError(err, file, fileList){
