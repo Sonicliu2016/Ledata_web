@@ -89,7 +89,7 @@
               <i class="el-input__icon el-icon-search"></i>
             </span>
             <input v-model="searchTv" type="text" v-on:input ="searchAssociate" autocomplete="off"
-              @keyup="sous($event)" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(1)"
+              @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(1)"
               placeholder="请输入标签名称" class="el-input__inner" @keyup.enter="addFromSearch2Select()">
           </div>
           <div class="associate-label_ul">
@@ -152,15 +152,15 @@ export default {
       taskList:[]
     };
   },
-  watch: {
-    // 当 lists 中的值变化时
-    // 清除的选择到的 li
-    associateLabels: function(nw,old){
-      console.log("watch associateLabels new : "+nw+" old: "+old);
-      if(old != nw)
-        this.nowInAssociates = -1;
-    }
-  },
+  // watch: {
+  //   // 当 lists 中的值变化时
+  //   // 清除的选择到的 li
+  //   associateLabels: function(nw,old){
+  //     console.log("watch associateLabels new : "+nw+" old: "+old);
+  //     if(old != nw)
+  //       this.nowInAssociates = -1;
+  //   }
+  // },
   methods: {
     // 展示消息
     showMsg(msg,msgType){
@@ -534,9 +534,6 @@ export default {
       }else{
         this.showMsg("还有"+this.filterTaskList(0).length+"张未标，提交失败");
       }
-    },
-    sous: function(ev){
-      console.log("按下了 keycode ： "+ev.keycode);
     },
     down: function(){
       console.log("按下了 keycode ： down");

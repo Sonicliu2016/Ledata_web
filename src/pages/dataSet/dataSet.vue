@@ -2,11 +2,12 @@
   <div class="dataset">
     <div class="search_box">
       <Input search enter-button v-model="searchTv" placeholder="请输入标签名"
-      v-on:input ="searchAssociate" @keyup.native.enter="searchResult()"/>
+      v-on:input ="searchAssociate" @keyup.native.enter="searchResult()"
+      @keydown.native.down="down" @keydown.native.up.prevent="up"/>
       <div class="associate-label_ul">
         <ol >
           <li class="el-dropdown-menu__item" v-for="(tag,index) in associateLabels" v-bind:key="index"
-            @click="setSearchText(tag.cluster_name)" >
+            @click="setSearchText(tag.cluster_name)" :class="{bgc: index == nowInAssociates}">
             {{ tag.cluster_name }}
           </li>
         </ol>
@@ -30,12 +31,29 @@ export default {
   data(){
     return{
       searchTv:'',
+      nowInAssociates:-1,
       associateLabels:[],
       allTagsList:[],
       showTagList:[]
     }
   },
   methods:{
+    getAllTagList(){
+      var params = new URLSearchParams();
+      this.$axios({
+        method:'post',
+        url:'/label/getAllClustersCount',
+        data:params
+      })
+      .then(res => {
+        this.allTagsList = res.data.data.clusters;
+        this.showTagList = this.allTagsList;
+        console.log("this.allTagsList: "+this.allTagsList.length);
+      })
+      .catch(err => {
+
+      });
+    },
     seeDetail(tag){
       this.$router.push({
         name:'classifyImages',
@@ -58,21 +76,22 @@ export default {
       this.showTagList = this.associateLabels;
       this.associateLabels=[];
     },
-    getAllTagList(){
-      var params = new URLSearchParams();
-      this.$axios({
-        method:'post',
-        url:'/label/getAllClustersCount',
-        data:params
-      })
-      .then(res => {
-        this.allTagsList = res.data.data.clusters;
-        this.showTagList = this.allTagsList;
-        console.log("this.allTagsList: "+this.allTagsList.length);
-      })
-      .catch(err => {
-
-      });
+    down: function(){
+      console.log("按下了 keycode ： down");
+      this.nowInAssociates++;
+      if(this.nowInAssociates >= this.associateLabels.length){
+        this.nowInAssociates = -1;
+      }
+      this.searchTv = this.associateLabels[this.nowInAssociates].cluster_name;
+    },
+    // ↑ 选择值，控制 li 的 .bgc
+    up: function(){
+      console.log("按下了 keycode ： up");
+      this.nowInAssociates--;
+      if(this.nowInAssociates < -1){
+        this.nowInAssociates = this.associateLabels.length - 1;
+      }
+      this.searchTv = this.associateLabels[this.nowInAssociates].cluster_name;
     }
   },
   created(){
@@ -105,5 +124,8 @@ export default {
   border: black 2px;
   position: absolute;
   z-index: 1;
+}
+.bgc {
+  background-color: skyblue;
 }
 </style>
