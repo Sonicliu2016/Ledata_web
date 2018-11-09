@@ -16,12 +16,14 @@
   </div>
 </template>
 <script>
-import PDFJS from 'pdfjs-dist'
+import PDFJS from 'pdfjs-dist';
+import Global from '../../common/global';
+var global = Global;
 export default {
   data() {
   return {
     isShow:false,
-    baseUrl:"http://10.5.11.195:8080/",
+    baseUrl:"",
     pdfUrl:'static/dist/ledataHelpDoc.pdf',
     //通过该属性动态添加类，让pdf显示或隐藏
     pdfDoc: null,
@@ -88,6 +90,9 @@ export default {
   this.pageNum++
   this.queueRenderPage(this.pageNum)
   }
+ },
+ created(){
+   this.baseUrl = global.BASE_URL;
  }
 }
 </script>
