@@ -72,11 +72,15 @@
 </template>
 
 <script>
+import Global from '../common/global';
+var global = Global;
  import User from '../modules/UserModule.js';
  var user = User;
  export default {
    data () {
      return {
+      baseUrl:'',
+      helpDocUrl:'',
       username:'',
       activeIndex: 'userList',
       isAdmin:true,
@@ -108,8 +112,7 @@
                   name:'login'
                 });
         }else if(command == "helpDoc"){
-          let url = 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf';
-          this.$showPDF(url);
+          this.$showPDF(this.helpDocUrl);
         }
       },
       getNavIndex(){
@@ -127,6 +130,8 @@
 
    },
    created(){
+     this.baseUrl = global.BASE_URL;
+     this.helpDocUrl = this.baseUrl+'static/pdf/ledataHelpDoc.pdf';
      this.username = user.methods.getUserName();
      if(user.methods.isAdmin()){
        this.isAdmin = true;

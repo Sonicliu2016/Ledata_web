@@ -1,7 +1,7 @@
 <template >
   <div id = "container" :class = "{'back': isShow}" >
     <!-- <canvas id = "the-canvas" ></canvas> -->
-    <iframe v-if="isShow" src="http://10.5.11.195:8080/static/dist/ledataHelpDoc.pdf" width="80%" height="100%">
+    <iframe v-if="isShow" :src=pdfUrl width="80%" height="100%">
 
     <!-- <iframe v-if="isShow" src="http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf" width="80%" height="100%"> -->
      <!-- <a href="/test.pdf" rel="external nofollow" >Download PDF</a> -->
@@ -24,7 +24,7 @@ export default {
   return {
     isShow:false,
     baseUrl:"",
-    pdfUrl:'static/dist/ledataHelpDoc.pdf',
+    pdfUrl:"",
     //通过该属性动态添加类，让pdf显示或隐藏
     pdfDoc: null,
     //可以打印发现是一个对象，里面有页数信息等
@@ -93,6 +93,7 @@ export default {
  },
  created(){
    this.baseUrl = global.BASE_URL;
+   this.pdfUrl = this.baseUrl+'static/pdf/ledataHelpDoc.pdf';
  }
 }
 </script>
