@@ -1,41 +1,41 @@
  export default {
-   data () {
+   data() {
      return {
 
      }
    },
    methods: {
-     setUserName(user_name){
+     setUserName(user_name) {
        // 在这里把用户名和token保存起来
-       localStorage.setItem("current_user",user_name);
+       localStorage.setItem("current_user", user_name);
      },
-     getUserName(){
+     getUserName() {
        return localStorage.getItem("current_user");
      },
-     removeUser(){
+     removeUser() {
        localStorage.removeItem("current_user");
      },
-     setUserRole(role){
-      localStorage.setItem("is_admin",role);
+     setUserRole(role) {
+       localStorage.setItem("is_admin", role);
      },
-     getUserRole(){
-      return localStorage.getItem("is_admin");
+     getUserRole() {
+       return localStorage.getItem("is_admin");
      },
-     isAdmin(){
-       if(this.getUserRole() == 0){
+     isAdmin() {
+       if (this.getUserRole() == 0) {
          return false;
-       }else{
+       } else {
          return true;
        }
      },
      //将数组转成json存储
-     storeUsers(users){
-       sessionStorage.setItem("users",window.JSON.stringify(users));
+     storeUsers(users) {
+       sessionStorage.setItem("users", window.JSON.stringify(users));
      },
-     getAllUsers(){
+     getAllUsers() {
        return window.JSON.parse(sessionStorage.getItem("users"));
      },
-     removeAllUsers(){
+     removeAllUsers() {
        sessionStorage.removeItem("users");
      }
    },
@@ -43,4 +43,3 @@
 
    }
  }
-
