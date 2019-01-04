@@ -5,6 +5,13 @@
       <el-upload class="upload-demo" ref="upload" multiple name="imgs" :action="uploadUrl" :limit="limit" :on-success="uploadSuccess" :on-error="uploadError" :on-progress="uploadProgress" :file-list="filesList" :on-change="changeFile" :before-upload="beforeUpload" :on-exceed="onExceed" :show-file-list="false">
         <el-button slot="trigger" size="medium" type="primary">上传图片</el-button>
       </el-upload>
+
+      <el-upload class="upload-demo" :action="uploadJsonUrl" name="json" :show-file-list="false" :on-success="uploadJsonSuccess" v-show="isShowTask">
+        <div>
+          点击上传json文件
+        </div>
+      </el-upload>
+
     </el-header>
 
     <el-main v-show="isShowTask">
@@ -42,6 +49,7 @@ export default {
         }
       ],
       uploadUrl: '',
+      uploadJsonUrl:'',
       userList: [],
       filesList: [], //选中要上传的图片
       waitUpLoadList: [], //等待上传的图片列表
@@ -70,6 +78,12 @@ export default {
         });
         setTimeout("window.location.reload()", 3000);
       }
+    },
+    uploadJsonSuccess(){
+      this.$message({
+          message: '上传成功!',
+          type: 'success'
+        });
     },
     uploadError(err, file, fileList) {
       console.log("uploadError-->err:" + err + "-->filename:" + file.name);
@@ -127,7 +141,8 @@ export default {
   created() {
     this.userList = this.$parent.userList; //获取用户列表
     this.username = user.methods.getUserName();
-    this.uploadUrl = global.BASE_URL + 'file/uploadImgs';
+    this.uploadUrl = global.BASE_URL + 'file/uploadImg';
+    this.uploadJsonUrl = global.BASE_URL + 'task/uploadJson';
     if (user.methods.isAdmin()) {
       this.isShowTask = true;
     } else {

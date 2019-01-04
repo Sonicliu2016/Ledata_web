@@ -32,7 +32,7 @@ export default {
         'taskowner': 'evaluated',
         'taskname': '评价任务'
       });
-      // this.tasksList.push({'taskowner':'unrecognized','taskname':'未识别图片列表'});
+      this.tasksList.push({'taskowner':'unrecognized','taskname':'未识别图片列表'});
     },
     taskDetail(taskowner) {
       console.log("点击taskDetail:" + taskowner);
