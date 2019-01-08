@@ -241,12 +241,28 @@ export default {
         e = document.createEvent("MouseEvents"); //创建鼠标事件对象
       //         e.initEvent("click", false, false); //初始化事件对象
       a.href = window.URL.createObjectURL(blob); //设置下载地址
-      a.download = "downloadList.xml"; //设置下载文件名
+      a.download = this.getTime() + ".xml"; //设置下载文件名
+      console.log("------------->" + this.getTime() + ".xml");
       a.click()
       URL.revokeObjectURL(a.href)
       //         a.dispatchEvent(e); //给指定的元素，执行事件click事件
     },
-
+    getTime(){
+      var myDate = new Date();//获取系统当前时间
+      var year = myDate.getFullYear();
+      var month = (myDate.getMonth()+1);
+      var day = myDate.getDate();
+      var hour = myDate.getHours();
+      var minute = myDate.getMinutes();
+      var second = myDate.getSeconds();
+      return (year + "-" + this.getFullNUm(month) + "-" + this.getFullNUm(day) + "_" + this.getFullNUm(hour) + "：" + this.getFullNUm(minute) + "：" + this.getFullNUm(second));
+    },
+    getFullNUm(time){
+      if((time + "").length < 2){
+        return "0" + time;
+      }
+      return time;
+    },
     exportDownloadList() {
       var params = new URLSearchParams();
       this.$axios({

@@ -2,20 +2,19 @@
   <div>
     <el-container>
       <el-main>
-        <!-- <div>{{evaluateTaskList[1].anocator}}</div> -->
         <el-row :gutter="20">
           <el-col :span="6" v-for="(task, index) in evaluateTaskList" :key="index" style="padding: 5px;">
-            <el-card>
+            <el-card :class="{ selectcard:changeSelectedColor == index}">
               <div>
-                <!-- <span>{{tag.tagname}}</span> -->
-                图片数量：{{task.TaskCount}}<br/> 标注者：{{task.UserName}}
-                <br/>
-                <el-button type="text" class="button" @click="checkSingleImg(task)">单图检查</el-button>
-                <el-button type="text" class="button" @click="checkSingleLabel(task)">单标签检查</el-button><br/>
+                图片数量：{{task.TaskCount}} <br/>
+                标注者：{{task.UserName}} <br/>
+                和机器标注一致的数量：{{task.SameCount}} <br/>
+                删除的图片数量：{{task.DeletedCount}} <br/>
+                <el-button type="text" class="button" @click="checkSingleImg(task,index)">单图检查</el-button>
+                <el-button type="text" class="button" @click="checkSingleLabel(task,index)">单标签检查</el-button><br/>
                 <el-button type="danger" plain size="small" @click="showDialog(task,1)">重标</el-button>
                 <el-button type="success" plain size="small" @click="showDialog(task,0)">保存</el-button>
               </div>
-              <div class="flag"></div>
             </el-card>
           </el-col>
         </el-row>
@@ -29,6 +28,8 @@ export default {
   data() {
     return {
       evaluateTaskList: [],
+      changeSelectedColor:-1,
+      getDeletedCountAndSameCountsUrl:'/task/getEvaluateTaskDeleteCountAndSameCount',
     }
   },
   methods: {
@@ -45,21 +46,23 @@ export default {
     getEvaluateSize() {
       return this.evaluateTaskList.length;
     },
-    checkSingleLabel(task) {
+    checkSingleLabel(task,index) {
       this.$router.push({
         name: 'anotateQualityLabelCheckList',
         params: {
           taskId: task.TaskUniqueId
         }
       });
+      sessionStorage.setItem("selectdIndex", index);
     },
-    checkSingleImg(task) {
+    checkSingleImg(task,index) {
       this.$router.push({
         name: 'anotateQualityImgCheck',
         params: {
           taskId: task.TaskUniqueId
         }
       });
+      sessionStorage.setItem("selectdIndex", index);
     },
     getEvaluteTaskList() {
       var params = new URLSearchParams();
@@ -71,13 +74,44 @@ export default {
         .then(res => {
           if (res.data.code == 200) {
             this.evaluateTaskList = res.data.data.tasks;
-          } else {}
+          }
         })
         .catch(err => {
           console.log("getEvaluteTaskList , error:" + err);
           // alert("服务器出现故障，请稍后再试！");
         });
     },
+    // getDeletedCountAndSameCounts(taskId){
+    //   var params = new URLSearchParams();
+    //   params.append("taskid", taskId);
+    //   this.$axios({
+    //       method: 'post',
+    //       url: this.getDeletedCountAndSameCountsUrl,
+    //       data: params
+    //     })
+    //     .then(res => {
+    //       if (res.data.code == 200) {
+    //         var taskid = res.data.data.taskId;
+    //         var deletedCount = res.data.data.deletedCount;
+    //         var sameCount = res.data.data.sameCount;
+    //         for(var i=0; i < this.evaluateTaskList.length;i++){
+    //           if(this.evaluateTaskList[i].TaskUniqueId == taskid){
+    //              var evaluateItem = new Map();
+    //              evaluateItem.set("deletedCount",deletedCount);
+    //              evaluateItem.set("sameCount",sameCount);
+    //              evaluateItem.set("TaskUniqueId",this.evaluateTaskList[i].TaskUniqueId);
+    //              evaluateItem.set("TaskCount",this.evaluateTaskList[i].TaskCount);
+    //              evaluateItem.set("UserName",this.evaluateTaskList[i].UserName);
+    //              this.EvaluateTaskLists.push(evaluateItem);
+    //           }
+    //         }
+    //       }          
+    //     })
+    //     .catch(err => {
+    //       console.log("getEvaluteTaskList , error:" + err);
+    //       // alert("服务器出现故障，请稍后再试！");
+    //     });
+    // },
     showDialog(task, type) {
       var content = "";
       var msg = "";
@@ -154,14 +188,21 @@ export default {
         });
     }
   },
-  created() {
+  mounted(){
+    this.DeletedCountAndSameCounts = new Map();
     this.getEvaluteTaskList();
+  },
+  created() {
+    var selectdIndex = sessionStorage.getItem("selectdIndex")
+    if (selectdIndex != null){
+      this.changeSelectedColor = selectdIndex;
+    }    
   }
 }
 </script>
 
 <style scoped>
-.el-card {
+.card {
     width: 100%;
     height: 100%;
     position: relative;
@@ -169,11 +210,26 @@ export default {
     background-color: #ebeef5;
 }
 
-.el-card .flag {
+.selectcard {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    background-color: #ebeef5;
+}
+
+/* .el-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    background-color: #ebeef5;
+} */
+
+/* .el-card .flag {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-}
-
+    background-color: red;
+} */
 </style>
