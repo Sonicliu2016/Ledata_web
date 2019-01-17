@@ -376,9 +376,10 @@ export default {
             this.taskList.splice(0, this.taskList.length);
             if (tasks != null) {
               for (var i = 0; i < tasks.length; i++) {
+                var timestamp = new Date().getTime();
                 this.taskList.push({
                   'id': tasks[i].Id,
-                  'media_url': tasks[i].MediaNetUrl,
+                  'media_url': tasks[i].MediaNetUrl + "?" + timestamp,
                   'media_md5': tasks[i].MediaMD5,
                   'status': this.getTaskStatus(tasks[i].MediaAnnotatedState),
                   'mainCluster': tasks[i].MediaMasterCluster

@@ -1,18 +1,18 @@
 <template>
-  <div>
-    <el-row :gutter="20">
-      <el-col :span="4" v-for="(img,index) in images" :key="index">
-        <img class="small-img" v-bind:src=baseurl+img.MediaNetUrl @click="handleClick(img.MediaNetUrl,img.MediaMD5)">
+<div>
+  <el-row :gutter="20">
+    <el-col :span="4" v-for="(img,index) in images" :key="index">
+      <img class="small-img" v-bind:src=baseurl+img.media_url @click="handleClick(img.media_url,img.media_md5)">
       </el-col>
-    </el-row>
-    <Modal title="未识别图片" v-model="showModal" footer-hide>
-      <img class="big-img" :src="clickedImage" v-if="showModal" style="width: 100%">
-      <div align="center">
-        <el-button type="primary" @click="recycleImg()">撤回</el-button>
-        <el-button type="danger" @click="deleteImage()">彻底删除</el-button>
-      </div>
-    </Modal>
-  </div>
+  </el-row>
+  <Modal title="未识别图片" v-model="showModal" footer-hide>
+    <img class="big-img" :src="clickedImage" v-if="showModal" style="width: 100%">
+    <div align="center">
+      <el-button type="primary" @click="recycleImg()">撤回</el-button>
+      <el-button type="danger" @click="deleteImage()">彻底删除</el-button>
+    </div>
+  </Modal>
+</div>
 </template>
 
 <script>
@@ -32,7 +32,7 @@ export default {
     }
   },
   methods: {
-    handleClick(url,md5) {
+    handleClick(url, md5) {
       this.clickedImage = this.baseurl + url;
       this.clickedMd5 = md5
       this.showModal = true;
@@ -47,8 +47,15 @@ export default {
         .then(res => {
           console.log("请求成功:" + res.data.code);
           if (res.data.code == 200) {
-            console.log("------>" + res.data.data);
-            this.images = res.data.data;
+            var datas = res.data.data;
+            this.images.splice(0, this.images.length);
+            for (var i = 0; i < datas.length; i++) {
+              var timestamp = new Date().getTime();
+              this.images.push({
+                'media_url': datas[i].MediaNetUrl + "?" + timestamp,
+                'media_md5': datas[i].MediaMD5,
+              })
+            }
           } else {
             this.$message.error('获取信息失败！');
           }
@@ -58,7 +65,7 @@ export default {
           alert("服务器出现故障，请稍后再试！");
         })
     },
-    recycleImg(){
+    recycleImg() {
       var params = new URLSearchParams();
       params.append("md5", this.clickedMd5);
       this.$axios({
@@ -80,7 +87,7 @@ export default {
           alert("服务器出现故障，请稍后再试！");
         })
     },
-    deleteImage(){
+    deleteImage() {
       var params = new URLSearchParams();
       params.append("md5", this.clickedMd5);
       this.$axios({
@@ -118,31 +125,31 @@ export default {
 
 <style>
 .img-box {
-    width: 100%;
-    height: 200px;
-    position: relative;
-    z-index: 1;
-    background-color: #ebeef5;
+  width: 100%;
+  height: 200px;
+  position: relative;
+  z-index: 1;
+  background-color: #ebeef5;
 }
 
 .img-box img {
-    position: relative;
-    max-width: 100%;
-    max-height: 100%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: -1;
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
 }
 
 .small-img {
-    width: 100%;
-    height: 230px;
-    object-fit: cover;
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
 }
 
 .big-img {
-    max-height: 400px;
-    object-fit: contain;
+  max-height: 400px;
+  object-fit: contain;
 }
 </style>

@@ -31,7 +31,7 @@ export default {
       verifyClassName: "xx",
       selectedLsit: [],
       unSelectedList: [],
-      imgList: []
+      imgList: [],
     };
   },
   methods: {
@@ -65,8 +65,9 @@ export default {
             this.verifyClassName = res.data.data.taskcluster;
             this.imgList.splice(0, this.imgList.length);
             for (var i = 0; i < tasks.length; i++) {
+              var timestamp = new Date().getTime();
               this.imgList.push({
-                'media_url': tasks[i].MediaNetUrl,
+                'media_url': tasks[i].MediaNetUrl + "?" + timestamp,
                 'isSelected': false,
                 'img_md5': tasks[i].MediaMD5
               })
@@ -157,7 +158,5 @@ export default {
 
 .img-box .flag {
   position: absolute;
-  padding: 1000px;
-  background-color: rgba(0, 0, 0, 0.3);
 }
 </style>
