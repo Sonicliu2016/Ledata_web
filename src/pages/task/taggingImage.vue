@@ -387,7 +387,7 @@ export default {
               }
               console.log(this.taskList);
               this.setCurrent(this.taskList[0], 0);
-            } else {              
+            } else {
               this.curTask = [];
               this.curEditTask = [];
             }
@@ -424,6 +424,7 @@ export default {
       this.taskProgress = "共" + this.taskList.length + "个，未标：" + this.filterTaskList(0).length +
         "，错误：" + this.filterTaskList(2).length + "，删除：" + this.filterTaskList(3).length;
       this.progress = (this.taskList.length - this.filterTaskList(0).length) * 100 / this.taskList.length;
+      this.progress = this.progress.toFixed(2);
     },
     getTaskStatus(status) {
       switch (status) {

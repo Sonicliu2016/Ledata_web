@@ -29,6 +29,7 @@ export default {
       curUser: "",
       taskId: -1,
       verifyClassName: "xx",
+      compareName:"xxx",
       selectedLsit: [],
       unSelectedList: [],
       imgList: [],
@@ -63,6 +64,14 @@ export default {
             var tasks = res.data.data.taskinfo;
             this.taskId = res.data.data.taskid;
             this.verifyClassName = res.data.data.taskcluster;
+            if(this.compareName != this.verifyClassName){
+              this.$message({
+                message: '注意！现在标记的是'+this.verifyClassName+'的图片',
+                showClose: true,
+                type: 'warning'
+              });
+              this.compareName=this.verifyClassName;
+            }
             this.imgList.splice(0, this.imgList.length);
             for (var i = 0; i < tasks.length; i++) {
               var timestamp = new Date().getTime();
@@ -107,7 +116,7 @@ export default {
           if (res.data.code == 200) {
             this.getVerifyTask();
           } else {
-            this.showMsg("请求失败，code:" + res.data.code);
+            this.showMsg("所有图片已验证完毕");
           }
         })
         .catch(err => {
