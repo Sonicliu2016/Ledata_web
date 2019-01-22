@@ -1,11 +1,12 @@
 <template>
 <div>
-  <el-row :gutter="20">
-    <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="6" v-for="(task, index) in tasksList" :key="index" style="padding: 5px;">
+  <el-row :gutter="20" type="flex" justify="center">
+    <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="4" v-for="(task, index) in tasksList" :key="index" style="padding: 20px;">
       <el-card>
-        <div class="task">
-          <span>{{task.taskname}}</span>
-          <el-button style="position:absolute; margin-top: 25px;" type="text" class="button" @click="taskDetail(task.taskowner)">点击查看详情</el-button>
+        <div class="task" style="cursor: pointer;" @click="taskDetail(task.taskowner)">
+          <img src="../../assets/logo-blue.png">
+          <span style="font-size:20px">{{task.taskname}}</span>
+          <!-- <el-button style="position:absolute; margin-top: 25px;" type="text" class="button" >点击查看详情</el-button> -->
         </div>
       </el-card>
     </el-col>

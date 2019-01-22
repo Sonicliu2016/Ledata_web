@@ -2,8 +2,22 @@
 <div>
   <el-container>
     <el-header>
-      <el-upload class="upload-demo" ref="upload" multiple name="imgs" :action="uploadUrl" :limit="limit" :on-success="uploadSuccess" :on-error="uploadError" :on-progress="uploadProgress" :file-list="filesList" :on-change="changeFile" :before-upload="beforeUpload" :on-exceed="onExceed" :show-file-list="false">
-        <el-button slot="trigger" size="medium" type="primary">上传图片</el-button>
+      <el-upload class="upload-demo"
+      drag
+      ref="upload"
+      multiple name="imgs"
+      :action="uploadUrl"
+      :limit="limit"
+      :on-success="uploadSuccess"
+      :on-error="uploadError"
+      :on-progress="uploadProgress"
+      :file-list="filesList"
+      :on-change="changeFile"
+      :before-upload="beforeUpload"
+      :on-exceed="onExceed"
+      :show-file-list="false">
+      <i class="el-icon-upload"></i>
+      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </el-upload>
 
       <el-upload class="upload-demo" :action="uploadJsonUrl" name="json" :show-file-list="false" :on-success="uploadJsonSuccess" v-show="isShowTask">
@@ -159,7 +173,7 @@ export default {
 <style scoped>
 .el-header {
   width: 100%;
-  height: 65px;
+  height: 175px ! important;
   padding: 15px;
   text-align: center;
 }
