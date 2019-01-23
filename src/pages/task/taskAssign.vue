@@ -38,6 +38,7 @@
         </el-form-item>
         <el-form-item label="分配数量" :label-width="formLabelWidth">
           <el-input-number v-model="taskForm.assignCount" :max="taskForm.maxCount" :min="1" style="width:215px"></el-input-number>
+          <el-button  @click="taskForm.assignCount=taskForm.maxCount">最大值</el-button>
         </el-form-item>
       </el-form>
 
