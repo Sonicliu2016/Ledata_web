@@ -1,7 +1,13 @@
 <template>
 <div>
+
   <div class="login-page">
+    <div class=logo>
+      <img src="../assets/lenovo.png">
+      <h2>深圳联想研究院AiLab<br>V 1.0.0 </h2>
+    </div>
     <div class="page-content">
+
       <div class="info">
         <!-- 注意引用图片的方式 -->
         <img src="../assets/logo-blue.png">
@@ -160,5 +166,14 @@ export default {
 
 .remember {
   margin: 0px 0px 35px 0px;
+}
+
+.logo {
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+  text-align: center;
+  display: flex;
+  color: #000000;
 }
 </style>
