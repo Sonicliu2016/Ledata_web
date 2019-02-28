@@ -1,54 +1,62 @@
 <template>
 <div class="content">
-  <el-row>
-    <div class="content1 bg-purple-dark">
-      <el-button type="primary" @click="notifyZipAllFiles">下载全部照片</el-button>
-    </div>
-  </el-row>
-
-  <el-row>
-    <el-col :span="24">
-      <div class="content2 bg-purple-dark">
-        <el-row>
-          <span>输入图片名字范围查找并下载图片：</span>
-        </el-row>
-        <el-row>
+  <el-row :gutter="20" type="flex" justify="center" style="padding: 10px; ">
+    <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="4">
+      <el-card>
+        <div class="downLoad-card">
+          <img src="../../assets/download.png">
+          <div style="position: relative;top: 25%;">
+            <el-button type="primary" @click="notifyZipAllFiles">下载全部照片</el-button>
+          </div>
+        </div>
+      </el-card>
+    </el-col>
+    <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="4">
+      <el-card>
+        <div class="downLoad-card">
+          <img src="../../assets/download.png">
+          <br>
+          <span style="font-size:17px">输入图片名字范围查找并下载图片：</span>
+          <br>
           <input class="numInput" v-model="firstNum" type="number" placeholder="请输入起始数字"></input>
-          <span>—</span>
+          <br>
+          <span>to</span>
+          <br>
           <input class="numInput" v-model="secondNum" type="number" placeholder="请输入结束数字"></input>
-        </el-row>
-        <el-row>
-          <el-button type="primary" @click="searchNumAndNotifyZip">查找并下载照片</el-button>
-        </el-row>
-      </div>
+          <br>
+          <div style="margin-top: 10px;">
+            <el-button type="primary" @click="searchNumAndNotifyZip">查找并下载照片</el-button>
+          </div>
+        </div>
+      </el-card>
     </el-col>
-  </el-row>
-
-  <el-row>
-    <el-col :span="24">
-      <div class="content3 bg-purple-dark">
-        <el-row>
-          <span>输入标签名字查找并下载图片：</span>
-        </el-row>
-        <el-row>
+    <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="4">
+      <el-card>
+        <div class="downLoad-card">
+          <img src="../../assets/download.png">
+          <br>
+          <span style="font-size:17px">输入图片名字范围查找并下载图片：</span>
+          <br>
           <input class="tagInput" v-model="searchTag" placeholder="请输入标签"></input>
-        </el-row>
-        <el-row>
-          <el-button type="primary" @click="searchTagAndNotifyZip">查找标签并下载照片</el-button>
-        </el-row>
-      </div>
+          <div style="margin-top: 10px;">
+            <el-button type="primary" style="top=80px;" @click="searchTagAndNotifyZip">查找标签并下载照片</el-button>
+          </div>
+        </div>
+      </el-card>
+    </el-col>
+    <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="4">
+      <el-card>
+        <div class="downLoad-card">
+          <img src="../../assets/download.png">
+          <br>
+          <div style="position: relative;top: 25%;">
+            <el-button type="primary" @click="exportDownloadList">导出下载列表</el-button>
+          </div>
+        </div>
+      </el-card>
     </el-col>
   </el-row>
 
-  <el-row>
-    <el-col :span="24">
-      <div class="content4 bg-purple-dark">
-        <el-row>
-          <el-button type="primary" @click="exportDownloadList">导出下载列表</el-button>
-        </el-row>
-      </div>
-    </el-col>
-  </el-row>
 </div>
 </template>
 
@@ -247,18 +255,18 @@ export default {
       URL.revokeObjectURL(a.href)
       //         a.dispatchEvent(e); //给指定的元素，执行事件click事件
     },
-    getTime(){
-      var myDate = new Date();//获取系统当前时间
+    getTime() {
+      var myDate = new Date(); //获取系统当前时间
       var year = myDate.getFullYear();
-      var month = (myDate.getMonth()+1);
+      var month = (myDate.getMonth() + 1);
       var day = myDate.getDate();
       var hour = myDate.getHours();
       var minute = myDate.getMinutes();
       var second = myDate.getSeconds();
       return (year + "-" + this.getFullNUm(month) + "-" + this.getFullNUm(day) + "_" + this.getFullNUm(hour) + "：" + this.getFullNUm(minute) + "：" + this.getFullNUm(second));
     },
-    getFullNUm(time){
-      if((time + "").length < 2){
+    getFullNUm(time) {
+      if ((time + "").length < 2) {
         return "0" + time;
       }
       return time;
@@ -319,6 +327,7 @@ export default {
 .el-input {
   width: 150px;
   height: 30px;
+  font-size: 15px
 }
 
 .numInput {
@@ -334,6 +343,7 @@ export default {
 
 .numInput[type="number"] {
   -moz-appearance: textfield;
+  font-size: 15px;
 }
 
 .content3 {
@@ -342,5 +352,15 @@ export default {
 
 .bg-purple-dark {
   /* background: rgb(159, 203, 241); */
+}
+
+.downLoad-card {
+  height: 250px;
+
+  text-align: center;
+  position: relative;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
 }
 </style>
