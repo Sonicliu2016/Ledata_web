@@ -2,30 +2,34 @@
 <div>
   <el-container>
     <el-header>
-      <el-upload class="upload-demo"
-      drag
-      ref="upload"
-      multiple name="imgs"
-      :action="uploadUrl"
-      :limit="limit"
-      :on-success="uploadSuccess"
-      :on-error="uploadError"
-      :on-progress="uploadProgress"
-      :file-list="filesList"
-      :on-change="changeFile"
-      :before-upload="beforeUpload"
-      :on-exceed="onExceed"
-      :show-file-list="false">
-      <i class="el-icon-upload"></i>
-      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      </el-upload>
-
+      <el-row :gutter="10" type="flex" justify="center" style="padding: 10px; ">
+        <el-col :xs="8" :sm="4" :md="4" :lg="4" :span="4">
+          <el-upload class="upload-demo" ref="upload" multiple name="imgs" :action="uploadUrl" :limit="limit" :on-success="uploadSuccess" :on-error="uploadError" :on-progress="uploadProgress" :file-list="filesList" :on-change="changeFile"
+            :before-upload="beforeUpload" :on-exceed="onExceed" :show-file-list="false">
+            <el-card shadow="hover">
+              <div class="upload-card" style="cursor: pointer;">
+                <img src="../../assets/image.png">
+                <sapn style="font-size:20px">图片上传</sapn>
+              </div>
+            </el-card>
+          </el-upload>
+        </el-col>
+        <!-- <el-col :xs="8" :sm="4" :md="4" :lg="4" :span="4">
+          <el-upload class="upload-demo">
+            <el-card shadow="hover">
+              <div class="upload-card" style="cursor: pointer;">
+                <img src="../../assets/video.png">
+                <sapn style="font-size:20px">视频上传</sapn>
+              </div>
+            </el-card>
+          </el-upload>
+        </el-col> -->
+      </el-row>
       <el-upload class="upload-demo" :action="uploadJsonUrl" name="json" :show-file-list="false" :on-success="uploadJsonSuccess" v-show="isShowTask">
         <div>
           点击上传json文件
         </div>
       </el-upload>
-
     </el-header>
 
     <el-main v-show="isShowTask">
@@ -63,7 +67,7 @@ export default {
         }
       ],
       uploadUrl: '',
-      uploadJsonUrl:'',
+      uploadJsonUrl: '',
       userList: [],
       filesList: [], //选中要上传的图片
       waitUpLoadList: [], //等待上传的图片列表
@@ -93,11 +97,11 @@ export default {
         setTimeout("window.location.reload()", 3000);
       }
     },
-    uploadJsonSuccess(){
+    uploadJsonSuccess() {
       this.$message({
-          message: '上传成功!',
-          type: 'success'
-        });
+        message: '上传成功!',
+        type: 'success'
+      });
     },
     uploadError(err, file, fileList) {
       console.log("uploadError-->err:" + err + "-->filename:" + file.name);
@@ -173,7 +177,7 @@ export default {
 <style scoped>
 .el-header {
   width: 100%;
-  height: 175px ! important;
+  height: 200px !important;
   padding: 15px;
   text-align: center;
 }
@@ -203,14 +207,15 @@ export default {
   background-size: 100px auto;
 }
 
-.task {
-  height: 250px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 .el-card {
   /* background: rgb(159, 203, 241); */
+}
+
+.upload-card {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
