@@ -11,7 +11,7 @@
         <div class="img-box" @click="toogle(task)">
           <img v-bind:src="baseurl+task.media_url" />
           <img class="flag" v-show="task.isSelected" src="../../assets/icon_selected.png">
-          </div>
+        </div>
       </el-card>
     </el-col>
   </el-row>
@@ -29,7 +29,7 @@ export default {
       curUser: "",
       taskId: -1,
       verifyClassName: "xx",
-      compareName:"xxx",
+      compareName: "xxx",
       selectedLsit: [],
       unSelectedList: [],
       imgList: [],
@@ -61,16 +61,22 @@ export default {
         })
         .then(res => {
           if (res.data.code == 200) {
+            if (res.data.data == null) {
+              this.$alert('请联系管理员分配任务', '无验证任务', {
+                confirmButtonText: '确定',
+                center: true
+              });
+            }
             var tasks = res.data.data.taskinfo;
             this.taskId = res.data.data.taskid;
             this.verifyClassName = res.data.data.taskcluster;
-            if(this.compareName != this.verifyClassName){
+            if (this.compareName != this.verifyClassName) {
               this.$message({
-                message: '注意！现在标记的是'+this.verifyClassName+'的图片',
+                message: '注意！现在标记的是' + this.verifyClassName + '的图片',
                 showClose: true,
                 type: 'warning'
               });
-              this.compareName=this.verifyClassName;
+              this.compareName = this.verifyClassName;
             }
             this.imgList.splice(0, this.imgList.length);
             for (var i = 0; i < tasks.length; i++) {
@@ -99,7 +105,6 @@ export default {
       }
     },
     verifyComplete() {
-      console.log("hahahahha");
       this.getSelectedList();
       var params = new URLSearchParams();
       params.append("taskid", this.taskId);
