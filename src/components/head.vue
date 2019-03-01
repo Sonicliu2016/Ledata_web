@@ -150,6 +150,13 @@ export default {
         if (list[i].menuName == menuName) {
           list.splice(i, 1);
         }
+        if (list[i].hasChild) {
+          for (var j = 0; j < list[i].children.length; j++) {
+            if (list[i].children[j].menuName == menuName) {
+              list[i].children.splice(j, 1);
+            }
+          }
+        }
       }
     }
   },
@@ -166,12 +173,12 @@ export default {
       this.isAdmin = false;
       this.deleteFromList(this.navList, '用户管理');
       this.deleteFromList(this.navList, '用户任务详情');
-      this.deleteFromList(this.navList, '下载管理');
+      this.deleteFromList(this.navList, '下载');
       //  this.navList.shift();
     }
   },
   watch: {
-    '$store.state.navIndex': function () {
+    '$store.state.navIndex': function() {
       //  this.getNavIndex();
     },
   }
