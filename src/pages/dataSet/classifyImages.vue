@@ -91,7 +91,7 @@ export default {
 }
 
 .big-img {
-  max-height: 400px;
+  max-height: 800px;
   object-fit: contain;
 }
 </style>

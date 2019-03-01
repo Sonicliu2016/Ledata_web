@@ -3,7 +3,7 @@
 
   <div class="login-page">
     <div class=logo>
-      <img src="../assets/lenovo.png">
+      <img src="../assets/Lenovo.png">
       <h2>深圳联想研究院AiLab<br>V 1.0.0 </h2>
     </div>
     <div class="page-content">
@@ -173,7 +173,9 @@ export default {
   right: 10px;
   bottom: 0;
   text-align: center;
-  display: flex;
+  /* display: flex; */
   color: #000000;
+  display: block;
 }
+
 </style>

@@ -16,6 +16,8 @@
         <div class="downLoad-card">
           <img src="../../assets/download.png">
           <br>
+          <span style="font-size:17px">一共有{{totalCount}}张图片</span>
+          <br>
           <span style="font-size:17px">输入图片名字范围查找并下载图片：</span>
           <br>
           <input class="numInput" v-model="firstNum" type="number" placeholder="请输入起始数字"></input>
@@ -35,7 +37,7 @@
         <div class="downLoad-card">
           <img src="../../assets/download.png">
           <br>
-          <span style="font-size:17px">输入图片名字范围查找并下载图片：</span>
+          <span style="font-size:17px">输入标签名查找并下载图片：</span>
           <br>
           <input class="tagInput" v-model="searchTag" placeholder="请输入标签"></input>
           <div style="margin-top: 10px;">
@@ -44,7 +46,7 @@
         </div>
       </el-card>
     </el-col>
-    <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="4">
+    <!-- <el-col :xs="12" :sm="8" :md="6" :lg="6" :span="4">
       <el-card>
         <div class="downLoad-card">
           <img src="../../assets/download.png">
@@ -54,7 +56,7 @@
           </div>
         </div>
       </el-card>
-    </el-col>
+    </el-col> -->
   </el-row>
 
 </div>
@@ -74,14 +76,34 @@ export default {
       notifyZipNumUrl: 'file/notifyZipNums',
       downloadNumZipUrl: 'file/downloadZipByNum',
       exportDownloadListUrl: 'file/getDownloadList',
+      getMediaTotalCountUrl:'label/getMediaCountFromDownload',
       firstNum: '',
       secondNum: '',
       searchTag: '',
       file_urls: [],
       zips_url: [],
+      totalCount:0,
     }
   },
   methods: {
+    getMediaTotalCount(){
+      var params = new URLSearchParams();
+      this.$axios({
+          method: 'post',
+          url: this.getMediaTotalCountUrl,
+          data: params,
+        })
+        .then(res => {
+          console.log("请求成功:" + res.data.code);
+          if (res.data.code == 200) {
+            this.totalCount = res.data.data.count;            
+          }
+        })
+        .catch(err => {
+          console.log("error:" + err);
+          alert("服务器出现故障，请稍后再试！");
+        })
+    },
     notifyZipAllFiles() {
       var params = new URLSearchParams();
       this.$axios({
@@ -290,6 +312,9 @@ export default {
     strIsNull(str) {
       return (str.length === 0 || !str.trim());
     },
+  },
+  created() {
+    this.getMediaTotalCount();
   },
   components: {
 
