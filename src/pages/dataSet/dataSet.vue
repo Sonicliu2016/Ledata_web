@@ -1,9 +1,9 @@
 <template>
 <div class="dataset">
   <div class="search_box">
-    <Input search enter-button v-model="searchTv" placeholder="请输入标签名"
-      v-on:input ="searchAssociate" @keyup.native.enter="searchResult()"
-      @keydown.native.down="down" @keydown.native.up.prevent="up"/>
+    <el-input placeholder="请输入标签名" v-model="searchTv" v-on:input="searchAssociate" @keyup.native.enter="searchResult()" @keydown.native.down="down" @keydown.native.up.prevent="up" clearable>
+      <el-button slot="append" type="primary" icon="el-icon-search" @click="searchResult()"></el-button>
+    </el-input>
     <div class="associate-label_ul">
       <ol>
         <li class="el-dropdown-menu__item" v-for="(tag,index) in associateLabels" v-bind:key="index" @click="setSearchText(tag.cluster_name)" :class="{bgc: index == nowInAssociates}">
@@ -17,9 +17,9 @@
     <el-col :span="2" v-for="(tag, index) in showTagList" :key="index" style="padding: 5px;">
       <el-card>
         <div class="tag" @click="seeDetail(tag)">
-          {{tag.cluster_name}}<br/>
-          {{tag.count}}<br/>
-          </div>
+          {{tag.cluster_name}}<br />
+          {{tag.count}}<br />
+        </div>
       </el-card>
     </el-col>
   </el-row>
@@ -58,7 +58,8 @@ export default {
       this.$router.push({
         name: 'classifyImages',
         params: {
-          tagId: tag.cluster_name
+          tagId: tag.cluster_name,
+          tagCount: tag.count
         }
       })
     },
@@ -72,11 +73,20 @@ export default {
         }
       }
     },
-    searchResult() {
-      this.showTagList = this.associateLabels;
-      this.associateLabels = [];
+    setSearchText(cluster_name) {
+      this.searchTv = cluster_name;
+      this.searchAssociate();
     },
-    down: function () {
+    searchResult() {
+      if (this.associateLabels.length != 0) {
+        this.showTagList = this.associateLabels;
+        // this.associateLabels = [];
+      } else {
+        this.getAllTagList();
+      }
+
+    },
+    down: function() {
       console.log("按下了 keycode ： down");
       this.nowInAssociates++;
       if (this.nowInAssociates >= this.associateLabels.length) {
@@ -85,7 +95,7 @@ export default {
       this.searchTv = this.associateLabels[this.nowInAssociates].cluster_name;
     },
     // ↑ 选择值，控制 li 的 .bgc
-    up: function () {
+    up: function() {
       console.log("按下了 keycode ： up");
       this.nowInAssociates--;
       if (this.nowInAssociates < -1) {
@@ -109,7 +119,6 @@ export default {
 
 .search_box {
   width: 30%;
-  background-color: aquamarine;
   float: right;
 }
 
