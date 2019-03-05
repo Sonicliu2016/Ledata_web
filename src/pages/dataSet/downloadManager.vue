@@ -6,7 +6,7 @@
         <div class="downLoad-card">
           <img src="../../assets/download.png">
           <div style="position: relative;top: 25%;">
-            <el-button type="primary" @click="notifyZipAllFiles">下载全部照片</el-button>
+            <el-button type="primary" @click="downZipAllFiles">下载全部照片</el-button>
           </div>
         </div>
       </el-card>
@@ -27,7 +27,7 @@
           <input class="numInput" v-model="secondNum" type="number" placeholder="请输入结束数字"></input>
           <br>
           <div style="margin-top: 10px;">
-            <el-button type="primary" @click="searchNumAndNotifyZip">查找并下载照片</el-button>
+            <el-button type="primary" @click="searchNumAndDownload">查找并下载照片</el-button>
           </div>
         </div>
       </el-card>
@@ -41,7 +41,7 @@
           <br>
           <input class="tagInput" v-model="searchTag" placeholder="请输入标签"></input>
           <div style="margin-top: 10px;">
-            <el-button type="primary" style="top=80px;" @click="searchTagAndNotifyZip">查找标签并下载照片</el-button>
+            <el-button type="primary" style="top=80px;" @click="downZipClusterFiles">查找标签并下载照片</el-button>
           </div>
         </div>
       </el-card>
@@ -69,20 +69,18 @@ export default {
   data() {
     return {
       //通知图片开始压缩
-      notifyZipAllFilesUrl: 'file/notifyZipAllFile',
       downloadAllZipUrl: 'file/downloadAllZip',
-      notifyZipClusterUrl: 'file/notifyZipCluster',
       downloadClusterZipUrl: 'file/downloadZipByCluster',
-      notifyZipNumUrl: 'file/notifyZipNums',
       downloadNumZipUrl: 'file/downloadZipByNum',
       exportDownloadListUrl: 'file/getDownloadList',
-      getMediaTotalCountUrl:'label/getMediaCountFromDownload',
+      getMediaTotalCountUrl: 'label/getMediaCountFromDownload',
+      getBigFileUrl: 'file/getBigFile',
       firstNum: '',
       secondNum: '',
       searchTag: '',
       file_urls: [],
       zips_url: [],
-      totalCount:0,
+      totalCount: 0,
     }
   },
   methods: {
@@ -97,25 +95,6 @@ export default {
           console.log("请求成功:" + res.data.code);
           if (res.data.code == 200) {
             this.totalCount = res.data.data.count;            
-          }
-        })
-        .catch(err => {
-          console.log("error:" + err);
-          alert("服务器出现故障，请稍后再试！");
-        })
-    },
-    notifyZipAllFiles() {
-      var params = new URLSearchParams();
-      this.$axios({
-          method: 'post',
-          url: this.notifyZipAllFilesUrl,
-          data: params,
-        })
-        .then(res => {
-          console.log("请求成功:" + res.data.code);
-          if (res.data.code == 200) {
-            //延迟2s去获取压缩结果
-            setTimeout(this.downZipAllFiles, 2000);
           }
         })
         .catch(err => {
@@ -150,7 +129,7 @@ export default {
         })
     },
 
-    searchNumAndNotifyZip() {
+    searchNumAndDownload() {
       console.log(this.firstNum + "------" + this.secondNum + "------" + (this.firstNum >= this.secondNum))
       if (this.strIsNull(this.firstNum) || this.strIsNull(this.secondNum)) {
         this.$message.error('请输入起始和结束范围！');
@@ -162,65 +141,32 @@ export default {
         params.append('endNum', this.secondNum);
         this.$axios({
             method: 'post',
-            url: this.notifyZipNumUrl,
+            url: this.downloadNumZipUrl,
             data: params,
           })
           .then(res => {
             console.log("请求成功:" + res.data.code);
             if (res.data.code == 200) {
-              //延迟2s去获取压缩结果
-              setTimeout(this.downNumZip, 2000);
-            }
-          })
-          .catch(err => {
-            console.log("error:" + err);
-            alert("服务器出现故障，请稍后再试！");
-          })
-      }
-    },
-
-    //搜索范围然后下载图片
-    downNumZip() {
-      var params = new URLSearchParams();
-      params.append('startNum', this.firstNum);
-      params.append('endNum', this.secondNum);
-      this.$axios({
-          method: 'post',
-          url: this.downloadNumZipUrl,
-          data: params,
-        })
-        .then(res => {
-          console.log("请求成功:" + res.data.code);
-          if (res.data.code == 200) {
-            this.zips_url = res.data.data.zips_url;
-            console.log("zips_url-->" + this.zips_url);
-            if (this.zips_url.length > 0) {
-              for (var i = 0; i < this.zips_url.length; i++) {
-                this.downFile(global.BASE_URL + this.zips_url[i].zip_url);
+              if (res.data.data != "") {
+              this.zips_url = res.data.data.zips_url;
+              if (this.zips_url.length > 0) {
+                for (var i = 0; i < this.zips_url.length; i++) {
+                  // this.downFile(global.BASE_URL + this.zips_url[i].zip_url);
+                  this.getFileFromService(this.zips_url[i].zip_url);
+                  this.$message({
+                    message: '正在开始下载！',
+                    type: 'success'
+                  });
+                }
+              } else {
+                this.$message.error('没有可下载的照片！');
               }
             } else {
-              this.$message.error('没有可下载的照片！');
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              });
             }
-          }
-        })
-    },
-
-    searchTagAndNotifyZip() {
-      if (this.strIsNull(this.searchTag)) {
-        this.$message.error('请输入标签名称！');
-      } else {
-        var params = new URLSearchParams();
-        params.append('clusterName', this.searchTag);
-        this.$axios({
-            method: 'post',
-            url: this.notifyZipClusterUrl,
-            data: params,
-          })
-          .then(res => {
-            console.log("请求成功:" + res.data.code);
-            if (res.data.code == 200) {
-              //延迟2s去获取压缩结果
-              setTimeout(this.downZipClusterFiles, 2000);
             }
           })
           .catch(err => {
@@ -229,7 +175,8 @@ export default {
           })
       }
     },
-
+    
+    //查找标签并下载照片
     downZipClusterFiles() {
       var params = new URLSearchParams();
       params.append('clusterName', this.searchTag);
@@ -241,14 +188,25 @@ export default {
         .then(res => {
           console.log("请求成功:" + res.data.code);
           if (res.data.code == 200) {
-            this.zips_url = res.data.data.zips_url;
-            console.log("zips_url-->" + this.zips_url);
-            if (this.zips_url.length > 0) {
-              for (var i = 0; i < this.zips_url.length; i++) {
-                this.downFile(global.BASE_URL + this.zips_url[i].zip_url);
+            if (res.data.data != "") {
+              this.zips_url = res.data.data.zips_url;
+              if (this.zips_url.length > 0) {
+                for (var i = 0; i < this.zips_url.length; i++) {
+                  // this.downFile(global.BASE_URL + this.zips_url[i].zip_url);
+                  this.getFileFromService(this.zips_url[i].zip_url);
+                  this.$message({
+                    message: '正在开始下载！',
+                    type: 'success'
+                  });
+                }
+              } else {
+                this.$message.error('没有可下载的照片！');
               }
             } else {
-              this.$message.error('没有可下载的照片！');
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              });
             }
           }
         })
@@ -256,6 +214,10 @@ export default {
           console.log("error:" + err);
           alert("服务器出现故障，请稍后再试！");
         })
+    },
+    getFileFromService(url) {
+      console.log("开始下载:", url)
+      window.location.href = global.BASE_URL + this.getBigFileUrl + "?path=" + url;
     },
     downFile(imgsrc) {
       var a = document.createElement("a"), //创建a标签
