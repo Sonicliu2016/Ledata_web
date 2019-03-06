@@ -84,7 +84,7 @@ export default {
     }
   },
   methods: {
-    getMediaTotalCount(){
+    getMediaTotalCount() {
       var params = new URLSearchParams();
       this.$axios({
           method: 'post',
@@ -94,7 +94,7 @@ export default {
         .then(res => {
           console.log("请求成功:" + res.data.code);
           if (res.data.code == 200) {
-            this.totalCount = res.data.data.count;            
+            this.totalCount = res.data.data.count;
           }
         })
         .catch(err => {
@@ -113,10 +113,9 @@ export default {
           console.log("请求成功:" + res.data.code);
           if (res.data.code == 200) {
             this.zips_url = res.data.data.zips_url;
-            console.log("zips_url-->" + this.zips_url);
             if (this.zips_url.length > 0) {
               for (var i = 0; i < this.zips_url.length; i++) {
-                this.downFile(global.BASE_URL + this.zips_url[i].zip_url);
+                this.downFile(this.zips_url[i].zip_url);
               }
             } else {
               this.$message.error('没有可下载的照片！');
@@ -128,7 +127,17 @@ export default {
           alert("服务器出现故障，请稍后再试！");
         })
     },
-
+    downFile(url) {
+      console.log("下载文件:", url);
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.style.height = 0;
+      iframe.src = global.BASE_URL + this.getBigFileUrl + "?path=" + url;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        iframe.remove();
+      }, 5 * 60 * 1000);
+    },
     searchNumAndDownload() {
       console.log(this.firstNum + "------" + this.secondNum + "------" + (this.firstNum >= this.secondNum))
       if (this.strIsNull(this.firstNum) || this.strIsNull(this.secondNum)) {
@@ -148,25 +157,24 @@ export default {
             console.log("请求成功:" + res.data.code);
             if (res.data.code == 200) {
               if (res.data.data != "") {
-              this.zips_url = res.data.data.zips_url;
-              if (this.zips_url.length > 0) {
-                for (var i = 0; i < this.zips_url.length; i++) {
-                  // this.downFile(global.BASE_URL + this.zips_url[i].zip_url);
-                  this.getFileFromService(this.zips_url[i].zip_url);
-                  this.$message({
-                    message: '正在开始下载！',
-                    type: 'success'
-                  });
+                this.zips_url = res.data.data.zips_url;
+                if (this.zips_url.length > 0) {
+                  for (var i = 0; i < this.zips_url.length; i++) {
+                    this.getFileFromService(this.zips_url[i].zip_url);
+                    this.$message({
+                      message: '正在开始下载！',
+                      type: 'success'
+                    });
+                  }
+                } else {
+                  this.$message.error('没有可下载的照片！');
                 }
               } else {
-                this.$message.error('没有可下载的照片！');
+                this.$message({
+                  message: res.data.msg,
+                  type: 'success'
+                });
               }
-            } else {
-              this.$message({
-                message: res.data.msg,
-                type: 'success'
-              });
-            }
             }
           })
           .catch(err => {
@@ -175,7 +183,7 @@ export default {
           })
       }
     },
-    
+
     //查找标签并下载照片
     downZipClusterFiles() {
       var params = new URLSearchParams();
@@ -192,7 +200,6 @@ export default {
               this.zips_url = res.data.data.zips_url;
               if (this.zips_url.length > 0) {
                 for (var i = 0; i < this.zips_url.length; i++) {
-                  // this.downFile(global.BASE_URL + this.zips_url[i].zip_url);
                   this.getFileFromService(this.zips_url[i].zip_url);
                   this.$message({
                     message: '正在开始下载！',
@@ -218,14 +225,6 @@ export default {
     getFileFromService(url) {
       console.log("开始下载:", url)
       window.location.href = global.BASE_URL + this.getBigFileUrl + "?path=" + url;
-    },
-    downFile(imgsrc) {
-      var a = document.createElement("a"), //创建a标签
-        e = document.createEvent("MouseEvents"); //创建鼠标事件对象
-      e.initEvent("click", false, false); //初始化事件对象
-      a.href = imgsrc; //设置下载地址
-      a.download = ""; //设置下载文件名
-      a.dispatchEvent(e); //给指定的元素，执行事件click事件
     },
     downloadFile(url) {
       let blob = new Blob([url]);
