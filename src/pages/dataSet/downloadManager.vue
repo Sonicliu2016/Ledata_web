@@ -39,9 +39,18 @@
           <br>
           <span style="font-size:17px">输入标签名查找并下载图片：</span>
           <br>
-          <input class="tagInput" v-model="searchTag" placeholder="请输入标签"></input>
-          <div style="margin-top: 10px;">
-            <el-button type="primary" style="top=80px;" @click="downZipClusterFiles">查找标签并下载照片</el-button>
+          <div style="height:40px">
+            <el-input placeholder="请输入标签" v-model="searchTag" v-on:input="searchAssociate" @keydown.native.down="down" @keydown.native.up.prevent="up" clearable style="height:40px">
+            </el-input>
+            <el-button type="primary" @click="downZipClusterFiles">查找并下载</el-button>
+
+            <div class="associate-label_ul">
+              <ol>
+                <li class="el-dropdown-menu__item" v-for="(tag,index) in associateLabels" v-bind:key="index" @click="setSearchText(tag.cluster_name)" :class="{bgc: index == nowInAssociates}">
+                  {{ tag.cluster_name }}
+                </li>
+              </ol>
+            </div>
           </div>
         </div>
       </el-card>
@@ -81,6 +90,9 @@ export default {
       file_urls: [],
       zips_url: [],
       totalCount: 0,
+      associateLabels: [],
+      allTagsList: [],
+      nowInAssociates: -1,
     }
   },
   methods: {
@@ -101,6 +113,50 @@ export default {
           console.log("error:" + err);
           alert("服务器出现故障，请稍后再试！");
         })
+    },
+    getAllTagList() {
+      var params = new URLSearchParams();
+      this.$axios({
+          method: 'post',
+          url: '/label/getAllClustersCount',
+          data: params
+        })
+        .then(res => {
+          this.allTagsList = res.data.data.clusters;
+        })
+        .catch(err => {
+
+        });
+    },
+    searchAssociate() {
+      this.associateLabels = [];
+      for (var i = 0; i < this.allTagsList.length; i++) {
+        var label = this.allTagsList[i].cluster_name;
+        if (this.searchTag != "" && label.toLowerCase().indexOf(this.searchTag.toLowerCase()) != -1) {
+          this.associateLabels.push(this.allTagsList[i]);
+        }
+      }
+    },
+    setSearchText(cluster_name) {
+      this.searchTag = cluster_name;
+      this.searchAssociate();
+    },
+    down: function () {
+      console.log("按下了 keycode ： down");
+      this.nowInAssociates++;
+      if (this.nowInAssociates >= this.associateLabels.length) {
+        this.nowInAssociates = -1;
+      }
+      this.searchTag = this.associateLabels[this.nowInAssociates].cluster_name;
+    },
+    // ↑ 选择值，控制 li 的 .bgc
+    up: function () {
+      console.log("按下了 keycode ： up");
+      this.nowInAssociates--;
+      if (this.nowInAssociates < -1) {
+        this.nowInAssociates = this.associateLabels.length - 1;
+      }
+      this.searchTag = this.associateLabels[this.nowInAssociates].cluster_name;
     },
     downZipAllFiles() {
       var params = new URLSearchParams();
@@ -276,6 +332,7 @@ export default {
   },
   created() {
     this.getMediaTotalCount();
+    this.getAllTagList();
   },
   components: {
 
@@ -313,7 +370,7 @@ export default {
 .el-input {
   width: 150px;
   height: 30px;
-  font-size: 15px
+  font-size: 15px;
 }
 
 .numInput {
@@ -348,5 +405,27 @@ export default {
   /* display: flex; */
   /* justify-content: center; */
   /* align-items: center; */
+}
+
+.associate-label_ul {
+  width: 150px;
+  max-height: 500px;
+  overflow-y: scroll;
+  margin-top: 0px;
+  background-color: aliceblue;
+  list-style-type: decimal;
+  border: black 2px;
+  position: absolute;
+  left: 18%;
+  z-index: 1;  width: 150px;
+  max-height: 500px;
+  overflow-y: scroll;
+  margin-top: 0px;
+  background-color: aliceblue;
+  list-style-type: decimal;
+  border: black 2px;
+  position: absolute;
+  left: 18%;
+  z-index: 1;
 }
 </style>
