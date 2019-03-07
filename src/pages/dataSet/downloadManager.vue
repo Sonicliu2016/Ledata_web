@@ -16,9 +16,9 @@
         <div class="downLoad-card">
           <img src="../../assets/download.png">
           <br>
-          <span style="font-size:17px">一共有{{totalCount}}张图片</span>
+          <span>一共有{{totalCount}}张图片</span>
           <br>
-          <span style="font-size:17px">输入图片名字范围查找并下载图片：</span>
+          <span>输入图片名字范围查找并下载图片：</span>
           <br>
           <input class="numInput" v-model="firstNum" type="number" placeholder="请输入起始数字"></input>
           <br>
@@ -37,10 +37,10 @@
         <div class="downLoad-card">
           <img src="../../assets/download.png">
           <br>
-          <span style="font-size:17px">输入标签名查找并下载图片：</span>
+          <span>输入标签名查找并下载图片：</span>
           <br>
-          <div style="height:40px">
-            <el-input placeholder="请输入标签" v-model="searchTag" v-on:input="searchAssociate" @keydown.native.down="down" @keydown.native.up.prevent="up" clearable style="height:40px">
+          <div>
+            <el-input placeholder="请输入标签" v-model="searchTag" v-on:input="searchAssociate" @keydown.native.down="down" @keydown.native.up.prevent="up" clearable style="">
             </el-input>
             <el-button type="primary" @click="downZipClusterFiles">查找并下载</el-button>
 
@@ -141,7 +141,7 @@ export default {
       this.searchTag = cluster_name;
       this.searchAssociate();
     },
-    down: function () {
+    down: function() {
       console.log("按下了 keycode ： down");
       this.nowInAssociates++;
       if (this.nowInAssociates >= this.associateLabels.length) {
@@ -150,7 +150,7 @@ export default {
       this.searchTag = this.associateLabels[this.nowInAssociates].cluster_name;
     },
     // ↑ 选择值，控制 li 的 .bgc
-    up: function () {
+    up: function() {
       console.log("按下了 keycode ： up");
       this.nowInAssociates--;
       if (this.nowInAssociates < -1) {
@@ -368,9 +368,11 @@ export default {
 
 .tagInput,
 .el-input {
-  width: 150px;
-  height: 30px;
+  width: 180px;
+  height: 40px;
   font-size: 15px;
+  float: left;
+  left: 8%;
 }
 
 .numInput {
@@ -398,34 +400,22 @@ export default {
 }
 
 .downLoad-card {
-  height: 250px;
-
+  height: 300px;
+  font-size: 17px;
   text-align: center;
   position: relative;
-  /* display: flex; */
-  /* justify-content: center; */
-  /* align-items: center; */
 }
 
 .associate-label_ul {
-  width: 150px;
-  max-height: 500px;
+  width: 180px;
+  max-height: 180px;
   overflow-y: scroll;
   margin-top: 0px;
   background-color: aliceblue;
   list-style-type: decimal;
   border: black 2px;
   position: absolute;
-  left: 18%;
-  z-index: 1;  width: 150px;
-  max-height: 500px;
-  overflow-y: scroll;
-  margin-top: 0px;
-  background-color: aliceblue;
-  list-style-type: decimal;
-  border: black 2px;
-  position: absolute;
-  left: 18%;
   z-index: 1;
+  left: 8%;
 }
 </style>
