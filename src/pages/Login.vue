@@ -45,7 +45,7 @@ export default {
     return {
       logining: false,
       ruleForm: {
-        username: "admin",
+        username: "",
         password: ""
       },
       rules: {
