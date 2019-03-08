@@ -4,14 +4,14 @@
   <div class="login-page">
     <div class=logo>
       <img src="../assets/Lenovo.png">
-      <h2>深圳联想研究院AiLab<br>V 1.0.0 </h2>
+      <h2>Lenovo Research SZ , AI Lab<br>V 1.0.0 </h2>
     </div>
     <div class="page-content">
 
       <div class="info">
         <!-- 注意引用图片的方式 -->
         <img src="../assets/logo-blue.png">
-        <span>数据集管理系统</span>
+        <span>CV数据标注平台</span>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
         <div class="title">
@@ -45,7 +45,7 @@ export default {
     return {
       logining: false,
       ruleForm: {
-        username: "admin",
+        username: "",
         password: ""
       },
       rules: {
