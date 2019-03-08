@@ -44,7 +44,7 @@
             </el-input>
             <el-button type="primary" @click="downZipClusterFiles">查找并下载</el-button>
 
-            <div class="associate-label_ul">
+            <div class="associate-label_ul" v-show="isShow">
               <ol>
                 <li class="el-dropdown-menu__item" v-for="(tag,index) in associateLabels" v-bind:key="index" @click="setSearchText(tag.cluster_name)" :class="{bgc: index == nowInAssociates}">
                   {{ tag.cluster_name }}
@@ -93,6 +93,7 @@ export default {
       associateLabels: [],
       allTagsList: [],
       nowInAssociates: -1,
+      isShow: false,
     }
   },
   methods: {
@@ -130,16 +131,24 @@ export default {
     },
     searchAssociate() {
       this.associateLabels = [];
-      for (var i = 0; i < this.allTagsList.length; i++) {
-        var label = this.allTagsList[i].cluster_name;
-        if (this.searchTag != "" && label.toLowerCase().indexOf(this.searchTag.toLowerCase()) != -1) {
-          this.associateLabels.push(this.allTagsList[i]);
+
+      if (this.searchTag == "") {
+        this.isShow = false;
+      } else {
+        this.isShow = true;
+        for (var i = 0; i < this.allTagsList.length; i++) {
+          var label = this.allTagsList[i].cluster_name;
+          if (this.searchTag != "" && label.toLowerCase().indexOf(this.searchTag.toLowerCase()) != -1) {
+            this.associateLabels.push(this.allTagsList[i]);
+          }
         }
       }
+
     },
     setSearchText(cluster_name) {
       this.searchTag = cluster_name;
       this.searchAssociate();
+      this.isShow = false;
     },
     down: function() {
       console.log("按下了 keycode ： down");
@@ -368,7 +377,7 @@ export default {
 
 .tagInput,
 .el-input {
-  width: 180px;
+  width: 40%;
   height: 40px;
   font-size: 15px;
   float: left;
