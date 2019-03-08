@@ -109,8 +109,12 @@ export default {
             },
             {
               name: 'dataSet',
-              menuName: '数据集'
-            }
+              menuName: '图片数据集'
+            },
+            {
+              name: 'videoDataSet',
+              menuName: '视频数据集'
+            },
           ]
         },
         {
