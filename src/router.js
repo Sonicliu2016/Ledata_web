@@ -21,6 +21,7 @@ import VerifyTask from './pages/task/verifyTask.vue';
 import UserDetail from './pages/user/userDetail.vue';
 import UnrecognizedPage from './pages/task/unrecognizedPage.vue';
 import User from './modules/UserModule.js';
+import VideoDataSet from './pages/dataSet/videoDataSet.vue';
 
 //注册全局组件
 Vue.component('headerVue', Head);
@@ -54,6 +55,7 @@ const routes = [
       {name:'userDetail',path:'/userDetail',component:UserDetail},
       {name:'downloadManager',path:'/downloadManager',component:DownloadManager},
       {name:"dataSet",path:'/dataSet',component:DataSet},
+      {name:"videoDataSet",path:'/videoDataSet',component:VideoDataSet},
       {name:"classifyImages",path:'/classifyImages',component:ClassifyImages},
       {name:'anotateQualityLabelCheckList',path:'/anotateQualityLabelCheckList',component:AnotateQualityLabelCheckList},
       {name:'anotateQualityImgCheck',path:'/anotateQualityImgCheck',component:AnotateQualityImgCheck},
