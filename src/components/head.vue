@@ -85,6 +85,7 @@
             <!-- <el-dropdown-item command="usercenter">个人中心</el-dropdown-item> -->
             <el-dropdown-item command="logout">注销登录</el-dropdown-item>
             <el-dropdown-item command="helpDoc">使用指南</el-dropdown-item>
+            <el-dropdown-item command="updateInfo">更新信息</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -244,6 +245,10 @@ export default {
         });
       } else if (command == "helpDoc") {
         this.$showPDF(this.helpDocUrl);
+      } else if (command == "updateInfo") {
+        this.$router.push({
+          name: 'updateInfo'
+        });
       }
     },
     getNavIndex() {
