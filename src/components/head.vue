@@ -192,7 +192,7 @@ export default {
               this.sendToDownload();
               if (this.downloadNum > 0) {
                 //等待一段时间再查询一次任务列表
-                this.sleep(1000).then(() => {
+                this.sleep(3000).then(() => {
                   this.getDownloadList();
                 })
                 console.log("有任务执行");
