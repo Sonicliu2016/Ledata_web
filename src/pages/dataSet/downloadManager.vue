@@ -74,6 +74,9 @@
 <script>
 import Global from '../../common/global';
 var global = Global;
+import User from '../../modules/UserModule';
+var user = User;
+import Bus from '../../bus';
 export default {
   data() {
     return {
@@ -87,6 +90,7 @@ export default {
       firstNum: '',
       secondNum: '',
       searchTag: '',
+      username: '',
       file_urls: [],
       zips_url: [],
       totalCount: 0,
@@ -94,9 +98,16 @@ export default {
       allTagsList: [],
       nowInAssociates: -1,
       isShow: false,
+      downloadNum: 0, //接受自head的正在压缩的任务数
+      maxDownload: 3, //正在压缩的最大任务数
+      signal: 1,
     }
   },
   methods: {
+    //发送新任务产生的信号给head，触发开始监视任务列表状态
+    sendToHead() {
+      Bus.$emit('signal', this.signal);
+    },
     getMediaTotalCount() {
       var params = new URLSearchParams();
       this.$axios({
@@ -204,18 +215,69 @@ export default {
       }, 5 * 60 * 1000);
     },
     searchNumAndDownload() {
-      console.log(this.firstNum + "------" + this.secondNum + "------" + (this.firstNum >= this.secondNum))
-      if (this.strIsNull(this.firstNum) || this.strIsNull(this.secondNum)) {
-        this.$message.error('请输入起始和结束范围！');
-      } else if (Number(this.firstNum) >= Number(this.secondNum)) {
-        this.$message.error('请输入合适的范围！');
+      if (this.downloadNum < this.maxDownload) {
+        console.log(this.firstNum + "------" + this.secondNum + "------" + (this.firstNum >= this.secondNum))
+        if (this.strIsNull(this.firstNum) || this.strIsNull(this.secondNum)) {
+          this.$message.error('请输入起始和结束范围！');
+        } else if (Number(this.firstNum) >= Number(this.secondNum)) {
+          this.$message.error('请输入合适的范围！');
+        } else {
+          var params = new URLSearchParams();
+          params.append('startNum', this.firstNum);
+          params.append('endNum', this.secondNum);
+          params.append('userName', this.username);
+          this.$axios({
+              method: 'post',
+              url: this.downloadNumZipUrl,
+              data: params,
+            })
+            .then(res => {
+              console.log("请求成功:" + res.data.code);
+              if (res.data.code == 200) {
+                if (res.data.data != "") {
+                  this.zips_url = res.data.data.zips_url;
+                  if (this.zips_url.length > 0) {
+                    for (var i = 0; i < this.zips_url.length; i++) {
+                      this.getFileFromService(this.zips_url[i].zip_url);
+                      this.$message({
+                        message: '正在开始下载！',
+                        type: 'success'
+                      });
+                    }
+                  } else {
+                    this.$message.error('没有可下载的照片！');
+                  }
+                } else {
+                  this.sendToHead();
+                  this.$message({
+                    message: res.data.msg,
+                    type: 'success'
+                  });
+                }
+              }
+            })
+            .catch(err => {
+              console.log("error:" + err);
+              alert("服务器出现故障，请稍后再试！");
+            })
+        }
       } else {
+        this.$alert('当前任务已达上限，请等待当前任务完成', '服务器繁忙', {
+          confirmButtonText: '确定',
+          center: true
+        });
+      }
+    },
+
+    //查找标签并下载照片
+    downZipClusterFiles() {
+      if (this.downloadNum < this.maxDownload) {
         var params = new URLSearchParams();
-        params.append('startNum', this.firstNum);
-        params.append('endNum', this.secondNum);
+        params.append('clusterName', this.searchTag);
+        params.append('userName', this.username);
         this.$axios({
             method: 'post',
-            url: this.downloadNumZipUrl,
+            url: this.downloadClusterZipUrl,
             data: params,
           })
           .then(res => {
@@ -235,6 +297,7 @@ export default {
                   this.$message.error('没有可下载的照片！');
                 }
               } else {
+                this.sendToHead();
                 this.$message({
                   message: res.data.msg,
                   type: 'success'
@@ -246,46 +309,12 @@ export default {
             console.log("error:" + err);
             alert("服务器出现故障，请稍后再试！");
           })
+      } else {
+        this.$alert('当前任务已达上限，请等待当前任务完成', '服务器繁忙', {
+          confirmButtonText: '确定',
+          center: true
+        });
       }
-    },
-
-    //查找标签并下载照片
-    downZipClusterFiles() {
-      var params = new URLSearchParams();
-      params.append('clusterName', this.searchTag);
-      this.$axios({
-          method: 'post',
-          url: this.downloadClusterZipUrl,
-          data: params,
-        })
-        .then(res => {
-          console.log("请求成功:" + res.data.code);
-          if (res.data.code == 200) {
-            if (res.data.data != "") {
-              this.zips_url = res.data.data.zips_url;
-              if (this.zips_url.length > 0) {
-                for (var i = 0; i < this.zips_url.length; i++) {
-                  this.getFileFromService(this.zips_url[i].zip_url);
-                  this.$message({
-                    message: '正在开始下载！',
-                    type: 'success'
-                  });
-                }
-              } else {
-                this.$message.error('没有可下载的照片！');
-              }
-            } else {
-              this.$message({
-                message: res.data.msg,
-                type: 'success'
-              });
-            }
-          }
-        })
-        .catch(err => {
-          console.log("error:" + err);
-          alert("服务器出现故障，请稍后再试！");
-        })
     },
     getFileFromService(url) {
       console.log("开始下载:", url)
@@ -342,6 +371,13 @@ export default {
   created() {
     this.getMediaTotalCount();
     this.getAllTagList();
+    this.username = user.methods.getUserName();
+  },
+  //接收来自head的正在压缩任务数
+  mounted() {
+    Bus.$on('num', (e) => {
+      this.downloadNum = e
+    })
   },
   components: {
 

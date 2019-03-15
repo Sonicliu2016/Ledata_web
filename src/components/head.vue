@@ -51,13 +51,36 @@
         <!-- 导航菜单 -->
       </div>
     </el-col>
+    <el-col :span="1">
+      <div class="download-content" v-if="isAdmin">
+        <el-dropdown>
+          <i class="el-icon-download" style="padding-top:20px;font-size: 25px;color:#fff"></i>
+          <el-dropdown-menu slot="dropdown">
+            <el-table :data="downloadList" class="downloadTable" align="center" border height="400">
+              <el-table-column prop="zip_name" label="下载名称" width="160" align="center">
+              </el-table-column>
+              <el-table-column prop="downloadStatus" label="下载状态" width="100" align="center">
 
+              </el-table-column>
+              <el-table-column label="操作" width="100" align="center">
+                <template slot-scope="scope">
+                  <i class="el-icon-loading" v-show='scope.row.zip_url==""'></i>
+                  <el-button @click="downloadFile(scope.row)" type="text" v-show='scope.row.zip_url!=""'>下载</el-button>
+                  <el-button @click="deleteDownload(scope.row)" type="text">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+    </el-col>
     <el-col :span="3">
+
       <div class="user-content">
         <el-dropdown @command="handleCommand">
           <span class="userinfo">{{username}}
-              <i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
           <el-dropdown-menu slot="dropdown">
             <!-- <el-dropdown-item command="usercenter">个人中心</el-dropdown-item> -->
             <el-dropdown-item command="logout">注销登录</el-dropdown-item>
@@ -76,9 +99,14 @@ import Global from '../common/global';
 var global = Global;
 import User from '../modules/UserModule.js';
 var user = User;
+import Bus from '../bus'; //中央总线用于和download传输当前正在进行的任务数
 export default {
   data() {
     return {
+      getBigFileUrl: 'file/getBigFile',
+      signal: 0,
+      downloadNum: 0,
+      downloadList: [],
       baseUrl: '',
       helpDocUrl: '',
       username: '',
@@ -135,6 +163,78 @@ export default {
     };
   },
   methods: {
+    //发送正在压缩的任务数
+    sendToDownload() {
+      Bus.$emit('num', this.downloadNum);
+    },
+    getDownloadList() {
+      var params = new URLSearchParams();
+      params.append('userName', this.username);
+      this.$axios({
+          method: 'post',
+          url: '/file/getDownloadTaskList',
+          data: params,
+        })
+        .then(res => {
+          console.log("请求下载列表成功:" + res.data.code);
+          if (res.data.code == 200) {
+            if (res.data.data != "") {
+              this.downloadList = res.data.data.zips_url;
+              this.downloadNum = 0;
+              for (var i = 0; i < this.downloadList.length; i++) {
+                if (this.downloadList[i].zip_url == "") {
+                  this.downloadList[i].downloadStatus = "正在压缩";
+                  this.downloadNum++;
+                } else {
+                  this.downloadList[i].downloadStatus = "压缩完毕";
+                }
+              }
+              this.sendToDownload();
+              if (this.downloadNum > 0) {
+                //等待一段时间再查询一次任务列表
+                this.sleep(1000).then(() => {
+                  this.getDownloadList();
+                })
+                console.log("有任务执行");
+              }
+            } else {
+              this.downloadList = [];
+            }
+          }
+
+        })
+        .catch(err => {
+          console.log("error:" + err);
+          alert("服务器出现故障，请稍后再试");
+        })
+    },
+    //等待函数
+    sleep(time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    },
+    downloadFile(row) {
+      window.location.href = global.BASE_URL + this.getBigFileUrl + "?path=" + row.zip_url;
+    },
+    deleteDownload(row) {
+      console.log(row);
+      var params = new URLSearchParams();
+      params.append('zipName', row.zip_name);
+      this.$axios({
+          method: 'post',
+          url: '/file/deleteDownloadTask',
+          data: params
+        })
+        .then(res => {
+          console.log("删除成功:" + res.data.code);
+          if (res.data.code == 200) {
+            this.getDownloadList();
+          }
+        })
+        .catch(err => {
+          console.log("error:" + err);
+          alert("服务器出现故障，请稍后再试！");
+        })
+    },
     handleCommand(command) {
       if (command == "logout") {
         console.log("注销登录");
@@ -171,8 +271,10 @@ export default {
     this.baseUrl = global.BASE_URL;
     this.helpDocUrl = this.baseUrl + 'static/pdf/ledataHelpDoc.pdf';
     this.username = user.methods.getUserName();
+    this.signal = 0;
     if (user.methods.isAdmin()) {
       this.isAdmin = true;
+      this.getDownloadList();
     } else {
       this.isAdmin = false;
       this.deleteFromList(this.navList, '用户管理');
@@ -180,11 +282,23 @@ export default {
       this.deleteFromList(this.navList, '下载');
       //  this.navList.shift();
     }
+
+  },
+  mounted() {
+    //接受download新任务产生的信号量
+    Bus.$on('signal', (e) => {
+      this.signal = this.signal + e;
+      console.log("signal " + this.signal);
+    })
   },
   watch: {
     '$store.state.navIndex': function() {
       //  this.getNavIndex();
     },
+    //监视信号量改变，触发 created 之后的第一次查询
+    signal() {
+      this.getDownloadList();
+    }
   }
 }
 </script>
@@ -260,6 +374,13 @@ export default {
   list-style-type: none;
 }
 
+.downloadTable {
+  width: 100%;
+  height: 400px;
+  /* overflow-y: scroll; */
+  text-align: center;
+  /* padding: 5px; */
+}
 /* 去掉router-link链接文字的下划线 */
 a {
   text-decoration: none;
