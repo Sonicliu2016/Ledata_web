@@ -57,17 +57,20 @@
           <i class="el-icon-download" style="padding-top:20px;font-size: 25px;color:#fff"></i>
           <el-dropdown-menu slot="dropdown">
             <el-table :data="downloadList" class="downloadTable" align="center" border height="400">
-              <el-table-column prop="zip_name" label="下载名称" width="160" align="center">
+              <el-table-column prop="zip_name" label="下载名称" width="180" align="center">
               </el-table-column>
               <el-table-column prop="downloadStatus" label="下载状态" width="100" align="center">
 
               </el-table-column>
               <el-table-column label="操作" width="100" align="center">
-                <template slot-scope="scope">
+                <div slot-scope="scope">
                   <i class="el-icon-loading" v-show='scope.row.zip_url==""'></i>
                   <el-button @click="downloadFile(scope.row)" type="text" v-show='scope.row.zip_url!=""'>下载</el-button>
-                  <el-button @click="deleteDownload(scope.row)" type="text">删除</el-button>
-                </template>
+                  <!-- <el-button @click="deleteDownload(scope.row)" type="text">删除</el-button> -->
+                  <div @click="deleteDownload(scope.row)" style="cursor: pointer;display:inline">
+                    <i class="el-icon-close"></i>
+                  </div>
+                </div>
               </el-table-column>
             </el-table>
           </el-dropdown-menu>
@@ -85,6 +88,7 @@
             <!-- <el-dropdown-item command="usercenter">个人中心</el-dropdown-item> -->
             <el-dropdown-item command="logout">注销登录</el-dropdown-item>
             <el-dropdown-item command="helpDoc">使用指南</el-dropdown-item>
+            <el-dropdown-item command="updateInfo">更新信息</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -244,6 +248,10 @@ export default {
         });
       } else if (command == "helpDoc") {
         this.$showPDF(this.helpDocUrl);
+      } else if (command == "updateInfo") {
+        this.$router.push({
+          name: 'updateInfo'
+        });
       }
     },
     getNavIndex() {

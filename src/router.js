@@ -21,7 +21,9 @@ import VerifyTask from './pages/task/verifyTask.vue';
 import UserDetail from './pages/user/userDetail.vue';
 import UnrecognizedPage from './pages/task/unrecognizedPage.vue';
 import User from './modules/UserModule.js';
+import Bus from './bus';
 import VideoDataSet from './pages/dataSet/videoDataSet.vue';
+import UpdateInfo from './pages/updateInfo.vue';
 
 //注册全局组件
 Vue.component('headerVue', Head);
@@ -39,6 +41,7 @@ const routes = [
       requireLogin: true,
     },
     children:[
+      {name:'updateInfo',path:'/updateInfo',component:UpdateInfo},
       {name:'userList',path:'/userList',component:UserList},
       {name:'taggingImg',path:'/taggingImg',component:TaggingImage},
       {name:'taskList',path:'/taskList',component:TaskList,
