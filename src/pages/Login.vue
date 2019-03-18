@@ -3,8 +3,8 @@
 
   <div class="login-page">
     <div class=logo>
-      <img src="../assets/Lenovo.png">
-      <h2>Lenovo Research SZ , AI Lab<br>V 1.0.0 </h2>
+      <h1>AI Lab SZ LR<br>V 1.0.0 </h1>
+      <img src="../assets/Lenovo1.png">
     </div>
     <div class="page-content">
 
@@ -32,6 +32,10 @@
           <el-button type="primary" style="width:100%;" @click.native.prevent="login" :loading="logining">登录</el-button>
         </el-form-item>
       </el-form>
+
+    <div style="margin-top:10px;margin-left:10px">
+      <h3>小提示：请用谷歌浏览器或者火狐浏览器登录使用！</h3>
+    </div>
     </div>
   </div>
 </div>
@@ -170,9 +174,10 @@ export default {
 
 .logo {
   position: absolute;
-  right: 10px;
-  bottom: 0;
+  right: 0px;
+  bottom: 0px;
   text-align: center;
+  padding-bottom: 0px;
   /* display: flex; */
   color: #000000;
   display: block;
