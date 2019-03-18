@@ -67,7 +67,7 @@
                   <i class="el-icon-loading" v-show='scope.row.zip_url==""'></i>
                   <el-button @click="downloadFile(scope.row)" type="text" v-show='scope.row.zip_url!=""'>下载</el-button>
                   <!-- <el-button @click="deleteDownload(scope.row)" type="text">删除</el-button> -->
-                  <div @click="deleteDownload(scope.row)" style="cursor: pointer;display:inline">
+                  <div @click="deleteDownload(scope.row)" style="cursor: pointer;display:inline" v-show='scope.row.zip_url!=""'>
                     <i class="el-icon-close"></i>
                   </div>
                 </div>
