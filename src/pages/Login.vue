@@ -3,7 +3,7 @@
 
   <div class="login-page">
     <div class=logo>
-      <h1>AI Lab SZ LR<br>V 1.0.0 </h1>
+      <h1>AI Lab SZ LR<br>V 1.0.1 </h1>
       <img src="../assets/Lenovo1.png">
     </div>
     <div class="page-content">

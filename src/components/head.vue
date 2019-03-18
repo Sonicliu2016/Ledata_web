@@ -67,7 +67,7 @@
                   <i class="el-icon-loading" v-show='scope.row.zip_url==""'></i>
                   <el-button @click="downloadFile(scope.row)" type="text" v-show='scope.row.zip_url!=""'>下载</el-button>
                   <!-- <el-button @click="deleteDownload(scope.row)" type="text">删除</el-button> -->
-                  <div @click="deleteDownload(scope.row)" style="cursor: pointer;display:inline">
+                  <div @click="deleteDownload(scope.row)" style="cursor: pointer;display:inline" v-show='scope.row.zip_url!=""'>
                     <i class="el-icon-close"></i>
                   </div>
                 </div>
@@ -88,7 +88,7 @@
             <!-- <el-dropdown-item command="usercenter">个人中心</el-dropdown-item> -->
             <el-dropdown-item command="logout">注销登录</el-dropdown-item>
             <el-dropdown-item command="helpDoc">使用指南</el-dropdown-item>
-            <el-dropdown-item command="updateInfo">更新信息</el-dropdown-item>
+            <el-dropdown-item command="updateInfo">版本信息</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
