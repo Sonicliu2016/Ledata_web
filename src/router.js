@@ -22,8 +22,13 @@ import UserDetail from './pages/user/userDetail.vue';
 import UnrecognizedPage from './pages/task/unrecognizedPage.vue';
 import User from './modules/UserModule.js';
 import Bus from './bus';
-import VideoDataSet from './pages/dataSet/videoDataSet.vue';
 import UpdateInfo from './pages/updateInfo.vue';
+
+import VideoDataSet from './pages/dataSet/videoDataSet.vue';
+import VideoTaskList from './pages/task/videoTask/videoTaskList.vue';
+import VideoLabelTask from './pages/task/videoTask/videoLabelTask.vue';
+import VideoTaskAssign from './pages/task/videoTask/videoTaskAssign.vue';
+import TaggingVideo from './pages/task/videoTask/taggingVideo.vue';
 
 //注册全局组件
 Vue.component('headerVue', Head);
@@ -44,6 +49,7 @@ const routes = [
       {name:'updateInfo',path:'/updateInfo',component:UpdateInfo},
       {name:'userList',path:'/userList',component:UserList},
       {name:'taggingImg',path:'/taggingImg',component:TaggingImage},
+      {name:'taggingVideo',path:'/taggingVideo',component:TaggingVideo},
       {name:'taskList',path:'/taskList',component:TaskList,
         redirect:'/labelTask',
         children:[
@@ -54,6 +60,16 @@ const routes = [
                   {name:'evaluateTaskList',path:'/evaluateTaskList',component:EvaluateTaskList},
                   ]
       },
+      {name:'videoTaskList',path:'/videoTaskList',component:VideoTaskList,
+        redirect:'/videoLabelTask',
+        children:[
+                  {name:'videoLabelTask',path:'/videoLabelTask',component:VideoLabelTask},
+                  // {name:'verifyTask',path:'/verifyTask',component:VerifyTask},
+                  {name:'videoTaskAssign',path:'/videoTaskAssign',component:VideoTaskAssign},
+                  // {name:'unrecognized',path:'/unrecognized',component:UnrecognizedPage},
+                  // {name:'evaluateTaskList',path:'/evaluateTaskList',component:EvaluateTaskList},
+                  ]
+      },
       {name:'verificationTask',path:'/verificationTask',component:VerificationTask},
       {name:'userDetail',path:'/userDetail',component:UserDetail},
       {name:'downloadManager',path:'/downloadManager',component:DownloadManager},
@@ -62,6 +78,7 @@ const routes = [
       {name:"classifyImages",path:'/classifyImages',component:ClassifyImages},
       {name:'anotateQualityLabelCheckList',path:'/anotateQualityLabelCheckList',component:AnotateQualityLabelCheckList},
       {name:'anotateQualityImgCheck',path:'/anotateQualityImgCheck',component:AnotateQualityImgCheck},
+
     ]
   },
   // 404页面(当输入地址错误时，显示404页面)

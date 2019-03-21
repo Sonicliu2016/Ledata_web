@@ -122,9 +122,18 @@ export default {
           hasChild: false
         },
         {
-          name: 'taskList',
+          name: 'task',
           menuName: '任务管理',
-          hasChild: false
+          hasChild: true,
+          children: [{
+              name: 'taskList',
+              menuName: '图片任务管理'
+            },
+            {
+              name: 'videoTaskList',
+              menuName: '视频任务管理'
+            }
+          ]
         },
         {
           name: 'userDetail',
@@ -155,11 +164,15 @@ export default {
           hasChild: true,
           children: [{
               name: 'taggingImg',
-              menuName: '标注任务'
+              menuName: '图片标注任务'
             },
             {
               name: 'verificationTask',
-              menuName: '验证任务'
+              menuName: '图片验证任务'
+            },
+            {
+              name: 'taggingVideo',
+              menuName: '视频标注任务'
             }
           ]
         }
