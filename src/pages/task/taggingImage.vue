@@ -6,31 +6,31 @@
     <div class="img-box">
       <img v-bind:src="baseurl + curEditTask.media_url" />
       <button type="button" class="el-carousel__arrow el-carousel__arrow--left" @click="setCurrent(curTask,-1)">
-          <i class="el-icon-arrow-left"></i>
-        </button>
+        <i class="el-icon-arrow-left"></i>
+      </button>
       <button type="button" class="el-carousel__arrow el-carousel__arrow--right" @click="setCurrent(curTask,1)">
-          <i class="el-icon-arrow-right"></i>
-        </button>
+        <i class="el-icon-arrow-right"></i>
+      </button>
     </div>
 
     <div class='select-tag-box'>
       <span>已选分类：</span>
       <span class="only-select-tag-box">
-          <el-tag @click.native="setSelect(tag)" @keyup.delete.native="deleteSelectTag()" :props="selectLabelsProps" v-for="tag in curEditTask.tags" :key="tag.name" closable @close="remove(tag)" is-focusable :type="tag.type">
-            {{tag.cluster_name}}
-          </el-tag>
-        </span>
+        <el-tag @click.native="setSelect(tag)" @keyup.delete.native="deleteSelectTag()" :props="selectLabelsProps" v-for="tag in curEditTask.tags" :key="tag.name" closable @close="remove(tag)" is-focusable :type="tag.type">
+          {{tag.cluster_name}}
+        </el-tag>
+      </span>
       <div class="button-box">
         <span class="commit-box">
-            <el-button type="danger" round @click="submitAnnotateTask(3)">删除</el-button>
-            <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
-            <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
-          </span>
+          <el-button type="danger" round @click="submitAnnotateTask(3)">删除</el-button>
+          <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
+          <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
+        </span>
         <span class="complete-box">
-            <el-button type="success" size="big" @click="showCompleteDialog">
-              完成任务
-            </el-button>
-          </span>
+          <el-button type="success" size="big" @click="showCompleteDialog">
+            完成任务
+          </el-button>
+        </span>
       </div>
     </div>
   </div>
@@ -38,9 +38,9 @@
   <el-dialog title="提示" :visible.sync="centerDialogVisible" width="30%" center>
     <span>确定要完成该批任务吗？</span>
     <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">继续浏览</el-button>
-        <el-button type="primary" @click="clickComplete">完成任务</el-button>
-      </span>
+      <el-button @click="centerDialogVisible = false">继续浏览</el-button>
+      <el-button type="primary" @click="clickComplete">完成任务</el-button>
+    </span>
   </el-dialog>
 
   <el-tabs v-model="activeTabName" type="border-card" style="position:positive;z-index:-1;">
@@ -74,8 +74,8 @@
         </el-button> -->
       <div class="el-transfer-panel__filter el-input el-input--small el-input--prefix " style="margin-top:10px;">
         <span class="el-input__prefix">
-            <i class="el-input__icon el-icon-search"></i>
-          </span>
+          <i class="el-input__icon el-icon-search"></i>
+        </span>
         <input v-model="searchTv" type="text" v-on:input="searchAssociate" autocomplete="off" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(1)" placeholder="请输入标签名称" class="el-input__inner" @keyup.enter="addFromSearch2Select()">
 
         <div class="associate-label_ul">
@@ -113,7 +113,7 @@ var user = User;
 export default {
   data() {
     return {
-      imgUrl:"",
+      imgUrl: "",
       centerDialogVisible: false,
       showDiaCount: 0,
       filterText: '',
@@ -293,7 +293,7 @@ export default {
           this.associateLabels.push(label);
         }
       }
-      this.associateLabels.sort(function (m, n) {
+      this.associateLabels.sort(function(m, n) {
         if (m.slice(0, 1) == text.slice(0, 1)) {
           return -1;
         } else if (n.slice(0, 1) == text.slice(0, 1)) {
@@ -390,6 +390,10 @@ export default {
             } else {
               this.curTask = [];
               this.curEditTask = [];
+              this.$alert('请联系管理员分配任务', '无标注任务', {
+                confirmButtonText: '确定',
+                center: true
+              });
             }
             this.refreshTaskProgress();
           } else {
@@ -440,32 +444,32 @@ export default {
     },
     filterTaskList(a) {
       if (a == 0) {
-        return this.taskList.filter(function (item) {
+        return this.taskList.filter(function(item) {
           return item.status == "未标";
         });
       } else if (a == 1) {
-        return this.taskList.filter(function (item) {
+        return this.taskList.filter(function(item) {
           return item.status == "已标";
         });
       } else if (a == 2) {
-        return this.taskList.filter(function (item) {
+        return this.taskList.filter(function(item) {
           return item.status == "错误";
         });
       } else if (a == 3) {
-        return this.taskList.filter(function (item) {
+        return this.taskList.filter(function(item) {
           return item.status == "删除";
         });
       }
     },
-    showCompleteDialog(){
+    showCompleteDialog() {
       console.log("点击提交：" + this.taskList.length);
-      if(this.taskList.length > 0){
+      if (this.taskList.length > 0) {
         this.centerDialogVisible = true;
-      }else{
+      } else {
         this.showMsg("当前没有任务需要提交！");
       }
     },
-    
+
     clickComplete() {
       this.centerDialogVisible = false;
       var rest = this.filterTaskList(0).length;
@@ -551,7 +555,7 @@ export default {
           this.showMsg("网络错误，提交失败 error:" + err);
         });
     },
-    down: function () {
+    down: function() {
       console.log("按下了 keycode ： down");
       this.nowInAssociates++;
       if (this.nowInAssociates >= this.associateLabels.length) {
@@ -560,7 +564,7 @@ export default {
       this.searchTv = this.associateLabels[this.nowInAssociates];
     },
     // ↑ 选择值，控制 li 的 .bgc
-    up: function () {
+    up: function() {
       console.log("按下了 keycode ： up");
       this.nowInAssociates--;
       if (this.nowInAssociates < -1) {

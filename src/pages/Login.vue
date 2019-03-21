@@ -3,15 +3,15 @@
 
   <div class="login-page">
     <div class=logo>
-      <img src="../assets/lenovo.png">
-      <h2>深圳联想研究院AiLab<br>V 1.0.0 </h2>
+      <h1>AI Lab SZ LR<br>V 1.0.1 </h1>
+      <img src="../assets/Lenovo1.png">
     </div>
     <div class="page-content">
 
       <div class="info">
         <!-- 注意引用图片的方式 -->
         <img src="../assets/logo-blue.png">
-        <span>数据集管理系统</span>
+        <span>CV数据标注平台</span>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
         <div class="title">
@@ -32,6 +32,10 @@
           <el-button type="primary" style="width:100%;" @click.native.prevent="login" :loading="logining">登录</el-button>
         </el-form-item>
       </el-form>
+
+    <div style="margin-top:10px;margin-left:10px">
+      <h3>小提示：请用谷歌浏览器或者火狐浏览器登录使用！</h3>
+    </div>
     </div>
   </div>
 </div>
@@ -45,7 +49,7 @@ export default {
     return {
       logining: false,
       ruleForm: {
-        username: "admin",
+        username: "",
         password: ""
       },
       rules: {
@@ -170,10 +174,13 @@ export default {
 
 .logo {
   position: absolute;
-  right: 10px;
-  bottom: 0;
+  right: 0px;
+  bottom: 0px;
   text-align: center;
-  display: flex;
+  padding-bottom: 0px;
+  /* display: flex; */
   color: #000000;
+  display: block;
 }
+
 </style>
