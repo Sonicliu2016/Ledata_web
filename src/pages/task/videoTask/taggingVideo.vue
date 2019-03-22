@@ -236,7 +236,6 @@ export default {
       console.log("添加成功");
     },
     findAllLabels(labelsStr, tarLabel, parentLabel) {
-      console.log("99");
       for (var i = 0; i < labelsStr.length; i++) {
         var mLabel = labelsStr[i];
         if (mLabel.tag_en_str == tarLabel) {
@@ -360,8 +359,12 @@ export default {
       for (var i = 0; i < this.taskList.length; i++) {
         if (val.id == this.taskList[i].id) {
           this.curEditTask = this.taskList[i];
+          if (this.curEditTask.meida_tags == null) {
+            this.curEditTask.meida_tags = [];
+          }
         }
       }
+
       this.videoSrc = this.baseurl + this.curEditTask.media_url;
       this._dom1 = document.getElementById('myvideo1');
       this._dom2 = document.getElementById('myvideo2');
