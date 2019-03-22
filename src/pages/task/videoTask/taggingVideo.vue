@@ -130,6 +130,7 @@
 import User from '../../../modules/UserModule.js';
 import Global from '../../../common/global.vue';
 var user = User;
+import Bus from '../../../bus';
 export default {
   data() {
     return {
@@ -470,7 +471,6 @@ export default {
                   'video_count': tasks[i].video_count,
                 })
               }
-              console.log(this.allTaskList);
               this.requestForTaskDetail(this.allTaskList[0].id)
               // this.setCurrent(this.taskList[0], 0);
             } else {
@@ -516,7 +516,6 @@ export default {
                 'meida_tags': tasks[i].video_tags
               })
             }
-            console.log("taskList " + this.taskList);
             this.setCurrent(this.taskList[0], 0);
 
             this.refreshTaskProgress();
@@ -689,7 +688,11 @@ export default {
     this.start = false;
     console.log("username:" + this.currentUser);
   },
-  mounted() {}
+  mounted() {
+    Bus.$on('stop', (e) => {
+      this.start = e
+    })
+  }
 };
 </script>
 

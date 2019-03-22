@@ -8,6 +8,7 @@
 <script>
 import User from '../modules/UserModule.js';
 var user = User;
+import Bus from '../bus';
 export default {
   data() {
     return {
@@ -57,13 +58,16 @@ export default {
           alert("服务器出现故障，请稍后再试！");
         })
     },
+    sendToTaggingVideo() {
+      Bus.$emit('stop', false);
+    },
   },
   created() {
     this.curUserName = user.methods.getUserName();
     this.getUserList();
   },
   watch: {
-
+    '$route': 'sendToTaggingVideo'
   },
   components: {
 
