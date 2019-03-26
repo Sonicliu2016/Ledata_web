@@ -28,20 +28,26 @@
           </video>
         </el-col>
       </el-row>
+      <button type="button" class="el-carousel__arrow el-carousel__arrow--left" @click="setCurrent(curTask,-1)">
+        <i class="el-icon-arrow-left"></i>
+      </button>
+      <button type="button" class="el-carousel__arrow el-carousel__arrow--right" @click="setCurrent(curTask,1)">
+        <i class="el-icon-arrow-right"></i>
+      </button>
     </div>
 
     <div class='select-tag-box'>
       <span>已选分类：</span>
       <span class="only-select-tag-box">
-        <el-tag @click.native="setSelect(tag)" @keyup.delete.native="deleteSelectTag()" :props="selectLabelsProps" v-for="tag in curEditTask.meida_tags" :key="tag.name" closable @close="remove(tag)" is-focusable :type="tag.type">
+        <el-tag :props="selectLabelsProps" v-for="tag in curEditTask.video_tags" :key="tag.name" closable @close="remove(tag)" is-focusable :type="tag.type">
           {{tag}}
         </el-tag>
       </span>
       <div class="button-box">
         <span class="commit-box">
-          <el-button type="danger" round @click="submitAnnotateTask(3)">删除</el-button>
+          <el-button type="danger" round @click="submitAnnotateTask(1)">删除</el-button>
           <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
-          <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
+          <el-button type="primary" round @click="submitAnnotateTask(0)">提交</el-button>
           <el-button type="primary" style="float: right;" @click="setStart();playVideo()" v-show="start==false">播放</el-button>
           <el-button type="danger" style="float: right;" @click="setStop()" v-show="start==true">停止</el-button>
         </span>
@@ -69,17 +75,11 @@
       <!-- <el-button type="success" size="small" style="width:18%;float:left；margin-left:18px;" @click="completeTask">
           完成任务
         </el-button> -->
-      <span style="float:right;font-size:12px;color:gray;padding:5px;">{{taskProgress}}</span>
-      <el-table ref="singleTable" :data="taskList" height="500px" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
+      <span style="float:right;font-size:12px;color:gray;padding:5px;margin-left: auto; margin-right: auto;">{{taskProgress}}</span>
+      <el-table ref="singleTable" :data="allTaskList" height="500px" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
         <el-table-column property="id" label="编号" width="50">
         </el-table-column>
-        <el-table-column property="media_url" label="URL" width="180">
-        </el-table-column>
-        <el-table-column property="mainCluster" label="主标签">
-          <!-- <template slot-scope="scope">
-                <span v-for="(item, index) in scope.row.tags" :key="index">
-                  {{item.cluster_name}} </span>
-              </template> -->
+        <el-table-column property="videos_md5" label="MD5" width="360">
         </el-table-column>
         <el-table-column property="status" label="状态" width="120" :filters="[{ text: '未标', value: '未标'}, { text: '已标', value: '已标'}, { text: '错误', value: '错误'}, { text: '删除', value: '删除'}]" :filter-method="filterTaskStatusHandler">
         </el-table-column>
@@ -95,7 +95,7 @@
         <span class="el-input__prefix">
           <i class="el-input__icon el-icon-search"></i>
         </span>
-        <el-input v-model="searchTv" size="medium" prefix-icon="el-icon-search" style="font-size: 16px;" clearable type="text" v-on:input="searchAssociate" autocomplete="off" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(1)"
+        <el-input v-model="searchTv" size="medium" prefix-icon="el-icon-search" style="font-size: 16px;" clearable type="text" v-on:input="searchAssociate" autocomplete="off" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(0)"
           placeholder="请输入标签名称" @keyup.enter="addFromSearch2Select()">
         </el-input>
         <div class="associate-label_ul" v-show="isShow">
@@ -163,7 +163,6 @@ export default {
         tags: []
       },
       allTaskList: [],
-      taskList: [],
       touchtime: '',
       videoSrc: '',
       // videoSrc: baseurl + curEditTask.media_url,
@@ -177,11 +176,11 @@ export default {
       _dom4: '',
     };
   },
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val);
-    },
-  },
+  // watch: {
+  //   filterText(val) {
+  //     this.$refs.tree.filter(val);
+  //   },
+  // },
   methods: {
     filterNode(value, data) {
       if (!value) return true;
@@ -242,11 +241,11 @@ export default {
         if (mLabel.tag_en_str == tarLabel) {
           if (parentLabel != "") {
             if (!this.checkLabelExist(parentLabel)) {
-              this.curEditTask.meida_tags.push(parentLabel);
+              this.curEditTask.video_tags.push(parentLabel);
             }
           }
           if (!this.checkLabelExist(mLabel.tag_en_str)) {
-            this.curEditTask.meida_tags.push(mLabel.tag_en_str);
+            this.curEditTask.video_tags.push(mLabel.tag_en_str);
           }
           break;
         }
@@ -257,10 +256,10 @@ export default {
     },
     //核查标签是否已存在
     checkLabelExist(labelStr) {
-      for (var i = 0; i < this.curEditTask.meida_tags.length; i++) {
-        if (labelStr == this.curEditTask.meida_tags[i].cluster_name) {
-          console.log("不能重复添加:" + this.curEditTask.meida_tags[i].cluster_name);
-          this.showMsg(this.curEditTask.meida_tags[i].cluster_name + "已添加", "warning");
+      for (var i = 0; i < this.curEditTask.video_tags.length; i++) {
+        if (labelStr == this.curEditTask.video_tags[i]) {
+          console.log("不能重复添加:" + this.curEditTask.video_tags[i]);
+          this.showMsg(this.curEditTask.video_tags[i] + "已添加", "warning");
           return true;
         }
       }
@@ -268,7 +267,7 @@ export default {
     },
     // 从已选tag中删除
     remove(tag) {
-      this.curEditTask.meida_tags.splice(this.curEditTask.meida_tags.indexOf(tag), 1);
+      this.curEditTask.video_tags.splice(this.curEditTask.video_tags.indexOf(tag), 1);
     },
     // 设置已选tag列表中，tag为选中状态
     setSelect(tag) {
@@ -277,18 +276,6 @@ export default {
         this.curEditTask.tags[i].type = "";
       }
       tag.type = "danger";
-    },
-    // 点击”->“选择下一个
-    seleceNext(tag) {
-      console.log("选择了 下一个：" + this.curEditTask.tags.indexOf(tag) + 1);
-      setSelect(this.curEditTask.tags[this.curEditTask.tags.indexOf(tag) + 1]);
-    },
-    deleteSelectTag() {
-      for (var i = 0; i < this.curEditTask.tags.length; i++) {
-        if (this.curEditTask.tags[i].type == "danger") {
-          remove(this.curEditTask.tags[i]);
-        }
-      }
     },
     //单击item时，将item的label加入到input选项中
     setSearchText(label) {
@@ -336,20 +323,20 @@ export default {
       });
     },
     setCurrent(row, i) {
-      var index = this.taskList.indexOf(row);
+      var index = this.allTaskList.indexOf(row);
       var rest = this.filterTaskList(0).length;
       if (index != -1) {
         if (i == 1) {
-          if (index + 1 >= this.taskList.length) {
+          if (index + 1 >= this.allTaskList.length) {
             this.showMsg("已是最后一张图片");
           } else {
-            row = this.taskList[index + 1];
+            row = this.allTaskList[index + 1];
           }
         } else if (i == -1) {
           if (index - 1 < 0) {
             this.showMsg("已是第一张图片");
           } else {
-            row = this.taskList[index - 1];
+            row = this.allTaskList[index - 1];
           }
         }
       }
@@ -357,16 +344,10 @@ export default {
     },
     handleCurrentChange(val) {
       this.curTask = val;
-      for (var i = 0; i < this.taskList.length; i++) {
-        if (val.id == this.taskList[i].id) {
-          this.curEditTask = this.taskList[i];
-          if (this.curEditTask.meida_tags == null) {
-            this.curEditTask.meida_tags = [];
-          }
-        }
+      this.requestForTaskDetail(val.videos_md5);
+      if (this.curEditTask.video_tags == null) {
+        this.curEditTask.video_tags = [];
       }
-
-      this.videoSrc = this.baseurl + this.curEditTask.media_url;
       this._dom1 = document.getElementById('myvideo1');
       this._dom2 = document.getElementById('myvideo2');
       this._dom3 = document.getElementById('myvideo3');
@@ -379,10 +360,6 @@ export default {
       this._dom2.muted = true;
       this._dom3.muted = true;
       this._dom4.muted = true;
-      // this._dom1.autoplay = true;
-      // this._dom2.autoplay = true;
-      // this._dom3.autoplay = true;
-      // this._dom4.autoplay = true;
     },
     sleep(time) {
       return new Promise((resolve) => setTimeout(resolve, time));
@@ -455,24 +432,25 @@ export default {
       params.append('userName', this.currentUser);
       this.$axios({
           method: 'post',
-          url: "/video/getVideoLabelTasksState",
+          url: "/video/getVideoLabelTasks",
           data: params
         })
         .then(res => {
           if (res.data.code == 200) {
-            // this.taskId = res.data.data.taskid;
+            this.taskId = res.data.data[0].task_id;
             var tasks = res.data.data;
             this.allTaskList.splice(0, this.allTaskList.length);
             if (tasks != null) {
-              for (var i = 0; i < tasks.length; i++) {
-                var timestamp = new Date().getTime();
+              for (var i = 0; i < tasks[0].videos_md5.length; i++) {
                 this.allTaskList.push({
-                  'id': tasks[i].task_id,
-                  'video_count': tasks[i].video_count,
+                  'id': i + 1,
+                  // 'video_count': tasks[i].video_count,
+                  'videos_md5': tasks[0].videos_md5[i],
+                  'status': this.getTaskStatus(2),
                 })
               }
-              this.requestForTaskDetail(this.allTaskList[0].id)
-              // this.setCurrent(this.taskList[0], 0);
+              // this.requestForTaskDetail(this.allTaskList[0].id)
+              this.setCurrent(this.allTaskList[0], 0);
             } else {
               this.curTask = [];
               this.curEditTask = [];
@@ -492,33 +470,22 @@ export default {
         });
     },
     // 根据任务Id获取任务详情信息
-    requestForTaskDetail(task_id) {
+    requestForTaskDetail(md5) {
       var params = new URLSearchParams();
-      params.append("taskId", task_id);
+      params.append("md5", md5);
       params.append("userName", this.currentUser);
       this.$axios({
           method: 'post',
-          url: "/video/getVideoAndTagsByTaskId",
+          url: "/video/getVideoAndTagsByMd5",
           data: params
         })
         .then(res => {
           if (res.data.code == 200) {
-            // this.taskId = res.data.data.taskid;
-            var tasks = res.data.data.videos;
-            this.taskList.splice(0, this.taskList.length);
-            for (var i = 0; i < tasks.length; i++) {
-              var timestamp = new Date().getTime();
-              this.taskList.push({
-                'id': i,
-                'media_url': tasks[i].video_url,
-                'media_md5': tasks[i].video_md5,
-                // 'status': this.getTaskStatus(tasks[i].MediaAnnotatedState),
-                'meida_tags': tasks[i].video_tags
-              })
+            this.curEditTask = res.data.data;
+            if (this.curEditTask.video_tags == null) {
+              this.curEditTask.video_tags = [];
             }
-            this.setCurrent(this.taskList[0], 0);
-
-            this.refreshTaskProgress();
+            this.videoSrc = this.baseurl + this.curEditTask.video_url;
           } else {
             showMsg("获取任务失败！", "error")
           }
@@ -528,45 +495,38 @@ export default {
         });
     },
     refreshTaskProgress() {
-      this.taskProgress = "共" + this.taskList.length + "个，未标：" + this.filterTaskList(0).length +
-        "，错误：" + this.filterTaskList(2).length + "，删除：" + this.filterTaskList(3).length;
-      this.progress = (this.taskList.length - this.filterTaskList(0).length) * 100 / this.taskList.length;
-      this.progress = this.progress.toFixed(2);
+      this.taskProgress = "共" + this.allTaskList.length + "个，未标：" + this.filterTaskList(2).length +
+        "，删除：" + this.filterTaskList(1).length;
+      this.progress = ((this.allTaskList.length - this.filterTaskList(2).length) * 100 / this.allTaskList.length).toFixed(2);
     },
     getTaskStatus(status) {
       switch (status) {
         case 0:
-          return "未标";
-        case 1:
           return "已标";
-        case 2:
-          return "错误";
-        case 3:
+        case 1:
           return "删除";
+        case 2:
+          return "未标";
       }
     },
     filterTaskList(a) {
-      if (a == 0) {
-        return this.taskList.filter(function(item) {
+      if (a == 2) {
+        return this.allTaskList.filter(function(item) {
           return item.status == "未标";
         });
-      } else if (a == 1) {
-        return this.taskList.filter(function(item) {
+      } else if (a == 0) {
+        return this.allTaskList.filter(function(item) {
           return item.status == "已标";
         });
-      } else if (a == 2) {
-        return this.taskList.filter(function(item) {
-          return item.status == "错误";
-        });
-      } else if (a == 3) {
-        return this.taskList.filter(function(item) {
+      } else if (a == 1) {
+        return this.allTaskList.filter(function(item) {
           return item.status == "删除";
         });
       }
     },
     showCompleteDialog() {
-      console.log("点击提交：" + this.taskList.length);
-      if (this.taskList.length > 0) {
+      console.log("点击提交：" + this.allTaskList.length);
+      if (this.allTaskList.length > 0) {
         this.centerDialogVisible = true;
       } else {
         this.showMsg("当前没有任务需要提交！");
@@ -575,26 +535,25 @@ export default {
 
     clickComplete() {
       this.centerDialogVisible = false;
-      var rest = this.filterTaskList(0).length;
+      var rest = this.filterTaskList(2).length;
       console.log("rest:" + rest);
       if (rest == 0) {
         this.completeTask();
       } else {
-        this.showMsg("还有" + this.filterTaskList(0).length + "张未标，提交失败");
+        this.showMsg("还有" + this.filterTaskList(2).length + "张未标，提交失败");
       }
     },
-    //提交当前任务 submitType:(1:提交 2：错误 3：删除)
+    //提交当前任务 submitType:(0:提交 1：删除)
     submitAnnotateTask(submitType) {
       var params = new URLSearchParams();
-      params.append("type", submitType);
-      params.append("clusters", this.transFormTags2Str(this.curEditTask.tags));
-      params.append("username", this.currentUser);
-      params.append("tasktype", 0);
-      params.append("mediamd5", this.curEditTask.media_md5);
-      console.log("requestForTaskDetail 请求ready:" + this.transFormTags2Str(this.curEditTask.tags));
+      params.append("submitType", submitType);
+      params.append("tagStr", this.transFormTags2Str(this.curEditTask.video_tags));
+      params.append("userName", this.currentUser);
+      params.append("videoMd5", this.curEditTask.video_md5);
+      console.log("requestForTaskDetail 请求ready:" + this.transFormTags2Str(this.curEditTask.video_tags));
       this.$axios({
           method: 'post',
-          url: "/task/submitAnnotateTask",
+          url: "/video/submitVideoTags",
           data: params
         })
         .then(res => {
@@ -617,7 +576,7 @@ export default {
     transFormTags2Str(tagsJson) {
       var str = "";
       for (var i = 0; i < tagsJson.length; i++) {
-        str += (tagsJson[i].cluster_name + ",");
+        str += (tagsJson[i] + ",");
       }
       console.log("transFormTags2Str: " + str);
       return str;
@@ -636,11 +595,12 @@ export default {
     },
     completeTask() {
       var params = new URLSearchParams();
-      params.append("taskid", this.taskId);
-      console.log("taskid: " + this.taskId)
+      params.append("taskId", this.taskId);
+      params.append("userName", this.currentUser);
+      console.log("taskid: " + this.taskId);
       this.$axios({
           method: 'post',
-          url: "/task/completeAnnotateTask",
+          url: "/video/completeVideoLabelTask",
           data: params
         })
         .then(res => {
