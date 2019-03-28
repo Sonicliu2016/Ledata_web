@@ -45,9 +45,9 @@
       </span>
       <div class="button-box">
         <span class="commit-box">
-          <el-button type="danger" round @click="submitAnnotateTask(1)">删除</el-button>
+          <el-button type="danger" round @click="submitAnnotateTask(2)">删除</el-button>
           <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
-          <el-button type="primary" round @click="submitAnnotateTask(0)">提交</el-button>
+          <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
           <el-button type="primary" style="float: right;" @click="setStart();playVideo()" v-show="start==false">播放</el-button>
           <el-button type="danger" style="float: right;" @click="setStop()" v-show="start==true">停止</el-button>
         </span>
@@ -269,14 +269,6 @@ export default {
     remove(tag) {
       this.curEditTask.video_tags.splice(this.curEditTask.video_tags.indexOf(tag), 1);
     },
-    // 设置已选tag列表中，tag为选中状态
-    setSelect(tag) {
-      console.log("选择了：" + tag);
-      for (var i = 0; i < this.curEditTask.tags.length; i++) {
-        this.curEditTask.tags[i].type = "";
-      }
-      tag.type = "danger";
-    },
     //单击item时，将item的label加入到input选项中
     setSearchText(label) {
       if (new Date().getTime() - this.touchtime < 500) {
@@ -322,6 +314,7 @@ export default {
         }
       });
     },
+    //在列表中前后切换当前任务
     setCurrent(row, i) {
       var index = this.allTaskList.indexOf(row);
       var rest = this.filterTaskList(0).length;
@@ -342,6 +335,7 @@ export default {
       }
       this.$refs.singleTable.setCurrentRow(row);
     },
+    //列表点击选择当前任务
     handleCurrentChange(val) {
       this.curTask = val;
       this.requestForTaskDetail(val.videos_md5);
@@ -361,9 +355,11 @@ export default {
       this._dom3.muted = true;
       this._dom4.muted = true;
     },
+    //等待播放时长，然后重新进行定位并播放
     sleep(time) {
       return new Promise((resolve) => setTimeout(resolve, time));
     },
+    //定位各个视频的起点，进行播放
     playVideo() {
       console.log("play,start:" + this.start);
       if (this.start == true) {
@@ -387,6 +383,7 @@ export default {
       this._dom4.pause();
       this.playVideo();
     },
+    //循环播放的开关
     setStart() {
       this.start = true;
     },
@@ -409,12 +406,7 @@ export default {
     getLableList() {
       this.$axios
         .post(
-          "video/getAllVideoTags", {}, {
-            //跨域请求配置参数
-            // headers: {
-            //   "Content-Type": "application/x-www-form-urlencoded"
-            // }
-          }
+          "video/getAllVideoTags",
         )
         .then(res => {
           this.data4 = res.data.data;
@@ -437,23 +429,25 @@ export default {
         })
         .then(res => {
           if (res.data.code == 200) {
-            this.taskId = res.data.data[0].task_id;
             var tasks = res.data.data;
             this.allTaskList.splice(0, this.allTaskList.length);
             if (tasks != null) {
-              for (var i = 0; i < tasks[0].videos_md5.length; i++) {
+              this.taskId = res.data.data[0].task_id;
+              for (var i = 0; i < tasks[0].videos.length; i++) {
                 this.allTaskList.push({
                   'id': i + 1,
                   // 'video_count': tasks[i].video_count,
-                  'videos_md5': tasks[0].videos_md5[i],
-                  'status': this.getTaskStatus(2),
+                  'videos_md5': tasks[0].videos[i].video_md5,
+                  'status': this.getTaskStatus(tasks[0].videos[i].tag_status),
                 })
               }
+              console.log(this.allTaskList);
               // this.requestForTaskDetail(this.allTaskList[0].id)
               this.setCurrent(this.allTaskList[0], 0);
             } else {
               this.curTask = [];
               this.curEditTask = [];
+              this.videoSrc = "";
               this.$alert('请联系管理员分配任务', '无标注任务', {
                 confirmButtonText: '确定',
                 center: true
@@ -495,30 +489,30 @@ export default {
         });
     },
     refreshTaskProgress() {
-      this.taskProgress = "共" + this.allTaskList.length + "个，未标：" + this.filterTaskList(2).length +
-        "，删除：" + this.filterTaskList(1).length;
-      this.progress = ((this.allTaskList.length - this.filterTaskList(2).length) * 100 / this.allTaskList.length).toFixed(2);
+      this.taskProgress = "共" + this.allTaskList.length + "个，未标：" + this.filterTaskList(0).length +
+        "，删除：" + this.filterTaskList(2).length;
+      this.progress = ((this.allTaskList.length - this.filterTaskList(0).length) * 100 / this.allTaskList.length).toFixed(2);
     },
     getTaskStatus(status) {
       switch (status) {
         case 0:
-          return "已标";
-        case 1:
-          return "删除";
-        case 2:
           return "未标";
+        case 1:
+          return "已标";
+        case 2:
+          return "删除";
       }
     },
     filterTaskList(a) {
-      if (a == 2) {
+      if (a == 0) {
         return this.allTaskList.filter(function(item) {
           return item.status == "未标";
         });
-      } else if (a == 0) {
+      } else if (a == 1) {
         return this.allTaskList.filter(function(item) {
           return item.status == "已标";
         });
-      } else if (a == 1) {
+      } else if (a == 2) {
         return this.allTaskList.filter(function(item) {
           return item.status == "删除";
         });
@@ -535,7 +529,7 @@ export default {
 
     clickComplete() {
       this.centerDialogVisible = false;
-      var rest = this.filterTaskList(2).length;
+      var rest = this.filterTaskList(0).length;
       console.log("rest:" + rest);
       if (rest == 0) {
         this.completeTask();
