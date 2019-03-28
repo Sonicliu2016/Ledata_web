@@ -68,20 +68,20 @@
     </span>
   </el-dialog>
 
-  <el-tabs v-model="activeTabName" type="border-card" style="position:positive;z-index:-1;">
+  <el-tabs v-model="activeTabName" type="border-card" style="position:positive;z-index:-1;width:28%">
 
     <el-tab-pane label="标注任务列表" name="first">
       <el-progress :text-inside="true" :stroke-width="18" :percentage=progress style="width:100%;"></el-progress>
       <!-- <el-button type="success" size="small" style="width:18%;float:left；margin-left:18px;" @click="completeTask">
           完成任务
         </el-button> -->
-      <span style="float:right;font-size:12px;color:gray;padding:5px;margin-left: auto; margin-right: auto;">{{taskProgress}}</span>
+      <span style="float:right;font-size:12px;color:gray;padding:5px;">{{taskProgress}}</span>
       <el-table ref="singleTable" :data="allTaskList" height="500px" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
         <el-table-column property="id" label="编号" width="50">
         </el-table-column>
-        <el-table-column property="videos_md5" label="MD5" width="360">
+        <el-table-column property="videos_name" label="名称">
         </el-table-column>
-        <el-table-column property="status" label="状态" width="120" :filters="[{ text: '未标', value: '未标'}, { text: '已标', value: '已标'}, { text: '错误', value: '错误'}, { text: '删除', value: '删除'}]" :filter-method="filterTaskStatusHandler">
+        <el-table-column property="status" label="状态" width="120" :filters="[{ text: '未标', value: '未标'}, { text: '已标', value: '已标'},  { text: '删除', value: '删除'}]" :filter-method="filterTaskStatusHandler">
         </el-table-column>
       </el-table>
     </el-tab-pane>
@@ -321,13 +321,13 @@ export default {
       if (index != -1) {
         if (i == 1) {
           if (index + 1 >= this.allTaskList.length) {
-            this.showMsg("已是最后一张图片");
+            this.showMsg("已是最后一个视频");
           } else {
             row = this.allTaskList[index + 1];
           }
         } else if (i == -1) {
           if (index - 1 < 0) {
-            this.showMsg("已是第一张图片");
+            this.showMsg("已是第一个视频");
           } else {
             row = this.allTaskList[index - 1];
           }
@@ -438,6 +438,7 @@ export default {
                   'id': i + 1,
                   // 'video_count': tasks[i].video_count,
                   'videos_md5': tasks[0].videos[i].video_md5,
+                  'videos_name': tasks[0].videos[i].video_name,
                   'status': this.getTaskStatus(tasks[0].videos[i].tag_status),
                 })
               }
@@ -534,7 +535,7 @@ export default {
       if (rest == 0) {
         this.completeTask();
       } else {
-        this.showMsg("还有" + this.filterTaskList(2).length + "张未标，提交失败");
+        this.showMsg("还有" + this.filterTaskList(0).length + "张未标，提交失败");
       }
     },
     //提交当前任务 submitType:(0:提交 1：删除)
@@ -674,13 +675,13 @@ export default {
 
 .box {
   float: left;
-  width: 50%;
+  width: 70%;
   overflow: hidden;
 }
 
 .video-box {
-  width: 1000px;
-  height: 500px;
+  width: 1200px;
+  height: 600px;
   position: relative;
   z-index: 1;
   background: url(../../../assets/img_bg.png);
@@ -692,8 +693,8 @@ export default {
 }
 
 .video-each-box {
-  height: 250px;
-  width: 90%;
+  height: 300px;
+  width: 100%;
 
 }
 
@@ -818,7 +819,11 @@ ol {
   overflow-y: auto;
 }
 
-@media only screen and (min-width: 1200px) {}
+@media only screen and (max-height: 1000px) {
+  .video-box {
+    height: 500px;
+  }
+}
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {}
 
