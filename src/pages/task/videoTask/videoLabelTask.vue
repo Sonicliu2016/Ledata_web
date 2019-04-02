@@ -50,7 +50,7 @@ export default {
         });
       } else if (taskowner == 'evaluated') {
         this.$router.push({
-          // name: 'evaluateTaskList'
+          name: 'videoEvaluateTaskList'
         })
       } else if (taskowner == 'unrecognized') {
         this.$router.push({

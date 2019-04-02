@@ -29,6 +29,7 @@ import VideoTaskList from './pages/task/videoTask/videoTaskList.vue';
 import VideoLabelTask from './pages/task/videoTask/videoLabelTask.vue';
 import VideoTaskAssign from './pages/task/videoTask/videoTaskAssign.vue';
 import TaggingVideo from './pages/task/videoTask/taggingVideo.vue';
+import VideoEvaluateTaskList from './pages/task/videoTask/videoEvaluateTaskList.vue'
 
 //注册全局组件
 Vue.component('headerVue', Head);
@@ -67,7 +68,7 @@ const routes = [
                   // {name:'verifyTask',path:'/verifyTask',component:VerifyTask},
                   {name:'videoTaskAssign',path:'/videoTaskAssign',component:VideoTaskAssign},
                   // {name:'unrecognized',path:'/unrecognized',component:UnrecognizedPage},
-                  // {name:'evaluateTaskList',path:'/evaluateTaskList',component:EvaluateTaskList},
+                  {name:'videoEvaluateTaskList',path:'/videoEvaluateTaskList',component:VideoEvaluateTaskList},
                   ]
       },
       {name:'verificationTask',path:'/verificationTask',component:VerificationTask},
