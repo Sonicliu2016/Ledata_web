@@ -16,7 +16,7 @@
           </video>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row v-if=isLong>
         <el-col :span="12">
           <video id="myvideo3" :src="videoSrc" :poster="videoImg" :muted="true" class="video-each-box">
             your browser does not support the video tag
@@ -98,7 +98,7 @@
         <el-input v-model="searchTv" size="medium" prefix-icon="el-icon-search" style="font-size: 16px;" clearable type="text" v-on:input="searchAssociate" autocomplete="off" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(0)"
           placeholder="请输入标签名称" @keyup.enter="addFromSearch2Select()">
         </el-input>
-        <div class="associate-label_ul" v-show="isShow">
+        <div class="associate-label_ul" v-show="associateIsShow">
           <ol>
             <li class="el-dropdown-menu__item" v-for="(label,index) in associateLabels" v-bind:key="index" @click="setSearchText(label)" :class="{bgc: index == nowInAssociates}">
               {{ label }}
@@ -165,11 +165,11 @@ export default {
       allTaskList: [],
       touchtime: '',
       videoSrc: '',
-      // videoSrc: baseurl + curEditTask.media_url,
-      // videoImg: 'http://static.fdc.com.cn/avatar/usercenter/5996999fa093c04d4b4dbaf1_162.jpg',
       videoImg: '',
       start: false,
-      isShow: false,
+      associateIsShow: false,
+      isLong: true,
+      playTime: 0,
       _dom1: '',
       _dom2: '',
       _dom3: '',
@@ -273,7 +273,7 @@ export default {
     setSearchText(label) {
       if (new Date().getTime() - this.touchtime < 500) {
         console.log("dblclick");
-        this.isShow = false;
+        this.associateIsShow = false;
         this.addToSelect(label)
       } else {
         this.touchtime = new Date().getTime();
@@ -284,9 +284,9 @@ export default {
     // 监听到搜索框内容变化时，调用获取联想列表
     searchAssociate() {
       if (this.searchTv == "") {
-        this.isShow = false;
+        this.associateIsShow = false;
       } else {
-        this.isShow = true;
+        this.associateIsShow = true;
         var strs = new Array();
         strs = this.searchTv.split(" ");
         if (strs.length > 0) {
@@ -339,21 +339,10 @@ export default {
     handleCurrentChange(val) {
       this.curTask = val;
       this.requestForTaskDetail(val.videos_md5);
-      if (this.curEditTask.video_tags == null) {
-        this.curEditTask.video_tags = [];
-      }
       this._dom1 = document.getElementById('myvideo1');
       this._dom2 = document.getElementById('myvideo2');
-      this._dom3 = document.getElementById('myvideo3');
-      this._dom4 = document.getElementById('myvideo4');
-      // this._dom1.controls = true;
-      // this._dom2.controls = true;
-      // this._dom3.controls = true;
-      // this._dom4.controls = true;
       this._dom1.muted = true;
       this._dom2.muted = true;
-      this._dom3.muted = true;
-      this._dom4.muted = true;
     },
     //等待播放时长，然后重新进行定位并播放
     sleep(time) {
@@ -363,26 +352,39 @@ export default {
     playVideo() {
       console.log("play,start:" + this.start);
       if (this.start == true) {
+
         this._dom1.currentTime = 0;
         this._dom1.play();
-        this._dom2.currentTime = 3;
+        this._dom2.currentTime = this.playTime;
         this._dom2.play();
-        this._dom3.currentTime = 6;
-        this._dom3.play();
-        this._dom4.currentTime = 9;
-        this._dom4.play();
-        this.sleep(3000).then(() => {
-          this.pauseVideo();
+        if (this.isLong == true) {
+          this._dom3 = document.getElementById('myvideo3');
+          this._dom4 = document.getElementById('myvideo4');
+          this._dom3.muted = true;
+          this._dom4.muted = true;
+          this._dom3.currentTime = this.playTime * 2;
+          this._dom3.play();
+          console.log("4");
+          this._dom4.currentTime = this.playTime * 3;
+          this._dom4.play();
+        }
+
+        console.log("9 " + this.playTime * 1000);
+        this.sleep(this.playTime * 1000).then(() => {
+          this.playVideo();
         })
       }
     },
-    pauseVideo() {
-      this._dom1.pause();
-      this._dom2.pause();
-      this._dom3.pause();
-      this._dom4.pause();
-      this.playVideo();
-    },
+    // pauseVideo() {
+    //   this._dom1.pause();
+    //   this._dom2.pause();
+    //   if (this.isLong == true) {
+    //     console.log("3");
+    //     this._dom3.pause();
+    //     this._dom4.pause();
+    //   }
+    //   this.playVideo();
+    // },
     //循环播放的开关
     setStart() {
       this.start = true;
@@ -477,10 +479,22 @@ export default {
         .then(res => {
           if (res.data.code == 200) {
             this.curEditTask = res.data.data;
+            //若没有标签则定义为空数组
             if (this.curEditTask.video_tags == null) {
               this.curEditTask.video_tags = [];
             }
             this.videoSrc = this.baseurl + this.curEditTask.video_url;
+            //12秒来判断视频长短来决定切成几个画面播放
+            if (this.curEditTask.video_duration < 12) {
+              this.isLong = false;
+              this.playTime = (this.curEditTask.video_duration / 2).toFixed(2);
+              console.log("1playTime:" + this.playTime);
+            } else {
+              this.isLong = true;
+              this.playTime = (this.curEditTask.video_duration / 4).toFixed(2);
+              console.log("2playTime:" + this.playTime);
+            }
+
           } else {
             showMsg("获取任务失败！", "error")
           }
@@ -555,7 +569,7 @@ export default {
           console.log("requestForTaskDetail 请求成功" + res.data.code);
           if (res.data.code == 200) {
             // this.curEditTask = res.data.data;
-            console.log("点击了提交 before:" + this.curTask.MediaNetUrl);
+            console.log("点击了提交");
             // this.curTask.tags = JSON.parse(JSON.stringify(this.curEditTask.tags));
             this.curTask.status = this.getTaskStatus(submitType);
             // this.initShowCount(submitType);
@@ -693,7 +707,8 @@ export default {
 }
 
 .video-each-box {
-  height: 300px;
+  max-height: 500px;
+  height: 100%;
   width: 100%;
 
 }
