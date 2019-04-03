@@ -9,12 +9,12 @@
         <div>
           <span class="task-title">标签任务：</span>
           <!-- <p>已完成 <span style="color:#409EFF">{{task.labelTaskCompleted}}</span>张</p> -->
-          <p>进行中 <span style="color:#f00">{{task.labelTaskUndone}}</span>张</p>
+          <p>图片 <span style="color:#f00">{{task.imageLabel}}</span> 张 &nbsp 视频 <span style="color:#f00">{{task.videoLabel}}</span>个</p>
           <!-- <div>{{'已完成 ' + task.labelTaskCompleted + '张'}}</div>
             <div>{{'未完成 ' + task.labelTaskUndone + '张'}}</div> -->
           <span class="task-title">验证任务：</span>
           <!-- <p>已完成 <span style="color:#409EFF">{{task.verifyTaskCompleted}}</span>张</p> -->
-          <p>进行中 <span style="color:#f00">{{task.verifyTaskUndone}}</span>张</p>
+          <p>图片 <span style="color:#f00">{{task.imageVerify}}</span>张 &nbsp 视频 <span style="color:#f00">{{task.videoVerify}}</span>个</p>
         </div>
       </el-card>
     </el-col>
@@ -26,21 +26,14 @@
 export default {
   data() {
     return {
-      userList: [],
       userDetails: [],
-      userTaskDetailUrl: 'task/getUserTasksInfo',
+      userTaskDetailUrl: 'task/getAllUserTaskState',
     }
   },
   methods: {
-    getUserDetails() {
+    getUserDetails() { //查看用户的任务完成情况
       this.userDetails.splice(0, this.userDetails.length); //先清空数组
-      for (var i = 0; i < this.userList.length; i++) {
-        this.selectUserDetail(this.userList[i].username);
-      }
-    },
-    selectUserDetail(taskowner) { //查看用户的任务完成情况
       var params = new URLSearchParams();
-      params.append('username', taskowner);
       this.$axios({
           method: 'post',
           url: this.userTaskDetailUrl,
@@ -49,27 +42,16 @@ export default {
         .then(res => {
           console.log("请求成功:" + res.data.code);
           if (res.data.code == 200) {
-            var LabelTasks = res.data.data.LabelTasks;
-            var VerifiTasks = res.data.data.VerifiTasks;
-            var label_completed = 0;
-            var label_uncomplete = 0;
-            var verify_completed = 0;
-            var verify_uncomplete = 0;
-            for (var i = 0; i < LabelTasks.length; i++) {
-              label_completed += LabelTasks[i].TaskCompeteCount;
-              label_uncomplete += LabelTasks[i].TaskCount - LabelTasks[i].TaskCompeteCount;
+            var userDetail = res.data.data;
+            for (var i = 0; i < userDetail.length; i++) {
+              this.userDetails.push({
+                'username': userDetail[i].user_name,
+                'imageLabel': userDetail[i].image_label_task_count,
+                'imageVerify': userDetail[i].image_verify_task_count,
+                'videoLabel': userDetail[i].video_label_task_count,
+                'videoVerify': userDetail[i].video_complete_count
+              });
             }
-            for (var j = 0; j < VerifiTasks.length; j++) {
-              verify_completed += VerifiTasks[j].TaskCompeteCount;
-              verify_uncomplete += VerifiTasks[j].TaskCount - VerifiTasks[j].TaskCompeteCount;
-            }
-            this.userDetails.push({
-              'username': taskowner,
-              'labelTaskCompleted': label_completed,
-              'labelTaskUndone': label_uncomplete,
-              'verifyTaskCompleted': verify_completed,
-              'verifyTaskUndone': verify_uncomplete
-            });
           } else {
             this.$message.error('请求失败！');
           }
@@ -83,14 +65,12 @@ export default {
   components: {
 
   },
-  created() {
-    this.userList = this.$parent.userList;
-  },
+  created() {},
   mounted() {
     this.getUserDetails();
   },
   watch: {
-    '$parent.userList': function () {
+    '$parent.userList': function() {
       this.getUserDetails();
     }
   }
