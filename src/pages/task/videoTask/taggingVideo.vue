@@ -91,14 +91,12 @@
       <!-- <el-button type="success" size="small" style="width:18%;float:left；margin-left:18px;" @click="completeTask">
           完成任务
         </el-button> -->
-      <div style="margin:10px;">
+      <div class="el-transfer-panel__filter el-input el-input--small el-input--prefix " style="margin:10px;">
         <span class="el-input__prefix">
           <i class="el-input__icon el-icon-search"></i>
         </span>
-        <el-input v-model="searchTv" size="medium" prefix-icon="el-icon-search" style="font-size: 16px;" clearable type="text" v-on:input="searchAssociate" autocomplete="off" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(0)"
-          placeholder="请输入标签名称" @keyup.enter="addFromSearch2Select()">
-        </el-input>
-        <div class="associate-label_ul" v-show="associateIsShow">
+        <input v-model="searchTv" type="text" v-on:input="searchAssociate" autocomplete="off" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(1)" placeholder="请输入标签名称" class="el-input__inner" @keyup.enter="addFromSearch2Select()">
+        <div class="associate-label_ul" v-show='searchTv!=""'>
           <ol>
             <li class="el-dropdown-menu__item" v-for="(label,index) in associateLabels" v-bind:key="index" @click="setSearchText(label)" :class="{bgc: index == nowInAssociates}">
               {{ label }}
@@ -167,7 +165,6 @@ export default {
       videoSrc: '',
       videoImg: '',
       start: false,
-      associateIsShow: false,
       isLong: true,
       playTime: 0,
       _dom1: '',
@@ -273,7 +270,6 @@ export default {
     setSearchText(label) {
       if (new Date().getTime() - this.touchtime < 500) {
         console.log("dblclick");
-        this.associateIsShow = false;
         this.addToSelect(label)
       } else {
         this.touchtime = new Date().getTime();
@@ -283,18 +279,14 @@ export default {
     },
     // 监听到搜索框内容变化时，调用获取联想列表
     searchAssociate() {
-      if (this.searchTv == "") {
-        this.associateIsShow = false;
-      } else {
-        this.associateIsShow = true;
-        var strs = new Array();
-        strs = this.searchTv.split(" ");
-        if (strs.length > 0) {
-          var s = strs[strs.length - 1];
-          var labelPart = s.replace(/[^a-z]+/ig, "");
-          this.getAssociateList(labelPart);
-        }
+      var strs = new Array();
+      strs = this.searchTv.split(" ");
+      if (strs.length > 0) {
+        var s = strs[strs.length - 1];
+        var labelPart = s.replace(/[^a-z]+/ig, "");
+        this.getAssociateList(labelPart);
       }
+
     },
     getAssociateList(text) {
       this.associateLabels = [];
