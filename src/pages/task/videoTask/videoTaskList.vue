@@ -4,8 +4,7 @@
     <el-header>
       <el-row :gutter="10" type="flex" justify="center" style="padding: 10px; ">
         <el-col :xs="8" :sm="4" :md="4" :lg="4" :span="4">
-          <el-upload class="upload-demo" ref="upload" multiple name="imgs" :action="uploadUrl" :limit="limit" :on-success="uploadSuccess" :on-error="uploadError" :on-progress="uploadProgress" :file-list="filesList" :on-change="changeFile"
-            :before-upload="beforeUpload" :on-exceed="onExceed" :show-file-list="false">
+          <el-upload class="upload-demo" ref="upload" multiple name="videos" :action="string" :limit="limit" :file-list="filesList" :on-exceed="onExceed" :show-file-list="false" :http-request="uploadFile">
             <el-card shadow="hover">
               <div class="upload-card" style="cursor: pointer;">
                 <img src="../../../assets/video.png">
@@ -67,22 +66,53 @@ export default {
         }
       ],
       uploadUrl: '',
-      uploadJsonUrl: '',
       userList: [],
       filesList: [], //选中要上传的视频
       waitUpLoadList: [], //等待上传的视频列表
       showUploadProgress: false,
       uploadPro: 0, //上传的进度
       totalCount: 0, //要上传的总数量
-      limit: 2000, //单次上传限制视频张数
+      limit: 50, //单次上传限制视频个数
       username: '',
       isShowTask: true, //如果是admin就展示任务列表，如果是普通用户，就不展示
     }
   },
   methods: {
-    uploadSuccess(response, file, fileList) {
-      console.log("uploadSuccess-->response:" + response + "-->filename:" + file.name + "-->url:" + file.url);
-      var index = this.findIndex(this.waitUpLoadList, file.url);
+    // 视频的上传
+    uploadFile(item) {
+      const isMP4 = item.file.type === 'video/mp4';
+      this.totalCount = 0;
+      this.uploadPro = 0;
+      this.waitUpLoadList.push({
+        'fileName': item.file.name,
+      })
+      if (isMP4) {
+        this.totalCount = this.waitUpLoadList.length;
+        this.showUploadProgress = true;
+
+        let FormDatas = new FormData();
+        FormDatas.append('video', item.file);
+        FormDatas.append('userName', this.username);
+        this.$axios({
+          method: 'post',
+          url: this.uploadUrl,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          data: FormDatas
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.uploadSuccess(item.file);
+          }
+        })
+      } else {
+        this.$message.error('上传视频只能是MP4格式:' + file.name);
+      }
+      return isMP4;
+    },
+    //上传视频成功后对上传进度的更新
+    uploadSuccess(file) {
+      var index = this.findIndex(this.waitUpLoadList, file.name);
       if (index > -1) {
         this.waitUpLoadList.splice(index, 1); //删除指定下标的元素
       }
@@ -97,67 +127,15 @@ export default {
         setTimeout("window.location.reload()", 3000);
       }
     },
-    uploadJsonSuccess() {
-      this.$message({
-        message: '上传成功!',
-        type: 'success'
-      });
-    },
-    uploadError(err, file, fileList) {
-      console.log("uploadError-->err:" + err + "-->filename:" + file.name);
-    },
-    uploadProgress(event, file, fileList) {
-      console.log("uploadProgress-->event:" + event.percent + "-->filename:" + file.name + "--->fileList:" + fileList.length + "---->剩下：" + this.waitUpLoadList.length);
-    },
-    changeFile(file, fileList) {
-      this.filesList = [].concat(fileList);
-    },
-    // 图片准备上传时()
-    beforeUpload(file) {
-      const isMP4 = file.type === 'video/mp4';
-      this.totalCount = 0;
-      this.uploadPro = 0;
-      if (isMP4) {
-        if (this.filesList.length > 0) {
-          this.waitUpLoadList = [].concat(this.filesList);
-          this.totalCount = this.filesList.length;
-
-          this.showUploadProgress = true;
-        }
-        let FormDatas = new FormData();
-        // var params = new URLSearchParams();
-        FormDatas.append('video', file);
-        FormDatas.append('userName', this.username);
-        console.log(FormDatas);
-        let that = this;
-        // that.$http({
-        this.$axios({
-          method: 'post',
-          url: '/file/uploadVideo',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: FormDatas
-        }).then(function(res) {
-          if (res.data.code == 10000) {
-            // that.$message.success(res.data.msg);
-          } else {
-            // that.$message.error(res.data.msg);
-          }
-        })
-
-      } else {
-        this.$message.error('上传视频只能是MP4格式:' + file.name);
-      }
-      return isMP4;
-    },
     // 文件超出个数限制时
     onExceed(files, fileList) {
       this.$message.error('一次最多上传' + this.limit + '个视频!');
     },
-    findIndex(files, url) {
+    //定位上传完毕的视频，删除待上传列表对应数组
+    findIndex(files, name) {
+      console.log("-1");
       for (var i = 0; i < files.length; i++) {
-        if (files[i].url == url) {
+        if (files[i].fileName == name) {
           return i;
         }
       }
@@ -170,7 +148,7 @@ export default {
         });
       } else if (this.tabs[tab.index].name == '验证任务') {
         this.$router.push({
-          // name: 'verifyTask'
+          name: 'videoVerifyTask'
         });
       }
       console.log(this.tabs[tab.index].name);
