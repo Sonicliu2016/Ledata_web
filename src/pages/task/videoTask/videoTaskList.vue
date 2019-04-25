@@ -112,17 +112,14 @@ export default {
     },
     //上传视频成功后对上传进度的更新
     uploadSuccess(file) {
-
       var index = this.findIndex(this.waitUpLoadList, file.name);
       if (index > -1) {
         this.waitUpLoadList.splice(index, 1); //删除指定下标的元素
       }
       var uploadedCount = this.totalCount - this.waitUpLoadList.length;
-      console.log("uploadedCount: " + uploadedCount + " totalCount: " + this.totalCount);
       this.uploadPro = (Math.round(parseFloat(uploadedCount) / parseFloat(this.totalCount) * 10000) / 100.00);
       if (this.waitUpLoadList.length == 0) {
         this.showUploadProgress = false;
-        this.totalCount = 0;
         this.$message({
           message: '视频上传完毕!',
           type: 'success'
@@ -168,7 +165,6 @@ export default {
       this.isShowTask = false;
     }
     console.log("tasklist-->create-->userList:" + this.userList.length + "--->url:" + this.uploadUrl);
-    console.log();
   },
   mounted() {
 
