@@ -74,6 +74,7 @@ export default {
       showUploadProgress: false,
       uploadPro: 0, //上传的进度
       totalCount: 0, //要上传的总数量
+      totalUploadedCount: 0,
       limit: 2000, //单次上传限制图片张数
       username: '',
       isShowTask: true, //如果是admin就展示任务列表，如果是普通用户，就不展示
@@ -81,8 +82,7 @@ export default {
   },
   methods: {
     uploadSuccess(response, file, fileList) {
-      console.log("uploadSuccess-->response:" + response + "-->filename:" + file.name + "-->url:" + file.url);
-      var index = this.findIndex(this.waitUpLoadList, file.url);
+      var index = this.findIndex(this.waitUpLoadList, file.name);
       if (index > -1) {
         this.waitUpLoadList.splice(index, 1); //删除指定下标的元素
       }
@@ -90,11 +90,13 @@ export default {
       this.uploadPro = (Math.round(parseFloat(uploadedCount) / parseFloat(this.totalCount) * 10000) / 100.00);
       if (this.waitUpLoadList.length == 0) {
         this.showUploadProgress = false;
+        //记录上传个数，以确定fileList在此位置之前都是上传过的项目，避免计入下次上传队列
+        this.totalUploadedCount += uploadedCount;
         this.$message({
           message: '图片上传完毕!',
           type: 'success'
         });
-        setTimeout("window.location.reload()", 3000);
+        // setTimeout("window.location.reload()", 3000);
       }
     },
     uploadJsonSuccess() {
@@ -120,10 +122,11 @@ export default {
       this.totalCount = 0;
       this.uploadPro = 0;
       if (isJPG || isPNG || isBMP) {
-        console.log("kaikaikaikaikaikai")
         if (this.filesList.length > 0) {
-          this.waitUpLoadList = [].concat(this.filesList);
-          this.totalCount = this.filesList.length;
+          //filesList保留了所有上传项目，从之前上传数之后取为新的上传队列，避免将上传过的项目计入新的上传队列
+          var start = this.totalUploadedCount;
+          this.waitUpLoadList = this.filesList.slice(start);
+          this.totalCount = this.waitUpLoadList.length;
           this.showUploadProgress = true;
         }
       } else {
@@ -135,9 +138,9 @@ export default {
     onExceed(files, fileList) {
       this.$message.error('一次最多上传' + this.limit + '张照片!');
     },
-    findIndex(files, url) {
+    findIndex(files, name) {
       for (var i = 0; i < files.length; i++) {
-        if (files[i].url == url) {
+        if (files[i].name == name) {
           return i;
         }
       }

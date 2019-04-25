@@ -4,7 +4,7 @@
     <el-header>
       <el-row :gutter="10" type="flex" justify="center" style="padding: 10px; ">
         <el-col :xs="8" :sm="4" :md="4" :lg="4" :span="4">
-          <el-upload class="upload-demo" ref="upload" multiple name="videos" :action="string" :limit="limit" :file-list="filesList" :on-exceed="onExceed" :show-file-list="false" :http-request="uploadFile">
+          <el-upload class="upload-demo" ref="upload" multiple name="videos" :limit="limit" :file-list="filesList" :on-exceed="onExceed" :show-file-list="false" :http-request="uploadFile">
             <el-card shadow="hover">
               <div class="upload-card" style="cursor: pointer;">
                 <img src="../../../assets/video.png">
@@ -24,11 +24,11 @@
           </el-upload>
         </el-col> -->
       </el-row>
-      <el-upload class="upload-demo" :action="uploadJsonUrl" name="json" :show-file-list="false" :on-success="uploadJsonSuccess" v-show="isShowTask">
+      <!-- <el-upload class="upload-demo" :action="uploadJsonUrl" name="json" :show-file-list="false" :on-success="uploadJsonSuccess" v-show="isShowTask">
         <div>
           点击上传json文件
         </div>
-      </el-upload>
+      </el-upload> -->
     </el-header>
 
     <el-main v-show="isShowTask">
@@ -101,7 +101,7 @@ export default {
           },
           data: FormDatas
         }).then((res) => {
-          if (res.data.code == 200) {
+          if (res.data.code == 200 || res.data.code == 202) {
             this.uploadSuccess(item.file);
           }
         })
@@ -124,7 +124,7 @@ export default {
           message: '视频上传完毕!',
           type: 'success'
         });
-        setTimeout("window.location.reload()", 3000);
+        // setTimeout("window.location.reload()", 3000);
       }
     },
     // 文件超出个数限制时
