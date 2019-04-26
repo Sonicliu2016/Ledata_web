@@ -18,7 +18,7 @@
 
   <el-row :gutter="20" style="float:left;width:100%">
     <el-col :span="2" v-for="(tag, index) in showTagList" :key="index" style="padding: 5px;">
-      <el-card style="height:80px;display: flex;justify-content:center;align-items:Center;">
+      <el-card style="height:80px;display: flex;justify-content:center;align-items:Center;cursor: pointer;cursor: pointer;">
         <div class="tag" @click="seeDetail(tag)">
           {{tag.cluster_name}}<br />
           {{tag.count}}<br />

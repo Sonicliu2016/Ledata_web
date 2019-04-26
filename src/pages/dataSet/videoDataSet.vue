@@ -56,13 +56,17 @@ export default {
         });
     },
     seeDetail(tag) {
-      this.$router.push({
-        name: 'classifyVideos',
-        params: {
-          tagId: tag.cluster_name,
-          tagCount: tag.count
-        }
-      })
+      this.$alert('目前还无法查看视频数据', '我们正在开放中', {
+        confirmButtonText: '确定',
+        center: true
+      });
+      // this.$router.push({
+      //   name: 'classifyVideos',
+      //   params: {
+      //     tagId: tag.cluster_name,
+      //     tagCount: tag.count
+      //   }
+      // })
     },
     searchAssociate() {
       this.associateLabels = [];
