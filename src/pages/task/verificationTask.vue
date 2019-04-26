@@ -1,9 +1,10 @@
 <template>
 <div>
   <h2 class="title">请标记下列是{{verifyClassName}}的图片</h2>
-
   <div class="verify-complete">
-    <el-button type="success" @click="verifyComplete()">验证完成，换一批</el-button>
+    <el-button type="primary" @click="selectAll()" v-show="!isAllSelected">选择全部</el-button>
+    <el-button type="danger" @click="selectAll()" v-show="isAllSelected">取消全选</el-button>
+    <el-button type="success" @click="verifyComplete()" style="margin-left:20px">验证完成，换一批</el-button>
   </div>
   <el-row :gutter="20">
     <el-col :span="4" v-for="(task, index) in imgList" :key="index" style="padding: 5px; ">
@@ -33,6 +34,7 @@ export default {
       selectedLsit: [],
       unSelectedList: [],
       imgList: [],
+      isAllSelected: false,
     };
   },
   methods: {
@@ -42,6 +44,19 @@ export default {
         message: msg,
         type: msgType
       });
+    },
+    selectAll() {
+      if (this.isAllSelected) {
+        for (var i = 0; i < this.imgList.length; i++) {
+          this.imgList[i].isSelected = false;
+        }
+        this.isAllSelected = false;
+      } else {
+        for (var i = 0; i < this.imgList.length; i++) {
+          this.imgList[i].isSelected = true;
+        }
+        this.isAllSelected = true;
+      }
     },
     toogle(task) {
       if (task.isSelected) {
@@ -149,7 +164,7 @@ export default {
 
 .verify-complete {
   text-align: right;
-  margin-right: 20px;
+  margin-right: 40px;
 }
 
 .img-box {
