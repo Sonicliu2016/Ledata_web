@@ -14,24 +14,36 @@
     </div>
 
     <div class='select-tag-box'>
-      <span>已选分类：</span>
-      <span class="only-select-tag-box">
+      <div class="only-select-tag-box">
+        <span>已选分类：</span>
         <el-tag @click.native="setSelect(tag)" @keyup.delete.native="deleteSelectTag()" :props="selectLabelsProps" v-for="tag in curEditTask.tags" :key="tag.name" closable @close="remove(tag)" is-focusable :type="tag.type">
           {{tag.cluster_name}}
         </el-tag>
-      </span>
+      </div>
       <div class="button-box">
-        <span class="commit-box">
-          <el-button type="danger" round @click="submitAnnotateTask(3)">删除</el-button>
-          <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
-          <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
-        </span>
-        <span class="complete-box">
-          <el-button type="success" size="big" @click="showCompleteDialog">
-            完成任务
-          </el-button>
+        <span>
+          <span class="commit-box">
+            <el-button type="danger" round @click="submitAnnotateTask(3)">删除</el-button>
+            <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
+            <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
+            <el-button type="warning" round @click="editCommon()" v-show="!editing">编辑常用</el-button>
+            <el-button type="warning" round plain @click="editCommon()" v-show="editing">保存常用</el-button>
+          </span>
+          <span class="complete-box">
+            <el-button type="success" size="big" @click="showCompleteDialog">
+              完成任务
+            </el-button>
+          </span>
         </span>
       </div>
+      <span class="commonly-box">
+        <div v-for="item in common">
+          <el-input size="medium" v-model="item.value" v-show="editing"></el-input>
+          <el-button size="medium" plain v-show="!editing" @click="addToSelect(item.value)">{{item.value}}</el-button>
+        </div>
+        <!-- <el-input size="medium" v-model="common2"></el-input>
+        <el-input size="medium" v-model="common3"></el-input> -->
+      </span>
     </div>
   </div>
 
@@ -143,6 +155,18 @@ export default {
       },
       taskList: [],
       touchtime: '',
+      editing: false,
+      common: [{
+          value: '（常用标签）'
+        },
+        {
+          value: '（常用标签）'
+        },
+        {
+          value: '（常用标签）'
+        },
+      ],
+
     };
   },
   watch: {
@@ -151,6 +175,14 @@ export default {
     }
   },
   methods: {
+    editCommon() {
+      if (this.editing) {
+        this.editing = false;
+
+      } else {
+        this.editing = true;
+      }
+    },
     filterNode(value, data) {
       if (!value) return true;
       return data.ShowStr.indexOf(value) !== -1;
@@ -600,6 +632,7 @@ export default {
   /* background-color: #99a9bf; */
 }
 
+
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #d3dce6;
 }
@@ -647,6 +680,8 @@ export default {
 .only-select-tag-box {
   width: 100px;
   height: 100px;
+  display: inline;
+  white-space: nowrap;
 }
 
 .el-tag {
@@ -684,10 +719,20 @@ export default {
 }
 
 .button-box {
-  width: 100%;
+  float: left;
+  width: 75%;
   padding: 5px 0;
   text-align: center;
 }
+
+.commonly-box {
+  width: 25%;
+  float: right;
+  text-align: center;
+  padding: 5px 0;
+}
+
+
 
 .commit-box {
   display: block;
