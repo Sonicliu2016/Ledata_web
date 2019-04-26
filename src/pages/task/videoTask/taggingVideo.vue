@@ -11,12 +11,12 @@
           </video>
         </el-col>
         <el-col :span="12">
-          <video id="myvideo2" :src="videoSrc" :poster="videoImg" :muted="true" currentTime=2 class="video-each-box">
+          <video id="myvideo2" :src="videoSrc" :poster="videoImg" :muted="true" class="video-each-box">
             your browser does not support the video tag
           </video>
         </el-col>
       </el-row>
-      <el-row v-if=isLong>
+      <el-row v-show=isLong>
         <el-col :span="12">
           <video id="myvideo3" :src="videoSrc" :poster="videoImg" :muted="true" class="video-each-box">
             your browser does not support the video tag
@@ -48,8 +48,8 @@
           <el-button type="danger" round @click="submitAnnotateTask(2)">删除</el-button>
           <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
           <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
-          <el-button type="primary" style="float: right;" @click="setStart();playVideo()" v-show="start==false">播放</el-button>
-          <el-button type="danger" style="float: right;" @click="setStop()" v-show="start==true">停止</el-button>
+          <!-- <el-button type="primary" style="float: right;" @click="setStart();playVideo()" v-show="start==false">播放</el-button>
+          <el-button type="danger" style="float: right;" @click="setStop()" v-show="start==true">停止</el-button> -->
         </span>
         <span class="complete-box">
           <el-button type="success" size="big" @click="showCompleteDialog">
@@ -128,10 +128,11 @@
 import User from '../../../modules/UserModule.js';
 import Global from '../../../common/global.vue';
 var user = User;
-import Bus from '../../../bus';
 export default {
   data() {
     return {
+      video: ["myvideo1", "myvideo2", "myvideo3", "myvideo4"],
+      videoDom: ["A", "B", "C", "D"],
       imgUrl: "",
       centerDialogVisible: false,
       showDiaCount: 0,
@@ -167,10 +168,6 @@ export default {
       start: false,
       isLong: true,
       playTime: 0,
-      _dom1: '',
-      _dom2: '',
-      _dom3: '',
-      _dom4: '',
     };
   },
   // watch: {
@@ -331,10 +328,6 @@ export default {
     handleCurrentChange(val) {
       this.curTask = val;
       this.requestForTaskDetail(val.videos_md5);
-      this._dom1 = document.getElementById('myvideo1');
-      this._dom2 = document.getElementById('myvideo2');
-      this._dom1.muted = true;
-      this._dom2.muted = true;
     },
     //等待播放时长，然后重新进行定位并播放
     sleep(time) {
@@ -344,39 +337,36 @@ export default {
     playVideo() {
       console.log("play,start:" + this.start);
       if (this.start == true) {
-
-        this._dom1.currentTime = 0;
-        this._dom1.play();
-        this._dom2.currentTime = this.playTime;
-        this._dom2.play();
         if (this.isLong == true) {
-          this._dom3 = document.getElementById('myvideo3');
-          this._dom4 = document.getElementById('myvideo4');
-          this._dom3.muted = true;
-          this._dom4.muted = true;
-          this._dom3.currentTime = this.playTime * 2;
-          this._dom3.play();
-          console.log("4");
-          this._dom4.currentTime = this.playTime * 3;
-          this._dom4.play();
-        }
+          for (var i = 0; i < 4; i++) {
+            document.getElementsByTagName("video")[i].muted = true;
+            document.getElementsByTagName("video")[i].currentTime = i * this.playTime;
+            document.getElementsByTagName("video")[i].play();
+          }
 
-        console.log("9 " + this.playTime * 1000);
+        } else {
+          for (var i = 0; i < 2; i++) {
+            document.getElementsByTagName("video")[i].muted = true;
+            document.getElementsByTagName("video")[i].currentTime = i * this.playTime;
+            document.getElementsByTagName("video")[i].play();
+          }
+        }
         this.sleep(this.playTime * 1000).then(() => {
           this.playVideo();
         })
       }
     },
-    // pauseVideo() {
-    //   this._dom1.pause();
-    //   this._dom2.pause();
-    //   if (this.isLong == true) {
-    //     console.log("3");
-    //     this._dom3.pause();
-    //     this._dom4.pause();
-    //   }
-    //   this.playVideo();
-    // },
+    pauseVideo() {
+      for (var i = 0; i < 2; i++) {
+        document.getElementsByTagName("video")[i].pause();
+      }
+      if (this.isLong == true) {
+        for (var i = 2; i < 4; i++) {
+          document.getElementsByTagName("video")[i].pause();
+        }
+      }
+      this.playVideo();
+    },
     //循环播放的开关
     setStart() {
       this.start = true;
@@ -477,13 +467,19 @@ export default {
             }
             this.videoSrc = this.baseurl + this.curEditTask.video_url;
             //12秒来判断视频长短来决定切成几个画面播放
-            if (this.curEditTask.video_duration < 12) {
+            if (this.curEditTask.video_duration < 8) {
               this.isLong = false;
               this.playTime = (this.curEditTask.video_duration / 2).toFixed(2);
+              for (var i = 0; i < 4; i++) {
+                document.getElementsByTagName("video")[i].style.cssText = "max-height: 500px;height: 500px;";
+              }
               console.log("1playTime:" + this.playTime);
             } else {
               this.isLong = true;
               this.playTime = (this.curEditTask.video_duration / 4).toFixed(2);
+              for (var i = 0; i < 4; i++) {
+                document.getElementsByTagName("video")[i].style.cssText = "max-height: 250px;height: 250px;";
+              }
               console.log("2playTime:" + this.playTime);
             }
 
@@ -650,9 +646,11 @@ export default {
     console.log("username:" + this.currentUser);
   },
   mounted() {
-    Bus.$on('stop', (e) => {
-      this.start = e
-    })
+    this.setStart();
+    this.playVideo();
+  },
+  destroyed() {
+    this.start = false;
   }
 };
 </script>
@@ -699,10 +697,9 @@ export default {
 }
 
 .video-each-box {
-  max-height: 500px;
-  height: 100%;
+  /* max-height: 500px; */
+  /* height: 250px; */
   width: 100%;
-
 }
 
 .el-carousel__arrow {
