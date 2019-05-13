@@ -29,7 +29,7 @@ export default {
       baseurl: "",
       curUser: "",
       taskId: -1,
-      verifyClassName: "xx",
+      verifyClassName: "（null）",
       compareName: "xxx",
       selectedLsit: [],
       unSelectedList: [],
@@ -81,6 +81,8 @@ export default {
                 confirmButtonText: '确定',
                 center: true
               });
+              this.verifyClassName = "（null）";
+              this.imgList.splice(0, this.imgList.length);
             }
             var tasks = res.data.data.taskinfo;
             this.taskId = res.data.data.taskid;
