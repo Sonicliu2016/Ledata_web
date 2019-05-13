@@ -20,30 +20,30 @@
           {{tag.cluster_name}}
         </el-tag>
       </div>
-      <div class="button-box">
-        <span>
-          <span class="commit-box">
-            <el-button type="danger" round @click="submitAnnotateTask(3)">删除</el-button>
-            <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
-            <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
-            <el-button type="warning" round @click="editCommon()" v-show="!editing">编辑常用</el-button>
-            <el-button type="warning" round plain @click="editCommon()" v-show="editing">保存常用</el-button>
+      <div style="display:inline-block">
+        <div class="button-box">
+          <span>
+            <span class="commit-box">
+              <el-button type="danger" round @click="submitAnnotateTask(3)">删除</el-button>
+              <!-- <el-button type="warning" round @click="submitAnnotateTask(2)">错误</el-button> -->
+              <el-button type="primary" round @click="submitAnnotateTask(1)">提交</el-button>
+              <el-button type="warning" round @click="editCommon()" v-show="!editing">编辑常用</el-button>
+              <el-button type="warning" round plain @click="editCommon()" v-show="editing">保存常用</el-button>
+            </span>
+            <span class="complete-box">
+              <el-button type="success" size="big" @click="showCompleteDialog">
+                完成任务
+              </el-button>
+            </span>
           </span>
-          <span class="complete-box">
-            <el-button type="success" size="big" @click="showCompleteDialog">
-              完成任务
-            </el-button>
-          </span>
-        </span>
-      </div>
-      <span class="commonly-box">
-        <div v-for="item in common">
+        </div>
+        <!-- <span class="commonly-box"> -->
+        <span v-for="item in common">
           <el-input size="medium" v-model="item.value" v-show="editing"></el-input>
           <el-button size="medium" plain v-show="!editing" @click="addToSelect(item.value)">{{item.value}}</el-button>
-        </div>
-        <!-- <el-input size="medium" v-model="common2"></el-input>
-        <el-input size="medium" v-model="common3"></el-input> -->
-      </span>
+        </span>
+        <!-- </span> -->
+      </div>
     </div>
   </div>
 
@@ -681,7 +681,6 @@ export default {
   width: 100px;
   height: 100px;
   display: inline;
-  white-space: nowrap;
 }
 
 .el-tag {
