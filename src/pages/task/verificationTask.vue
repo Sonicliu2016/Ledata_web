@@ -135,6 +135,7 @@ export default {
         .then(res => {
           if (res.data.code == 200) {
             this.getVerifyTask();
+            this.isAllSelected = false;
           } else {
             this.showMsg("所有图片已验证完毕");
           }
