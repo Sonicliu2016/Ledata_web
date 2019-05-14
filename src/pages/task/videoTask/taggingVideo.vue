@@ -40,7 +40,7 @@
       <span>已选分类：</span>
       <span class="only-select-tag-box">
         <el-tag :props="selectLabelsProps" v-for="tag in curEditTask.video_tags" :key="tag.name" closable @close="remove(tag)" is-focusable :type="tag.type">
-          {{tag}}
+          {{tag.tag_show_str}}
         </el-tag>
       </span>
       <div class="button-box">
@@ -95,7 +95,7 @@
         <span class="el-input__prefix">
           <i class="el-input__icon el-icon-search"></i>
         </span>
-        <input v-model="searchTv" type="text" v-on:input="searchAssociate" autocomplete="off" @keydown.down="down" @keydown.up.prevent="up" @keyup.alt.83="submitAnnotateTask(1)" placeholder="请输入标签名称" class="el-input__inner" @keyup.enter="addFromSearch2Select()">
+        <input v-model="searchTv" type="text" v-on:input="searchAssociate" autocomplete="off" @keydown.down="down" @keydown.up.prevent="up" placeholder="请输入标签名称" class="el-input__inner" @keyup.enter="addFromSearch2Select()">
         <div class="associate-label_ul" v-show='searchTv!=""'>
           <ol>
             <li class="el-dropdown-menu__item" v-for="(label,index) in associateLabels" v-bind:key="index" @click="setSearchText(label)" :class="{bgc: index == nowInAssociates}">
@@ -182,7 +182,7 @@ export default {
     },
     handleNodeClick(data) {
       console.log("点击了标签:" + data.tag_en_str)
-      this.addToSelect(data.tag_en_str)
+      this.addToSelect(data)
     },
     // 展示消息
     showMsg(msg, msgType) {
@@ -191,6 +191,19 @@ export default {
         message: msg,
         type: msgType
       });
+    },
+    findTagForAddSearch(labelStr, label) {
+      for (var i = 0; i < labelStr.length; i++) {
+        var mLabel = labelStr[i];
+        console.log(mLabel.tag_en_str + "  " + label);
+        if (mLabel.tag_en_str == label) {
+          console.log(mLabel);
+          return mLabel;
+        }
+        if (mLabel.tag_children != "[]") {
+          this.findTagForAddSearch(mLabel.tag_children, label);
+        }
+      }
     },
     addFromSearch2Select() {
       this.searchTvs = [];
@@ -213,47 +226,54 @@ export default {
       }
       console.log("addFromSearch2Select :" + this.searchTvs.length);
       for (var i = 0; i < this.searchTvs.length; i++) {
-        this.addToSelect(this.searchTvs[i]);
+        var tag = this.findTagForAddSearch(this.data4, this.searchTvs[i]);
+        this.addToSelect(tag);
       }
       this.associateLabels = [];
       this.searchTv = "";
     },
     // 添加tag到已选
-    addToSelect(labelStr) {
-      console.log("请求添加成功:" + labelStr);
-      if (this.allLabelsArray.indexOf(labelStr) == -1) {
-        this.showMsg("无法添加" + labelStr + "，此标签不存在", "warning");
+    addToSelect(tag) {
+      console.log("请求添加成功:" + tag.tag_en_str);
+      if (this.allLabelsArray.indexOf(tag.tag_en_str) == -1) {
+        this.showMsg("无法添加" + tag.tag_en_str + "，此标签不存在", "warning");
         return;
       }
       // this.curEditTask = JSON.parse(JSON.stringify(this.curTask));
-      this.findAllLabels(this.data4, labelStr, "");
+      this.findAllLabels(this.data4, tag, "");
       console.log("添加成功");
     },
-    findAllLabels(labelsStr, tarLabel, parentLabel) {
+    findAllLabels(labelsStr, tag, parentLabel) {
       for (var i = 0; i < labelsStr.length; i++) {
         var mLabel = labelsStr[i];
-        if (mLabel.tag_en_str == tarLabel) {
+        if (mLabel.tag_en_str == tag.tag_en_str) {
           if (parentLabel != "") {
             if (!this.checkLabelExist(parentLabel)) {
-              this.curEditTask.video_tags.push(parentLabel);
+              this.curEditTask.video_tags.push({
+                tag_en_str: parentLabel.tag_en_str,
+                tag_show_str: parentLabel.tag_show_str,
+              });
             }
           }
-          if (!this.checkLabelExist(mLabel.tag_en_str)) {
-            this.curEditTask.video_tags.push(mLabel.tag_en_str);
+          if (!this.checkLabelExist(tag)) {
+            this.curEditTask.video_tags.push({
+              tag_en_str: tag.tag_en_str,
+              tag_show_str: tag.tag_show_str,
+            });
           }
           break;
         }
-        if (mLabel.ClusterChilds != "[]") {
-          this.findAllLabels(mLabel.tag_children, tarLabel, mLabel.tag_en_str);
+        if (mLabel.tag_children != "[]") {
+          this.findAllLabels(mLabel.tag_children, tag, mLabel);
         }
       }
     },
     //核查标签是否已存在
-    checkLabelExist(labelStr) {
+    checkLabelExist(tag) {
       for (var i = 0; i < this.curEditTask.video_tags.length; i++) {
-        if (labelStr == this.curEditTask.video_tags[i]) {
-          console.log("不能重复添加:" + this.curEditTask.video_tags[i]);
-          this.showMsg(this.curEditTask.video_tags[i] + "已添加", "warning");
+        if (tag.tag_en_str == this.curEditTask.video_tags[i].tag_en_str) {
+          console.log("不能重复添加:" + this.curEditTask.video_tags[i].tag_en_str);
+          this.showMsg(this.curEditTask.video_tags[i].tag_en_str + "已添加", "warning");
           return true;
         }
       }
@@ -335,7 +355,7 @@ export default {
     },
     //定位各个视频的起点，进行播放
     playVideo() {
-      console.log("play,start:" + this.start);
+      // console.log("play,start:" + this.start);
       if (this.start == true) {
         if (this.isLong == true) {
           for (var i = 0; i < 4; i++) {
@@ -573,7 +593,7 @@ export default {
     transFormTags2Str(tagsJson) {
       var str = "";
       for (var i = 0; i < tagsJson.length; i++) {
-        str += (tagsJson[i] + ",");
+        str += (tagsJson[i].tag_en_str + ",");
       }
       console.log("transFormTags2Str: " + str);
       return str;
