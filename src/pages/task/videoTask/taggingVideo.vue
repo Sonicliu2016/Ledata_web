@@ -192,51 +192,55 @@ export default {
         type: msgType
       });
     },
+    //根据中英文标签，搜索便签Object
     findTagForAddSearch(labelStr, label) {
       for (var i = 0; i < labelStr.length; i++) {
         var mLabel = labelStr[i];
-        console.log(mLabel.tag_en_str + "  " + label);
-        if (mLabel.tag_en_str == label) {
-          console.log(mLabel);
-          return mLabel;
+        // console.log(mLabel.tag_en_str + "  " + label);
+        if (mLabel.tag_show_str == label) {
+          this.addToSelect(mLabel);
         }
         if (mLabel.tag_children != "[]") {
           this.findTagForAddSearch(mLabel.tag_children, label);
         }
       }
     },
+    //回车加入标签
     addFromSearch2Select() {
       this.searchTvs = [];
       var strs = new Array();
       strs = this.searchTv.split(" ");
-      for (var i = 0; i < strs.length; i++) {
-        var s = strs[i];
-        var num = s.replace(/[^0-9]/ig, "");
-        var labelPart = s.replace(/[^a-z]+/ig, "");
-        this.getAssociateList(labelPart);
-        if (this.associateLabels.length > 0) {
-          if (num > this.associateLabels.length) {
-            num = this.associateLabels.length;
-          }
-          if (num <= 0) {
-            num = 1;
-          }
-          this.searchTvs.push(this.associateLabels[num - 1]);
-        }
-      }
-      console.log("addFromSearch2Select :" + this.searchTvs.length);
-      for (var i = 0; i < this.searchTvs.length; i++) {
-        var tag = this.findTagForAddSearch(this.data4, this.searchTvs[i]);
-        this.addToSelect(tag);
-      }
+      this.findTagForAddSearch(this.data4, strs);
+      // for (var i = 0; i < strs.length; i++) {
+      //   console.log(strs.length);
+      //   var s = strs[i];
+      //   var num = s.replace(/[^0-9]/ig, "");
+      //   var labelPart = s.replace(/[^a-z]+/ig, "");
+      //   console.log("labelPart " + s);
+      //   this.getAssociateList(labelPart);
+      //   if (this.associateLabels.length > 0) {
+      //     if (num > this.associateLabels.length) {
+      //       num = this.associateLabels.length;
+      //     }
+      //     if (num <= 0) {
+      //       num = 1;
+      //     }
+      //     this.searchTvs.push(this.associateLabels[num - 1]);
+      //   }
+      // }
+      // console.log("addFromSearch2Select :" + this.searchTvs.length);
+      // for (var i = 0; i < this.searchTvs.length; i++) {
+      //   this.findTagForAddSearch(this.data4, this.searchTvs[i]);
+      //
+      // }
       this.associateLabels = [];
       this.searchTv = "";
     },
     // 添加tag到已选
     addToSelect(tag) {
-      console.log("请求添加成功:" + tag.tag_en_str);
-      if (this.allLabelsArray.indexOf(tag.tag_en_str) == -1) {
-        this.showMsg("无法添加" + tag.tag_en_str + "，此标签不存在", "warning");
+      console.log("请求添加成功:" + tag.tag_show_str);
+      if (this.allLabelsArray.indexOf(tag.tag_show_str) == -1) {
+        this.showMsg("无法添加" + tag.tag_show_str + "，此标签不存在", "warning");
         return;
       }
       // this.curEditTask = JSON.parse(JSON.stringify(this.curTask));
@@ -286,8 +290,8 @@ export default {
     //单击item时，将item的label加入到input选项中
     setSearchText(label) {
       if (new Date().getTime() - this.touchtime < 500) {
-        console.log("dblclick");
-        this.addToSelect(label)
+        console.log("dblclick " + label);
+        this.findTagForAddSearch(this.data4, label);
       } else {
         this.touchtime = new Date().getTime();
         console.log("click")
@@ -300,11 +304,13 @@ export default {
       strs = this.searchTv.split(" ");
       if (strs.length > 0) {
         var s = strs[strs.length - 1];
-        var labelPart = s.replace(/[^a-z]+/ig, "");
-        this.getAssociateList(labelPart);
+        // var labelPart = s.replace(/[\u4e00-\u9fa5_a-zA-Z0-9]+/ig, "");
+        // console.log(s);
+        this.getAssociateList(s);
       }
 
     },
+    //搜索获取关联列表
     getAssociateList(text) {
       this.associateLabels = [];
       for (var i = 0; i < this.allLabelsArray.length; i++) {
@@ -322,6 +328,7 @@ export default {
           return 0;
         }
       });
+      this.nowInAssociates = -1;
     },
     //在列表中前后切换当前任务
     setCurrent(row, i) {
@@ -602,7 +609,7 @@ export default {
       for (var i = 0; i < labelsStr.length; i++) {
         var mLabel = labelsStr[i];
         if (mLabel.tag_en_str != "") {
-          this.allLabelsArray.push(mLabel.tag_en_str);
+          this.allLabelsArray.push(mLabel.tag_show_str);
         }
         if (mLabel.tag_children != "[]") {
           this.transFormAllLabel2Array(mLabel.tag_children);
@@ -637,19 +644,20 @@ export default {
         });
     },
     down: function() {
-      console.log("按下了 keycode ： down");
+      // console.log("按下了 keycode ： down");
       this.nowInAssociates++;
       if (this.nowInAssociates >= this.associateLabels.length) {
-        this.nowInAssociates = -1;
+        this.nowInAssociates = 0;
       }
       this.searchTv = this.associateLabels[this.nowInAssociates];
     },
     // ↑ 选择值，控制 li 的 .bgc
     up: function() {
-      console.log("按下了 keycode ： up");
+      // console.log("按下了 keycode ： up");
       this.nowInAssociates--;
-      if (this.nowInAssociates < -1) {
-        this.nowInAssociates = this.associateLabels.length - 1;
+      if (this.nowInAssociates < 0) {
+        // this.nowInAssociates = this.associateLabels.length - 1;
+        this.nowInAssociates = 0;
       }
       this.searchTv = this.associateLabels[this.nowInAssociates];
     }
@@ -800,7 +808,8 @@ export default {
 }
 
 .associate-label_ul {
-  width: 250px;
+  text-align: left;
+  width: 300px;
   max-height: 500px;
   overflow-y: scroll;
   margin-top: 0px;
