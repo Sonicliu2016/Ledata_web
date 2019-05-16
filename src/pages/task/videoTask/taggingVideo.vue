@@ -208,9 +208,16 @@ export default {
     //回车加入标签
     addFromSearch2Select() {
       this.searchTvs = [];
-      var strs = new Array();
-      strs = this.searchTv.split(" ");
-      this.findTagForAddSearch(this.data4, strs);
+      console.log(this.associateLabels.length);
+      if (this.associateLabels.length == 1) {
+        this.findTagForAddSearch(this.data4, this.associateLabels[0]);
+      } else {
+
+        var strs = new Array();
+        strs = this.searchTv.split(" ");
+        this.findTagForAddSearch(this.data4, strs);
+      }
+
       // for (var i = 0; i < strs.length; i++) {
       //   console.log(strs.length);
       //   var s = strs[i];
@@ -233,8 +240,6 @@ export default {
       //   this.findTagForAddSearch(this.data4, this.searchTvs[i]);
       //
       // }
-      this.associateLabels = [];
-      this.searchTv = "";
     },
     // 添加tag到已选
     addToSelect(tag) {
@@ -245,6 +250,8 @@ export default {
       }
       // this.curEditTask = JSON.parse(JSON.stringify(this.curTask));
       this.findAllLabels(this.data4, tag, "");
+      this.associateLabels = [];
+      this.searchTv = "";
       console.log("添加成功");
     },
     findAllLabels(labelsStr, tag, parentLabel) {
