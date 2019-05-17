@@ -68,7 +68,7 @@
     </span>
   </el-dialog>
 
-  <el-tabs v-model="activeTabName" type="border-card" style="position:positive;z-index:-1;width:28%">
+  <el-tabs v-model="activeTabName" type="border-card" style="position:positive;z-index:-1;width:28%" stretch>
 
     <el-tab-pane label="标注任务列表" name="first">
       <el-progress :text-inside="true" :stroke-width="18" :percentage=progress style="width:100%;"></el-progress>
@@ -86,7 +86,7 @@
       </el-table>
     </el-tab-pane>
 
-    <el-tab-pane label="标签列表" name="second">
+    <el-tab-pane label="标签列表" name="second" class="label-list">
       <el-progress :text-inside="true" :stroke-width="18" :percentage=progress style="width:100%;"></el-progress>
       <!-- <el-button type="success" size="small" style="width:18%;float:left；margin-left:18px;" @click="completeTask">
           完成任务
@@ -116,8 +116,17 @@
         </el-tree> -->
       <!-- <el-input placeholder="请输入标签名称" v-model="filterText">
         </el-input> -->
-      <el-tree class="vertical-scroll" :data="data4" :props="allLabelsProps" highlight-current accordion :expand-on-click-node="false" :filter-node-method="filterNode" @node-click="handleNodeClick" node-key="id" ref="tree">
-      </el-tree>
+      <el-tabs v-model="activeName" stretch>
+        <el-tab-pane v-for="tab in labelTabs" :label="tab.name" :key="tab.name">
+          <el-tree class="vertical-scroll" :data="tab.data" :props="allLabelsProps" highlight-current accordion :expand-on-click-node="false" :filter-node-method="filterNode" @node-click="handleNodeClick" node-key="id" ref="tree">
+          </el-tree>
+        </el-tab-pane>
+        <!-- <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
+        <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+        <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane> -->
+      </el-tabs>
+      <!-- <el-tree class="vertical-scroll" :data="data4" :props="allLabelsProps" highlight-current accordion :expand-on-click-node="false" :filter-node-method="filterNode" @node-click="handleNodeClick" node-key="id" ref="tree">
+      </el-tree> -->
     </el-tab-pane>
   </el-tabs>
 
@@ -154,6 +163,16 @@ export default {
       associateLabels: [],
       nowInAssociates: -1,
       data4: [],
+      labelTabs: [{
+        name: 'tag',
+        data: [],
+      }, {
+        name: 'scene',
+        data: [],
+      }, {
+        name: 'action',
+        data: [],
+      }, ],
       taskId: -1,
       allLabelsArray: [],
       curTask: {},
@@ -427,8 +446,19 @@ export default {
           "video/getAllVideoTags",
         )
         .then(res => {
-          this.data4 = res.data.data;
-          this.allLabelsArray = []
+          var response = res.data.data;
+          for (var i = 0; i < this.labelTabs.length; i++) {
+            if (this.labelTabs[i].name == "tag") {
+              this.labelTabs[i].data = response.tag_labels;
+            } else if (this.labelTabs[i].name == "scene") {
+              this.labelTabs[i].data = response.scene_labels;
+            } else if (this.labelTabs[i].name == "action") {
+              this.labelTabs[i].data = response.action_labels;
+            }
+          }
+          this.data4 = [].concat(response.tag_labels, response.scene_labels, response.action_labels);
+          // console.log(this.data4);
+          this.allLabelsArray = [];
           this.transFormAllLabel2Array(this.data4);
         })
         .catch(err => {
@@ -775,6 +805,11 @@ export default {
   display: block;
 }
 
+.label-list .el-tabs {
+  width: 100%;
+  z-index: 0;
+}
+
 .el-transfer-panel__header {
   margin-top: 10px;
   padding: 10px 10px;
@@ -825,7 +860,7 @@ export default {
   list-style-type: decimal;
   border: black 2px;
   position: absolute;
-  z-index: 1;
+  z-index: 3;
 }
 
 .bgc {
@@ -855,6 +890,7 @@ ol {
 }
 
 .vertical-scroll {
+  height: 550px;
   max-height: 550px;
   overflow-y: auto;
 }
