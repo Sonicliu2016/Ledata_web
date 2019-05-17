@@ -890,7 +890,7 @@ ol {
 }
 
 .vertical-scroll {
-  height: 550px;
+  height: 400px;
   max-height: 550px;
   overflow-y: auto;
 }
