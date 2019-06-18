@@ -24,6 +24,7 @@ import User from './modules/UserModule.js';
 import Bus from './bus';
 import UpdateInfo from './pages/updateInfo.vue';
 
+import ClassifyVideos from './pages/dataSet/classifyVideos.vue';
 import VideoDataSet from './pages/dataSet/videoDataSet.vue';
 import VideoTaskList from './pages/task/videoTask/videoTaskList.vue';
 import VideoLabelTask from './pages/task/videoTask/videoLabelTask.vue';
@@ -77,6 +78,7 @@ const routes = [
       {name:"dataSet",path:'/dataSet',component:DataSet},
       {name:"videoDataSet",path:'/videoDataSet',component:VideoDataSet},
       {name:"classifyImages",path:'/classifyImages',component:ClassifyImages},
+      {name:"classifyVideos",path:'/classifyVideos',component:ClassifyVideos},
       {name:'anotateQualityLabelCheckList',path:'/anotateQualityLabelCheckList',component:AnotateQualityLabelCheckList},
       {name:'anotateQualityImgCheck',path:'/anotateQualityImgCheck',component:AnotateQualityImgCheck},
 

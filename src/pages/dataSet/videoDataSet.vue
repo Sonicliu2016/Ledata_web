@@ -12,6 +12,9 @@
       </ol>
     </div>
   </div>
+  <div class="labelCount">
+    <span>一共有{{totalCount.labelCount}}个分类/{{totalCount.videoCount}}张图片</span>
+  </div>
 
   <el-row :gutter="20" style="float:left;width:100%">
     <el-col :span="2" v-for="(tag, index) in showTagList" :key="index" style="padding: 5px;">
@@ -30,12 +33,14 @@
 export default {
   data() {
     return {
+      getVideoCountUrl: '/video/getVideoCountFromDownload',
       searchTv: '',
       nowInAssociates: -1,
       associateLabels: [],
       allTagsList: [],
       showTagList: [],
       isShow: false,
+      totalCount: [],
     }
   },
   methods: {
@@ -55,18 +60,32 @@ export default {
 
         });
     },
+    getVideoCount() {
+      var params = new URLSearchParams();
+      this.$axios({
+          method: 'post',
+          url: this.getVideoCountUrl,
+          data: params,
+        })
+        .then(res => {
+          console.log("请求成功:" + res.data.code);
+          if (res.data.code == 200) {
+            this.totalCount = res.data.data;
+          }
+        })
+        .catch(err => {
+          console.log("error:" + err);
+          alert("服务器出现故障，请稍后再试！");
+        })
+    },
     seeDetail(tag) {
-      this.$alert('目前还无法查看视频数据', '我们正在开放中', {
-        confirmButtonText: '确定',
-        center: true
-      });
-      // this.$router.push({
-      //   name: 'classifyVideos',
-      //   params: {
-      //     tagId: tag.cluster_name,
-      //     tagCount: tag.count
-      //   }
-      // })
+      this.$router.push({
+        name: 'classifyVideos',
+        params: {
+          tagId: tag.cluster_name,
+          tagCount: tag.count
+        }
+      })
     },
     searchAssociate() {
       this.associateLabels = [];
@@ -118,7 +137,7 @@ export default {
   },
   created() {
     this.getAllTagList();
-
+    this.getVideoCount();
     console.log("this.showTagList: " + this.showTagList.length);
   }
 }
@@ -156,5 +175,10 @@ export default {
 
 .bgc {
   background-color: skyblue;
+}
+
+.labelCount {
+  width: 30%;
+  float: left;
 }
 </style>
