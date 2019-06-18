@@ -13,7 +13,7 @@
     </div>
   </div>
   <div class="labelCount">
-    <span>一共有{{showTagList.length}}个分类/{{10}}张图片</span>
+    <span>一共有{{showTagList.length}}个分类/{{totalCount}}张图片</span>
   </div>
 
   <el-row :gutter="20" style="float:left;width:100%">
@@ -59,6 +59,24 @@ export default {
         .catch(err => {
 
         });
+    },
+    getMediaTotalCount() {
+      var params = new URLSearchParams();
+      this.$axios({
+          method: 'post',
+          url: this.getMediaTotalCountUrl,
+          data: params,
+        })
+        .then(res => {
+          console.log("请求成功:" + res.data.code);
+          if (res.data.code == 200) {
+            this.totalCount = res.data.data.count;
+          }
+        })
+        .catch(err => {
+          console.log("error:" + err);
+          alert("服务器出现故障，请稍后再试！");
+        })
     },
     seeDetail(tag) {
       this.$router.push({
@@ -117,28 +135,9 @@ export default {
       this.searchTv = this.associateLabels[this.nowInAssociates].cluster_name;
     }
   },
-  getMediaTotalCount() {
-      var params = new URLSearchParams();
-      this.$axios({
-          method: 'post',
-          url: this.getMediaTotalCountUrl,
-          data: params,
-        })
-        .then(res => {
-          console.log("请求成功:" + res.data.code);
-          if (res.data.code == 200) {
-            this.totalCount = res.data.data.count;
-          }
-        })
-        .catch(err => {
-          console.log("error:" + err);
-          alert("服务器出现故障，请稍后再试！");
-        })
-    },
   created() {    
     this.getAllTagList();
     this.getMediaTotalCount();
-    console.log("this.showTagList: " + this.showTagList.length);
   }
 }
 </script>
